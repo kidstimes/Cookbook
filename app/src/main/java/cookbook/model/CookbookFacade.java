@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 public class CookbookFacade {
    
     private ArrayList<Recipe> recipes;
@@ -36,9 +35,6 @@ public class CookbookFacade {
         recipes.removeIf(recipe -> Objects.equals(name, recipe.getName()));
     }
 
-
-
-
     /**
      * Get the recipes of the cookbook.
      *
@@ -51,7 +47,6 @@ public class CookbookFacade {
         }
         return copyRecipes;
     }
-
 
     /**
      * Get the recipes of the cookbook containing the given keywords in the name.
@@ -94,11 +89,4 @@ public class CookbookFacade {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-
-    
-
 }
-
-
-
-
