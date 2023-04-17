@@ -4,8 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 import cookbook.model.Recipe;
 import cookbook.view.BrowserView;
@@ -49,50 +48,33 @@ public class BrowserController implements BrowserViewObserver, BaseController {
 
   public void handleSearch(String searchType, String searchText, ObservableList<String> selectedTags) {
     ArrayList<Recipe> searchResults = new ArrayList<>();
+
     if (!searchText.isEmpty()) {
         if (searchType.equals("Search by Name")) {
-            searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(searchText));
+            String[] names = searchText.split(" ");
+            ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
+            searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
         } else if (searchType.equals("Search by Ingredient")) {
             String[] ingredients = searchText.split(" ");
-            Set<Recipe> intersection = null;
-            for (String ingredient : ingredients) {
-                ArrayList<Recipe> recipesWithIngredient = this.controllerManager.getCookbook().getRecipesWithIngredients(ingredient);
-                if (intersection == null) {
-                    intersection = new HashSet<>(recipesWithIngredient);
-                } else {
-                    intersection.retainAll(recipesWithIngredient);
-                }
-            }
-            if (intersection != null) {
-                searchResults.addAll(intersection);
-            }
+            ArrayList<String> ingredientList = new ArrayList<>(Arrays.asList(ingredients));
+            searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
         }
     } else {
         searchResults.addAll(this.controllerManager.getCookbook().getRecipes());
     }
 
-
-
     ArrayList<Recipe> filteredResults = new ArrayList<>();
 
     if (!selectedTags.isEmpty()) {
-        for (Recipe recipe : searchResults) {
-            boolean hasAllTags = true;
-            for (String tag : selectedTags) {
-                if (!recipe.getTags().contains(tag)) {
-                    hasAllTags = false;
-                    break;
-                }
-            }
-            if (hasAllTags) {
-                filteredResults.add(recipe);
-            }
-        }
+        filteredResults.addAll(this.controllerManager.getCookbook().getRecipesWithTags(new ArrayList<>(selectedTags)));
+        filteredResults.retainAll(searchResults);
     } else {
         filteredResults.addAll(searchResults);
     }
+
     updateDisplayedRecipes(filteredResults);
-  }
+}
+
 
   public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
     this.browserView.displayRecipes(filteredResults);
