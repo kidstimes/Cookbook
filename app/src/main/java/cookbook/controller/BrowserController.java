@@ -46,20 +46,22 @@ public class BrowserController implements BrowserViewObserver, BaseController {
     this.controllerManager.showRecipeView();
   }
 
-  public void handleSearch(String searchType, String searchText, ObservableList<String> selectedTags) {
+  public void handleSearch(String searchTextByName, String searchTextByIngredient, ObservableList<String> selectedTags) {
     ArrayList<Recipe> searchResults = new ArrayList<>();
 
-    if (!searchText.isEmpty()) {
-        if (searchType.equals("Search by Name")) {
-            String[] names = searchText.split(" ");
-            ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
-            searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
-        } else if (searchType.equals("Search by Ingredient")) {
-            String[] ingredients = searchText.split(" ");
-            ArrayList<String> ingredientList = new ArrayList<>(Arrays.asList(ingredients));
-            searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
-        }
-    } else {
+    if (!searchTextByName.isEmpty()) {
+        String[] names = searchTextByName.split(" ");
+        ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
+        searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
+    }
+
+    if (!searchTextByIngredient.isEmpty()) {
+        String[] ingredients = searchTextByIngredient.split(" ");
+        ArrayList<String> ingredientList = new ArrayList<>(Arrays.asList(ingredients));
+        searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
+    }
+
+    if (searchTextByName.isEmpty() && searchTextByIngredient.isEmpty()) {
         searchResults.addAll(this.controllerManager.getCookbook().getRecipes());
     }
 
@@ -73,7 +75,7 @@ public class BrowserController implements BrowserViewObserver, BaseController {
     }
 
     updateDisplayedRecipes(filteredResults);
-}
+  }
 
 
   public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
