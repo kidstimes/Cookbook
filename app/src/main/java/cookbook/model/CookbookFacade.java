@@ -49,6 +49,20 @@ public class CookbookFacade {
     }
 
     /**
+     * Add tags to a recipe
+     *
+     * @param tags the tags in an ArrayList
+     * @param recipeName the name of the recipe
+     */
+    public void addTagsToRecipe(ArrayList<String> tags, String recipeName) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getName() == recipeName) {
+                recipe.setTags(tags);
+            }
+        }
+    }
+
+    /**
      * Get the recipes of the cookbook containing the given keywords in the name.
      *
      * @param keywords the keywords to search for in the recipes
