@@ -58,7 +58,7 @@ class AppTest {
 
         // Choose ingredients to search for
         ArrayList<String> ingredientNames = new ArrayList<String>(
-            Arrays.asList("Vanilla extract"));
+            Arrays.asList("Olive Oil", "Garlic"));
 
         // Perform the search by ingredients method
         searchedRecipes.clear();
@@ -69,7 +69,7 @@ class AppTest {
         for (Recipe recipe : searchedRecipes) {
             containsIngredient = false;
             for (Ingredient ingredient : recipe.getIngredients()) {
-                if (ingredient.getName().toLowerCase().contains("vanilla extract")) {
+                if (ingredient.getName().toLowerCase().contains("olive oil") || ingredient.getName().toLowerCase().contains("garlic")) {
                     containsIngredient = true;
                 }
             }
