@@ -1,6 +1,7 @@
 package cookbook.controller;
 
 import javafx.stage.Stage;
+import cookbook.database.Database;
 import cookbook.model.CookbookFacade;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -10,6 +11,7 @@ public class ControllerManager {
   private Stage stage;
   private BorderPane root;
   private CookbookFacade cookBook;
+  private Database database;
   private BaseController homePageController;
   private BaseController browserController;
   private BaseController recipeController;
@@ -17,6 +19,8 @@ public class ControllerManager {
   public ControllerManager(Stage stage) {
     this.stage = stage;
     this.cookBook = new CookbookFacade();
+    this.database = new Database(this.cookBook);
+    this.database.loadAllRecipes();
     this.initControllers();
     this.initLayout();
   }
