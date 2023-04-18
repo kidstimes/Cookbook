@@ -39,6 +39,8 @@ public class BrowserController implements BrowserViewObserver, BaseController {
   }
 
   public void handleBackToHomeClicked() {
+    this.browserView.resetSearchInputs();
+    updateDisplayedRecipes(recipes);
     this.controllerManager.showHomePageView();
   }
 
@@ -47,35 +49,62 @@ public class BrowserController implements BrowserViewObserver, BaseController {
   }
 
   public void handleSearch(String searchTextByName, String searchTextByIngredient, ObservableList<String> selectedTags) {
+
     ArrayList<Recipe> searchResults = new ArrayList<>();
+    selectedTags = browserView.getSelectedTags();
+
+    ArrayList<Recipe> nameSearchResults = new ArrayList<>();
+    ArrayList<Recipe> ingredientSearchResults = new ArrayList<>();
 
     if (!searchTextByName.isEmpty()) {
         String[] names = searchTextByName.split(" ");
         ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
-        searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
+        nameSearchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
     }
 
     if (!searchTextByIngredient.isEmpty()) {
         String[] ingredients = searchTextByIngredient.split(" ");
         ArrayList<String> ingredientList = new ArrayList<>(Arrays.asList(ingredients));
-        searchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
+        ingredientSearchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
     }
 
-    if (searchTextByName.isEmpty() && searchTextByIngredient.isEmpty()) {
+    if (!searchTextByName.isEmpty() && !searchTextByIngredient.isEmpty()) {
+        for (Recipe recipe : nameSearchResults) {
+            if (ingredientSearchResults.contains(recipe)) {
+                searchResults.add(recipe);
+            }
+        }
+    } else if (!searchTextByName.isEmpty()) {
+        searchResults.addAll(nameSearchResults);
+    } else if (!searchTextByIngredient.isEmpty()) {
+        searchResults.addAll(ingredientSearchResults);
+    } else {
         searchResults.addAll(this.controllerManager.getCookbook().getRecipes());
     }
 
     ArrayList<Recipe> filteredResults = new ArrayList<>();
 
     if (!selectedTags.isEmpty()) {
-        filteredResults.addAll(this.controllerManager.getCookbook().getRecipesWithTags(new ArrayList<>(selectedTags)));
-        filteredResults.retainAll(searchResults);
+        for (Recipe recipe : searchResults) {
+            boolean hasAllTags = true;
+            for (String tag : selectedTags) {
+                if (!recipe.getTags().contains(tag)) {
+                    hasAllTags = false;
+                    break;
+                }
+            }
+            if (hasAllTags) {
+                filteredResults.add(recipe);
+            }
+        }
     } else {
         filteredResults.addAll(searchResults);
     }
-
     updateDisplayedRecipes(filteredResults);
-  }
+}
+
+
+
 
 
   public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
