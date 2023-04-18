@@ -29,8 +29,6 @@ class AppTest {
                     recipeIngredients.add(tempIngredients);
                 }
             }
-            // Add the recipe with its ingredients
-            cookbook.addRecipe(recipe, recipeIngredients);
 
             // Separate the tags of the recipe from the other recipes
             ArrayList<String> recipeTags = new ArrayList<String>();
@@ -40,8 +38,8 @@ class AppTest {
                 }
             }
 
-            // Add the tags to the recipe
-            cookbook.addTagsToRecipe(recipeTags, recipe[0]);
+            // Add the recipe with its ingredients
+            cookbook.addRecipe(recipe, recipeIngredients, recipeTags);
         }
 
         // Choose keywords to search for
