@@ -83,22 +83,19 @@ public class BrowserController implements BrowserViewObserver, BaseController {
     }
 
     ArrayList<Recipe> filteredResults = new ArrayList<>();
+    ArrayList<String> selectedTagList = new ArrayList<>(selectedTags);
+
+
+    ArrayList<Recipe> recipeWithSelectedTags = this.controllerManager.getCookbook().getRecipesWithTags(selectedTagList);
 
     if (!selectedTags.isEmpty()) {
-        for (Recipe recipe : searchResults) {
-            boolean hasAllTags = true;
-            for (String tag : selectedTags) {
-                if (!recipe.getTags().contains(tag)) {
-                    hasAllTags = false;
-                    break;
-                }
-            }
-            if (hasAllTags) {
-                filteredResults.add(recipe);
-            }
+      for (Recipe recipe : searchResults) {
+        if (recipeWithSelectedTags.contains(recipe)) {
+          filteredResults.add(recipe);
         }
+      }
     } else {
-        filteredResults.addAll(searchResults);
+      filteredResults.addAll(searchResults);
     }
     updateDisplayedRecipes(filteredResults);
 }
