@@ -77,7 +77,7 @@ public class CookbookFacade {
         // return a list of recipes that contain all the ingredients
         return recipes.stream()
         //as above
-                .filter(recipe -> ingredients.stream().allMatch(ingredient -> recipe.getIngredients().stream().anyMatch(i -> i.getName().toLowerCase().contains(ingredient.toLowerCase()))))
+                .filter(recipe -> ingredients.stream().anyMatch(ingredient -> recipe.getIngredients().stream().anyMatch(i -> i.getName().toLowerCase().contains(ingredient.toLowerCase()))))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
