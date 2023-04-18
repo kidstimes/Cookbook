@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 public class CookbookFacade {
    
     private ArrayList<Recipe> recipes;
@@ -36,9 +35,6 @@ public class CookbookFacade {
         recipes.removeIf(recipe -> Objects.equals(name, recipe.getName()));
     }
 
-
-
-
     /**
      * Get the recipes of the cookbook.
      *
@@ -52,6 +48,19 @@ public class CookbookFacade {
         return copyRecipes;
     }
 
+    /**
+     * Add tags to a recipe
+     *
+     * @param tags the tags in an ArrayList
+     * @param recipeName the name of the recipe
+     */
+    public void addTagsToRecipe(ArrayList<String> tags, String recipeName) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getName() == recipeName) {
+                recipe.setTags(tags);
+            }
+        }
+    }
 
     /**
      * Get the recipes of the cookbook containing the given keywords in the name.
@@ -94,11 +103,4 @@ public class CookbookFacade {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-
-    
-
 }
-
-
-
-
