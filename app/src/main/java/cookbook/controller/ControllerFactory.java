@@ -1,18 +1,9 @@
 package cookbook.controller;
 
-public class ControllerFactory {
-  public static HomePageController createHomePageController(ControllerManager controllerManager) {
-      HomePageController controller = new HomePageController(controllerManager);
-      return controller;
-  }
+public interface ControllerFactory {
+  public HomePageController createHomePageController(ControllerManager controllerManager);
 
-  public static BrowserController createBrowserController(ControllerManager controllerManager) {
-      BrowserController controller = new BrowserController(controllerManager);
-      return controller;
-  }
+  public BrowserController createBrowserController(ControllerManager controllerManager);
 
-  public static BaseController createRecipeController(ControllerManager controllerManager) {
-      RecipeController controller = new RecipeController(controllerManager);
-      return controller;
-  }
+  public RecipeController createRecipeController(ControllerManager controllerManager);
 }
