@@ -12,15 +12,19 @@ public class ControllerManager {
   private BorderPane root;
   private CookbookFacade cookBook;
   private Database database;
+  private ControllerFactory controllerFactory;
   private BaseController homePageController;
   private BaseController browserController;
   private BaseController recipeController;
+
+
 
   public ControllerManager(Stage stage) {
     this.stage = stage;
     this.cookBook = new CookbookFacade();
     this.database = new Database(this.cookBook);
     this.database.loadAllRecipes();
+    this.controllerFactory = new ConcreteControllerFactory();
     this.initControllers();
     this.initLayout();
   }
@@ -30,9 +34,9 @@ public class ControllerManager {
   }
 
   private void initControllers() {
-    this.homePageController = ControllerFactory.createHomePageController(this);
-    this.browserController = ControllerFactory.createBrowserController(this);
-    this.recipeController = ControllerFactory.createRecipeController(this);
+    this.homePageController = controllerFactory.createHomePageController(this);
+    this.browserController = controllerFactory.createBrowserController(this);
+    this.recipeController = controllerFactory.createRecipeController(this);
 }
 
   private void initLayout() {
