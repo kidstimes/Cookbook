@@ -1,8 +1,12 @@
 package cookbook.controller;
 
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+
 import cookbook.database.Database;
 import cookbook.model.CookbookFacade;
+import cookbook.model.Recipe;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 
@@ -12,7 +16,6 @@ public class ControllerManager {
   private BorderPane root;
   private CookbookFacade cookBook;
   private Database database;
-  private ControllerFactory controllerFactory;
   private BaseController homePageController;
   private BaseController browserController;
   private BaseController recipeController;
@@ -22,9 +25,8 @@ public class ControllerManager {
   public ControllerManager(Stage stage) {
     this.stage = stage;
     this.cookBook = new CookbookFacade();
-    this.database = new Database(this.cookBook);
-    this.database.loadAllRecipes();
-    this.controllerFactory = new ConcreteControllerFactory();
+    this.database = new Database();
+    loadRecipesFromDatabase();
     this.initControllers();
     this.initLayout();
   }
@@ -33,11 +35,18 @@ public class ControllerManager {
     return this.cookBook;
   }
 
+  private void loadRecipesFromDatabase() {
+    ArrayList<Recipe> recipes = database.loadAllRecipes();
+    for (Recipe recipe : recipes) {
+        cookBook.addRecipe(recipe);
+    }
+  }
+
   private void initControllers() {
-    this.homePageController = controllerFactory.createHomePageController(this);
-    this.browserController = controllerFactory.createBrowserController(this);
-    this.recipeController = controllerFactory.createRecipeController(this);
-}
+    this.homePageController = new HomePageController(this);
+    this.browserController = new BrowserController(this);
+    this.recipeController = new RecipeController(this);
+  }
 
   private void initLayout() {
     this.root = new BorderPane();
