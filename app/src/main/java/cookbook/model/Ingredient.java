@@ -2,48 +2,48 @@ package cookbook.model;
 
 public class Ingredient {
 
-    private String name;
-    private float quantity;
-    private String measurementUnit;
+  private String name;
+  private float quantity;
+  private String measurementUnit;
 
-    /**
-     * Ingredient Constructor.
-     *
-     * @param name the name of the ingredients
-     * @param quantity the quantity of the ingredient in the recipe
-     * @param measurementUnit the measurement unit of the ingredient
-     */
-    public Ingredient(String name, float quantity, String measurementUnit) {
-        this.name = name;
-        this.quantity = quantity;
-        this.measurementUnit = measurementUnit;
-    }
-    
-// start the getters and setters
-// setters mainly for the write recipe method later
+  /**
+   * Ingredient Constructor.
+   *
+   * @param name the name of the ingredients
+   * @param quantity the quantity of the ingredient in the recipe
+   * @param measurementUnit the measurement unit of the ingredient
+   */
+  public Ingredient(String name, float quantity, String measurementUnit) {
+    this.name = name;
+    this.quantity = quantity;
+    this.measurementUnit = measurementUnit;
+  }
 
-    public String getName() {
-        return name;
-    }
+  // start the getters and setters
+  // setters mainly for the write recipe method later
 
-    public float getQuantity() {
-        return quantity;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public float getQuantity(int serving) {
-        return quantity * serving;
-    }
+  public float getQuantity() {
+    return quantity;
+  }
 
-    public String getMeasurementUnit() {
-        return measurementUnit;
-    }
+  public float getQuantity(int serving) {
+    return quantity * serving;
+  }
 
-// here is the toString method to test the above code
-// remove it to test folder later 
+  public String getMeasurementUnit() {
+    return measurementUnit;
+  }
 
-public String toString() {
+  // here is the toString method to test the above code
+  // remove it to test folder later
+
+  public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(quantity).append(" ").append(measurementUnit).append(" of ").append(name);
     return sb.toString();
-}
+  }
 }

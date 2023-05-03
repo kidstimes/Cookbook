@@ -1,111 +1,90 @@
 package cookbook.controller;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.BrowserView;
 import cookbook.view.BrowserViewObserver;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 
-public class BrowserController implements BrowserViewObserver, BaseController {
-  private ControllerManager controllerManager;
+/**
+ * Controller for managing the browsing of recipes.
+ */
+public class BrowserController implements BrowserViewObserver {
+
   private BrowserView browserView;
-  private ArrayList<Recipe> recipes;
+  private CookbookFacade model;
+  private MainController mainController;
 
-  public BrowserController(ControllerManager controllerManager) {
-    this.controllerManager = controllerManager;
-    recipes = this.controllerManager.getCookbook().getRecipes();
-    this.browserView = new BrowserView(recipes);
+  /**
+  * Browser Controller Constructor.
+  *
+  * @param model the facade to the model
+  * @param mainController the main controller
+  */
+  public BrowserController(CookbookFacade model, MainController mainController) {
+    // initialize attributes
+    ArrayList<Recipe> recipes = model.getRecipes();
+    this.model = model;
+    this.mainController = mainController;
+    // become an observer of the browser's view.
+    this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser());
     this.browserView.setObserver(this);
   }
 
-  public void setControllerManager(ControllerManager manager) {
-    this.controllerManager = manager;
-}
-
-  public String getTitle() {
-    return "Recipe Browser";
-  }
-
+  /**
+   * Get the browser view.
+   */
   public Node getView() {
+    browserView.updateRecipes(model.getRecipes());
     return this.browserView.getView();
   }
 
-  public void handleBrowseRecipesClicked() {
-    this.controllerManager.showBrowserView();
-  }
-
-  public void handleBackToHomeClicked() {
-    this.browserView.resetSearchInputs();
-    updateDisplayedRecipes(recipes);
-    this.controllerManager.showHomePageView();
-  }
-
-  public void handleGoToRecipeClicked(Recipe recipe) {
-    this.controllerManager.showRecipeView();
-  }
-
-  public void handleSearch(String searchTextByName, String searchTextByIngredient, ObservableList<String> selectedTags) {
-
-    ArrayList<Recipe> searchResults = new ArrayList<>();
-    selectedTags = browserView.getSelectedTags();
-
-    ArrayList<Recipe> nameSearchResults = new ArrayList<>();
-    ArrayList<Recipe> ingredientSearchResults = new ArrayList<>();
-
+  /**
+   *Handle the search event.
+   */
+  @Override
+  public void handleSearch(String searchTextByName, String searchTextByIngredient,
+      ObservableList<String> selectedTags) {
+    // Convert keywords string into an arraylist
+    ArrayList<String> keywords = new ArrayList<>();
     if (!searchTextByName.isEmpty()) {
-        String[] names = searchTextByName.split(" ");
-        ArrayList<String> nameList = new ArrayList<>(Arrays.asList(names));
-        nameSearchResults.addAll(this.controllerManager.getCookbook().getRecipesWithName(nameList));
+      keywords.addAll(Arrays.asList(searchTextByName.split(" ")));
     }
 
+    // Convert ingredients string into an arraylist
+    ArrayList<String> ingredients = new ArrayList<>();
     if (!searchTextByIngredient.isEmpty()) {
-        String[] ingredients = searchTextByIngredient.split(" ");
-        ArrayList<String> ingredientList = new ArrayList<>(Arrays.asList(ingredients));
-        ingredientSearchResults.addAll(this.controllerManager.getCookbook().getRecipesWithIngredients(ingredientList));
+      ingredients.addAll(Arrays.asList(searchTextByIngredient.split(" ")));
     }
 
-    if (!searchTextByName.isEmpty() && !searchTextByIngredient.isEmpty()) {
-        for (Recipe recipe : nameSearchResults) {
-            if (ingredientSearchResults.contains(recipe)) {
-                searchResults.add(recipe);
-            }
-        }
-    } else if (!searchTextByName.isEmpty()) {
-        searchResults.addAll(nameSearchResults);
-    } else if (!searchTextByIngredient.isEmpty()) {
-        searchResults.addAll(ingredientSearchResults);
-    } else {
-        searchResults.addAll(this.controllerManager.getCookbook().getRecipes());
-    }
+    // Convert tags observable list into an arraylist
+    ArrayList<String> tags = new ArrayList<>(selectedTags);
 
-    ArrayList<Recipe> filteredResults = new ArrayList<>();
-    ArrayList<String> selectedTagList = new ArrayList<>(selectedTags);
+    // Apply the filters and display the filtered recipes
+    browserView.displayRecipes(model.getRecipesWithFilters(keywords, ingredients, tags));
+  }
 
-
-    ArrayList<Recipe> recipeWithSelectedTags = this.controllerManager.getCookbook().getRecipesWithTags(selectedTagList);
-
-    if (!selectedTags.isEmpty()) {
-      for (Recipe recipe : searchResults) {
-        if (recipeWithSelectedTags.contains(recipe)) {
-          filteredResults.add(recipe);
-        }
-      }
-    } else {
-      filteredResults.addAll(searchResults);
-    }
-    updateDisplayedRecipes(filteredResults);
-}
-
-
-
-
-
+  /**
+   * Update recipes with the new filters.
+   */
   public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
     this.browserView.displayRecipes(filteredResults);
   }
+
+
+  
+  @Override
+  public void goToHomePage() {
+    mainController.goToHomePage();
+  }
+
+  @Override
+  public void goToRecipe(Recipe recipe) {
+    mainController.goToRecipe(recipe);
+  }
+
 
 }

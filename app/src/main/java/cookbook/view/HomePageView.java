@@ -1,88 +1,143 @@
 package cookbook.view;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import javafx.animation.SequentialTransition;
+import javafx.animation.TranslateTransition;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
-public class HomePageView{
-    private HomePageViewObserver observer;
-    private BorderPane view;
+
+
+
+/**
+ * The view for the home page.
+ */
+public class HomePageView {
+
+  private HomePageViewObserver observer;
+  private BorderPane view;
+  private String displayName;
+
+  
+  /**
+   * Home Page View Constructor.
+   */
+  public HomePageView() {
+    this.view = new BorderPane();
+    view.setStyle("-fx-background-color: #F9F8F3;");
     
-    public HomePageView () {
-        this.view = new BorderPane();
-        initLayout();
-    }
+  }
 
-    public void setObserver(HomePageViewObserver observer) {
-        this.observer = observer;
-    }
+  /**
+   * Set an observer of the home page view..
+   */
+  public void setObserver(HomePageViewObserver observer) {
+    this.observer = observer;
+  }
 
-    public Node getView() {
-        return this.view;
-    }
+  /**
+   * Set the user displayName and initialize the layout of the home page view.
+   */
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+    initLayout(displayName);
+  }
 
-    public void initLayout() {
 
-        // Create a grid pane for the options
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(20, 20, 20, 20));
-        grid.setVgap(20);
-        grid.setHgap(10);
+  public Node getView() {
+    return view;
+  }
 
-        // Add a title to the homepage
-        Text title = new Text("Welcome to Cookbook!");
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 40));
-        grid.add(title, 0, 0, 2, 1);
+  /**
+   * Initializes the layout of the home page.
+   */
+  public void initLayout(String displayName) {
 
-        // Add five options to the homepage, one per row
-        Button browseRecipesButton = new Button("Browse Recipes");
-        browseRecipesButton.setFont(Font.font("Arial", 18));
-        browseRecipesButton.setOnAction(e -> {       
-            // Handle browse recipes action
-            observer.handleBrowseRecipesClicked();
-        });
-        grid.add(browseRecipesButton, 0, 1, 1, 1);
-        GridPane.setHalignment(browseRecipesButton, javafx.geometry.HPos.LEFT);
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(20);
+    sidebar.setMaxWidth(150);
+    sidebar.setStyle("-fx-padding: 20px;");
 
-        Button addRecipeButton = new Button("Add a Recipe");
-        addRecipeButton.setFont(Font.font("Arial", 18));
-        addRecipeButton.setOnAction(e -> {
-            // Handle add recipe action
-        });
-        grid.add(addRecipeButton, 0, 2, 1, 1);
-        GridPane.setHalignment(addRecipeButton, javafx.geometry.HPos.LEFT);
+    // Add a title to the homepage
+    Text title = new Text(displayName + ", welcome!");
+    title.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(title);
 
-        Button searchRecipeButton = new Button("Weekly Dinner List");
-        searchRecipeButton.setFont(Font.font("Arial", 18));
-        searchRecipeButton.setOnAction(e -> {
-            // Handle search recipe action
-        });
-        grid.add(searchRecipeButton, 0, 3, 1, 1);
-        GridPane.setHalignment(searchRecipeButton, javafx.geometry.HPos.LEFT);
+    // Add five options to the homepage, one per row
+    Button browseRecipesButton = new Button("Browse Recipes");
+    browseRecipesButton.setStyle(
+          "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    browseRecipesButton.setFont(Font.font("Roboto", 18));
+    browseRecipesButton.setOnAction(e -> {
+      // Handle browse recipes action
+      observer.goToBrowser();
+    });
+    sidebar.getChildren().add(browseRecipesButton);
 
-        Button viewFavoritesButton = new Button("My Favorites");
-        viewFavoritesButton.setFont(Font.font("Arial", 18));
-        viewFavoritesButton.setOnAction(e -> {
-            // Handle view favorites action
-        });
-        grid.add(viewFavoritesButton, 0, 4, 1, 1);
-        GridPane.setHalignment(viewFavoritesButton, javafx.geometry.HPos.LEFT);
+    Button addRecipeButton = new Button("Add a Recipe");
+    addRecipeButton.setFont(Font.font("Roboto", 18));
+    addRecipeButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    addRecipeButton.setOnAction(e -> {
+      // Handle add recipe action
+      observer.goToAddRecipe();
+    });
+    sidebar.getChildren().add(addRecipeButton);
 
-        Button viewShoppingListButton = new Button("My Shopping List");
-        viewShoppingListButton.setFont(Font.font("Arial", 18));
-        viewShoppingListButton.setOnAction(e -> {
-            // Handle view shopping list action
-        });
-        grid.add(viewShoppingListButton, 0, 5, 1, 1);
-        GridPane.setHalignment(viewShoppingListButton, javafx.geometry.HPos.LEFT);
+    Button weeklyDinnerButton = new Button("Weekly Dinner List");
+    weeklyDinnerButton.setFont(Font.font("Roboto", 18));
+    weeklyDinnerButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    weeklyDinnerButton.setOnAction(e -> {
+      // Handle search recipe action
+    });
+    sidebar.getChildren().add(weeklyDinnerButton);
 
-        view.setCenter(grid);
-    }
+    Button viewFavoritesButton = new Button("My Favorites");
+    viewFavoritesButton.setFont(Font.font("Roboto", 18));
+    viewFavoritesButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    viewFavoritesButton.setOnAction(e -> {
+      // Handle view favorites action
+    });
+    sidebar.getChildren().add(viewFavoritesButton);
+
+    Button viewShoppingListButton = new Button("My Shopping List");
+    viewShoppingListButton.setFont(Font.font("Roboto", 18));
+    viewShoppingListButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    viewShoppingListButton.setOnAction(e -> {
+      // Handle view shopping list action
+    });
+    sidebar.getChildren().add(viewShoppingListButton);
+
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 18));
+    logoutButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+    sidebar.getChildren().add(logoutButton);
+
+
+    view.setLeft(sidebar);
+  }
+
+
 }
