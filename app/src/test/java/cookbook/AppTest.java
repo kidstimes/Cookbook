@@ -8,6 +8,7 @@ import cookbook.model.Recipe;
 import cookbook.model.Ingredient;
 import cookbook.model.CookbookFacade;
 import cookbook.database.FileHandler;
+import cookbook.database.Database;
 
 class AppTest {
 
@@ -19,7 +20,7 @@ class AppTest {
         ArrayList<String[]> tags = fileHandler.getTags();
 
         // Add the recipes from the test data using the CookbookFacade class
-        CookbookFacade cookbook = new CookbookFacade();
+        CookbookFacade cookbook = new CookbookFacade(new Database());
         for (String[] recipe : recipes) {
             // Separate the ingredients of the recipe from the rest of the recipes
             ArrayList<String[]> recipeIngredients = new ArrayList<String[]>();
