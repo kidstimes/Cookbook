@@ -1,6 +1,9 @@
 package cookbook.view;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import cookbook.model.Recipe;
+
 
 /**
  * Interface for the RecipeView observer.
@@ -16,6 +19,17 @@ public interface RecipeViewObserver {
    * Handles the save tags action when the save tags button is clicked.
    */
   void handleSaveTagsClicked(ArrayList<String> updatedTags, String recipeName);
+
+  void goToAddRecipe();
+
+  void userLogout();
+
+  void goToWeeklyDinner();
+
+  void goToHomePage();
+
+  void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe);
+
 
 
 }

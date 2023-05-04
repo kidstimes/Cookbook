@@ -19,11 +19,12 @@ public class HomePageController implements HomePageViewObserver {
    * @param model the facade to the model
    * @param mainController the main controller
    */
-  public HomePageController(CookbookFacade model, MainController mainController) {
+  public HomePageController(CookbookFacade model, MainController mainController, String displayName) {
     this.model = model;
-    this.homePageView = new HomePageView();
+    this.homePageView = new HomePageView(displayName);
     this.homePageView.setObserver(this);
     this.mainController = mainController;
+    
   }
 
   /**
@@ -33,9 +34,6 @@ public class HomePageController implements HomePageViewObserver {
     return this.homePageView.getView();
   }
 
-  public void setDisplayName(String displayName) {
-    homePageView.setDisplayName(displayName);
-  }
 
   @Override
   public void goToBrowser() {
@@ -51,5 +49,10 @@ public class HomePageController implements HomePageViewObserver {
   @Override
   public void userLogout() {
     mainController.userLogout();
+  }
+
+  @Override
+  public void goToWeeklyDinner() {
+    mainController.goToWeeklyDinner();
   }
 }

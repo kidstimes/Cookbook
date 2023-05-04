@@ -19,4 +19,12 @@ public interface AddRecipeViewObserver {
    */
   void goToBrowser();
 
+  void goToAddRecipe();
+
+  void userLogout();
+
+  void goToWeeklyDinner();
+
+  void goToHomePage();
+
 }

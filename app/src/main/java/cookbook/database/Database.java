@@ -150,26 +150,102 @@ public class Database {
    */
   public static String hashPassword(String password) {
     try {
-        // Create a MessageDigest instance for SHA-256
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+      // Create a MessageDigest instance for SHA-256
+      MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
-        // Hash the password as bytes
-        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
-        byte[] hashedBytes = messageDigest.digest(passwordBytes);
+      // Hash the password as bytes
+      byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
+      byte[] hashedBytes = messageDigest.digest(passwordBytes);
 
-        // Convert the hashed bytes to a hexadecimal string
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hashedBytes) {
-            hexString.append(String.format("%02x", b));
-        }
+      // Convert the hashed bytes to a hexadecimal string
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hashedBytes) {
+        hexString.append(String.format("%02x", b));
+      }
 
-        // Return the hashed password as a hexadecimal string
-        return hexString.toString();
+      // Return the hashed password as a hexadecimal string
+      return hexString.toString();
     } catch (NoSuchAlgorithmException e) {
-        // Handle the exception if the hashing algorithm is not supported
-        throw new RuntimeException("SHA-256 is not supported", e);
+      // Handle the exception if the hashing algorithm is not supported
+      throw new RuntimeException("SHA-256 is not supported", e);
     }
   }
+
+
+  /**
+   * Save a recipe to the database and associate tags with the recipe.
+  */
+  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags, String userName) {
+    try { 
+      // Get the user id
+      int userId = getUserId(userName);
+      // Insert the recipe into the recipes table
+      String query = "INSERT INTO recipes (name, description, instructions) VALUES (?, ?, ?)";
+      try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        statement.setString(1, recipe[0]); // name
+        statement.setString(2, recipe[1]); // description
+        statement.setString(3, recipe[2]); // instructions
+        statement.executeUpdate();
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+          int recipeId = generatedKeys.getInt(1);
+              
+          // Insert ingredients into the ingredients table
+          for (String[] ingredient : ingredients) {
+            String name = ingredient[0];
+            String quantity = ingredient[1];
+            String measurementUnit = ingredient[2];
+            insertIngredient(recipeId, name, quantity, measurementUnit);
+          }
+              
+          // Define the predefined tags
+          List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
+                      "gluten free", "starter", "main course", "dessert and sweets");
+              
+          // Add tags to the database
+          for (String tag : tags) {
+            int tagId = getTagId(tag);
+            if (tagId == -1) {
+              // If the tag doesn't exist, insert it into the tags table
+              tagId = insertTag(tag);
+            }
+            // If the tag is a predefined tag, insert it into the recipe_tags table, otherwise insert it into the PersonalTags table
+            if (predefinedTags.contains(tag.toLowerCase())) {
+              insertRecipeTag(recipeId, tagId);
+            } else {
+              insertPersonalTag(userId, recipeId, tagId);
+            }
+          }
+          return true;
+        }
+      }
+  } catch (SQLException e) {
+      System.out.println("Error while saving recipe to the database: " + e.getMessage());
+  }
+  return false;
+}
+
+/**
+ * Insert an ingredient into the ingredients table and associate it with a recipe.
+ */
+/**
+ * Insert an ingredient into the ingredients table and associate it with a recipe.
+ */
+  private void insertIngredient(int recipeId, String name, String quantity, String measurementUnit) {
+    try {
+      String query ="INSERT INTO ingredients (recipe_id, name, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, recipeId); // recipe_id
+        statement.setString(2, name); // name
+        statement.setString(3, quantity); // quantity
+        statement.setString(4, measurementUnit); // measurementUnit
+        statement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      System.out.println("Error while inserting ingredient into the database: " + e.getMessage());
+    }
+  }
+
 
   /**
    * Load recipes from the database and return arraylist of Recipe (from model) objects.
@@ -349,23 +425,23 @@ public class Database {
   private void insertPersonalTag(int userId, int recipeId, int tagId) throws SQLException {
     String query = "INSERT IGNORE INTO PersonalTags (user_id, recipe_id, tag_id) VALUES (?, ?, ?)";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
-        statement.setInt(1, userId);
-        statement.setInt(2, recipeId);
-        statement.setInt(3, tagId);
-        statement.executeUpdate();
+      statement.setInt(1, userId);
+      statement.setInt(2, recipeId);
+      statement.setInt(3, tagId);
+      statement.executeUpdate();
     } catch (SQLException e) {
-        System.out.println("Error while inserting personal tag: " + e.getMessage());
+      System.out.println("Error while inserting personal tag: " + e.getMessage());
     }
   }
 
   private void insertRecipeTag(int recipeId, int tagId) throws SQLException {
     String query = "INSERT IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
-        statement.setInt(1, recipeId);
-        statement.setInt(2, tagId);
-        statement.executeUpdate();
+      statement.setInt(1, recipeId);
+      statement.setInt(2, tagId);
+      statement.executeUpdate();
     } catch (SQLException e) {
-        System.out.println("Error while inserting recipe tag: " + e.getMessage());
+      System.out.println("Error while inserting recipe tag: " + e.getMessage());
     }
   }
 
@@ -394,17 +470,17 @@ public class Database {
 
 
 
-    /**
-     * Close the connection with the database.
-     */
-    public void disconnect() {
-        // disconnect from the database
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
+  /**
+  * Close the connection with the database.
+  */
+  public void disconnect() {
+    // disconnect from the database
+    try {
+      if (connection != null) {
+        connection.close();
+      }
+    } catch (SQLException ex) {
+      System.out.println(ex.getMessage());
     }
+  }
 }

@@ -2,8 +2,13 @@ package cookbook.view;
 
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -11,22 +16,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.control.Control;
 import javafx.geometry.Pos;
-
+import javafx.scene.control.DatePicker;
 
 
 
@@ -43,13 +48,15 @@ public class RecipeView {
   private Spinner<Integer> servingSpinner;
   private int initialServings;
   private Button saveButton;
+  private String displayName;
 
   /**
    * Recipe View Constructor.
    */
-  public RecipeView() {
+  public RecipeView(String displayName) {
     this.view = new BorderPane();
     this.initialServings = 2;
+    this.displayName = displayName;
   }
 
   /**
@@ -78,6 +85,12 @@ public class RecipeView {
     return view;
   }
   
+  /**.
+   * Set the user displayName
+   */
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
 
   /**
    * Get a list of updated tags.
@@ -93,11 +106,42 @@ public class RecipeView {
     return updatedTags;
   }
 
-
   /**
    * init the layout of the recipe page.
    */
   public void initLayout() {
+
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(30);
+    sidebar.setMaxWidth(100);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text welcomeText = new Text(displayName + ", welcome!");
+    welcomeText.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(welcomeText);
+
+    // Add five options to the homepage, one per row
+    Button[] sidebarButtons = {
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> {}),
+      createButton("My Shopping List", e -> {})
+      };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 18));
+    logoutButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> { 
+      observer.userLogout(); 
+    });
+    sidebar.getChildren().add(logoutButton);
+    view.setLeft(sidebar);
 
     vbox = new VBox();
     vbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
@@ -114,10 +158,9 @@ public class RecipeView {
     scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     view.setCenter(scrollPane);
 
-
     // Add a back to broswer button
     Hyperlink backButton = new Hyperlink("← Back to Recipe Browser");
-    backButton.setFont(Font.font("Roboto", 20));
+    backButton.setFont(Font.font("Roboto", 16));
     backButton.setOnAction(e -> {
       if (observer != null) {
         observer.goToBrowser();
@@ -126,6 +169,31 @@ public class RecipeView {
 
     // Add serving spinner
     vbox.getChildren().add(backButton);
+
+    // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
+    DatePicker datePicker = new DatePicker();
+    datePicker.setStyle("-fx-font: 16px \"Roboto\";");
+
+    // Add button to add the recipe to the weekly dinner list
+    Button addToWeeklyDinnerButton = new Button("Add to Weekly Dinner");
+    addToWeeklyDinnerButton.setFont(Font.font("Roboto", 16));
+    addToWeeklyDinnerButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    addToWeeklyDinnerButton.setOnAction(e -> {
+      if (datePicker.getValue() != null) {
+        LocalDate selectedDate = datePicker.getValue();
+        observer.addRecipeToWeeklyDinner(selectedDate, recipe);
+      } else {
+        showAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
+      }
+    });
+
+    HBox addToWeeklyDinnerBox = new HBox();
+    addToWeeklyDinnerBox.setSpacing(10);
+    addToWeeklyDinnerBox.getChildren().addAll(datePicker, addToWeeklyDinnerButton);
+    vbox.getChildren().add(addToWeeklyDinnerBox);
+
 
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
@@ -344,6 +412,16 @@ public class RecipeView {
     alert.setHeaderText(null);
     alert.setContentText(message);
     alert.showAndWait();
+  }
+
+  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
+    Button button = new Button(text);
+    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setFont(Font.font("Roboto", 18));
+    button.setMinWidth(100); // Set the fixed width for each button
+    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setOnAction(eventHandler);
+    return button;
   }
 
 }

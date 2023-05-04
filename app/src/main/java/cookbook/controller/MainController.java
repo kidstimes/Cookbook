@@ -24,6 +24,7 @@ public class MainController {
   private AddRecipeController addRecipeController;
   private LoginController loginController;
   private SignUpController signUpController;
+  private WeeklyDinnerController weeklyDinnerController;
 
   /**
    * Controller Constructor.
@@ -35,18 +36,23 @@ public class MainController {
     // Initialize view, model, and database
     this.stage = primaryStage;
     this.model = model;
-    
 
-    //model.setRecipes(database.loadAllRecipes());
-
-    // Initialize controllers
+    // Initialize login and sign up controllers
     this.loginController = new LoginController(model, this);
     this.signUpController = new SignUpController(model, this);
-    this.homePageController = new HomePageController(model, this);
-    this.addRecipeController = new AddRecipeController(model, this);
 
-    // Initialize the main layout of the program
+  }
 
+
+  /**
+   * Initialize controllers after successful login of a user.
+   */
+  public void initializeControllersAfterLogin() {
+    String userDisplayName = model.getUserDisplayName();
+    System.out.println(model);
+    this.homePageController = new HomePageController(model, this, userDisplayName);
+    this.browserController = new BrowserController(model, this, userDisplayName);
+    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);
   }
 
   /**
@@ -60,10 +66,6 @@ public class MainController {
     goToLogin();
     
 
-
-
-
-
     // Quit
     // quitCookbook();
   }
@@ -75,7 +77,7 @@ public class MainController {
   public void initMainLayout() {
     // Initialize the root pane
     this.root = new BorderPane();
-    Scene scene = new Scene(this.root, 1200, 800);
+    Scene scene = new Scene(this.root, 1440, 960);
     // Initialize the stage
     this.stage.setTitle("Cookbook");
     this.stage.setScene(scene);
@@ -101,7 +103,7 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    homePageController.setDisplayName(model.getUserDisplayName());
+    
     root.setCenter(homePageController.getView());
   }
 
@@ -116,7 +118,7 @@ public class MainController {
    * Go to the browser.
    */
   public void goToBrowser() {
-    this.browserController = new BrowserController(model, this);
+    
     root.setCenter(browserController.getView());
   }
 
@@ -126,7 +128,7 @@ public class MainController {
    * @param recipe the chosen recipe
    */
   public void goToRecipe(Recipe recipe) {
-    recipeController = new RecipeController(model, this, recipe);
+    recipeController = new RecipeController(model, this, recipe, model.getUserDisplayName());
     root.setCenter(recipeController.getView());
   }
 
@@ -137,11 +139,20 @@ public class MainController {
     root.setCenter(addRecipeController.getView());
   }
 
+
+  
+  public void goToWeeklyDinner() {
+    this.weeklyDinnerController 
+        = new WeeklyDinnerController(model, this, model.getUserDisplayName(), model.getDinnerList());
+    root.setCenter(weeklyDinnerController.getView());
+  }
+
+
   public void userLogout() {
     model.userLogout();
     goToLogin();
   }
-  
+
   /**
    * Quit the cookbook.
    */

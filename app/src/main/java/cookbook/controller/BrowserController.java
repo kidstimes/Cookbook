@@ -12,26 +12,22 @@ import javafx.scene.Node;
 /**
  * Controller for managing the browsing of recipes.
  */
-public class BrowserController implements BrowserViewObserver {
-
+public class BrowserController extends BaseController implements BrowserViewObserver {
   private BrowserView browserView;
-  private CookbookFacade model;
-  private MainController mainController;
-
   /**
-  * Browser Controller Constructor.
-  *
-  * @param model the facade to the model
-  * @param mainController the main controller
+  * Constructor for the browser controller.
+
+  * @param model is the cookbookfacade model
+  * @param mainController is the main controller
+  * @param displayName is the display name of the user
   */
-  public BrowserController(CookbookFacade model, MainController mainController) {
-    // initialize attributes
+  public BrowserController(CookbookFacade model, MainController mainController, String displayName) {
+    super(model, mainController);
+    System.out.println(model);
     ArrayList<Recipe> recipes = model.getRecipes();
-    this.model = model;
-    this.mainController = mainController;
-    // become an observer of the browser's view.
-    this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser());
+    this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser(), displayName);
     this.browserView.setObserver(this);
+    this.browserView.setDisplayName(displayName);
   }
 
   /**
@@ -74,17 +70,16 @@ public class BrowserController implements BrowserViewObserver {
     this.browserView.displayRecipes(filteredResults);
   }
 
-
-  
-  @Override
-  public void goToHomePage() {
-    mainController.goToHomePage();
+  public void setDisplayName(String displayName) {
+    browserView.setDisplayName(displayName);
   }
+
 
   @Override
   public void goToRecipe(Recipe recipe) {
     mainController.goToRecipe(recipe);
   }
+
 
 
 }

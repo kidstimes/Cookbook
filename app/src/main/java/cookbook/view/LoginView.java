@@ -74,7 +74,7 @@ public class LoginView {
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
-    fadeTransition.setDuration(Duration.millis(6000));
+    fadeTransition.setDuration(Duration.millis(2000));
     fadeTransition.setNode(introPane);
     fadeTransition.setFromValue(4.0);
     fadeTransition.setToValue(0.0);
@@ -83,7 +83,7 @@ public class LoginView {
 
     //Create a RotateTransition
     RotateTransition rotateTransition = new RotateTransition();
-    rotateTransition.setDuration(Duration.millis(4000));
+    rotateTransition.setDuration(Duration.millis(2000));
     rotateTransition.setNode(animatedImageView);
     rotateTransition.setByAngle(360);
     rotateTransition.setCycleCount(1);
@@ -119,7 +119,7 @@ public class LoginView {
   private void createAnimation(Node node) {
     // Create a TranslateTransition
     TranslateTransition translateTransition = new TranslateTransition();
-    translateTransition.setDuration(Duration.millis(1500));
+    translateTransition.setDuration(Duration.millis(500));
     translateTransition.setNode(node);
     translateTransition.setFromY(-100);
     translateTransition.setToY(0);
@@ -128,7 +128,7 @@ public class LoginView {
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
-    fadeTransition.setDuration(Duration.millis(1000));
+    fadeTransition.setDuration(Duration.millis(500));
     fadeTransition.setNode(node);
     fadeTransition.setFromValue(0.0);
     fadeTransition.setToValue(1.0);
@@ -265,13 +265,6 @@ public class LoginView {
 
     view.setCenter(stackPane);
 
-    // Add a PauseTransition to delay the appearance of the login page
-    PauseTransition pauseTransition = new PauseTransition(Duration.millis(3000));
-    pauseTransition.setOnFinished(e -> {
-      mainContainer.getChildren().addAll(welcomeMessage, loginGrid, signUpContainer);
-      view.setCenter(mainContainer);
-    });
-    pauseTransition.play();
   }
 
 

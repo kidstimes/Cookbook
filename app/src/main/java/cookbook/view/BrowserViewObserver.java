@@ -26,6 +26,14 @@ public interface BrowserViewObserver {
    */
   void goToRecipe(Recipe recipe);
 
+  void goToBrowser();
+
+  void goToWeeklyDinner();
+
+  void goToAddRecipe();
+
+  void userLogout();
+
 
 
 }

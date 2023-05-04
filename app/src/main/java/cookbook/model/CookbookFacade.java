@@ -1,6 +1,8 @@
 package cookbook.model;
 
 import cookbook.database.Database;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -53,6 +55,11 @@ public class CookbookFacade {
     } else {
       return database.getPrivateTagsForUser(user.getUsername());
     }
+  }
+
+  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients,
+      ArrayList<String> tags) {
+    return database.saveRecipeToDatabase(recipe, ingredients, tags, user.getUsername());
   }
 
   public void userLogout() {
@@ -204,6 +211,22 @@ public class CookbookFacade {
     }
 
     return filteredRecipes;
+  }
+
+  public void addRecipeToDinnerList(LocalDate date, Recipe recipe) {
+
+    
+  }
+
+  public ArrayList<Dinner> getDinnerList(){
+    ArrayList<Dinner> dinnerList = new ArrayList<Dinner>();
+    LocalDate date = LocalDate.now();
+    Dinner dinner = new Dinner(date);
+    Recipe recipe = new Recipe("test", "test", "test", new ArrayList<String[]>(), new ArrayList<String>());
+    dinner.addRecipe(recipe);
+    dinnerList.add(dinner);
+    return dinnerList;
+    
   }
 
 }

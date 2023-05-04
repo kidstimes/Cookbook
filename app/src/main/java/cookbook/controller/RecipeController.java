@@ -5,6 +5,8 @@ import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.scene.Node;
 
@@ -12,20 +14,17 @@ import javafx.scene.Node;
 /**
  * Controller for managing the detailed view of a recipe.
  */
-public class RecipeController implements RecipeViewObserver {
-
+public class RecipeController extends BaseController implements RecipeViewObserver {
   private RecipeView recipeView;
-  private CookbookFacade model;
-  private MainController mainController;
 
   /**Recipe Controller Constructor.
   *
   * @param model the cookbook facade
   * @param mainController the main controller
   */
-  public RecipeController(CookbookFacade model, MainController mainController, Recipe recipe) {
-    this.model = model;
-    this.recipeView = new RecipeView();
+  public RecipeController(CookbookFacade model, MainController mainController, Recipe recipe, String displayName) {
+    super(model, mainController);
+    this.recipeView = new RecipeView(displayName);
     this.recipeView.setRecipe(recipe);
     this.recipeView.setObserver(this);
     this.mainController = mainController;
@@ -64,6 +63,11 @@ public class RecipeController implements RecipeViewObserver {
     model.addTagsToRecipe(updatedTags, recipeName);
     model.updateTagToDatabase(updatedTags, recipeName);
     mainController.goToBrowser();
+  }
+
+  @Override
+  public void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe){
+    model.addRecipeToDinnerList(date, recipe);
   }
 
 }

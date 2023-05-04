@@ -2,6 +2,9 @@ package cookbook.view;
 
 
 import cookbook.model.Ingredient;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +18,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,6 +35,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.HBox;
 
 
@@ -55,13 +60,15 @@ public class AddRecipeView {
   private ListView<String> tagsList;
   private ListView<String> directionsList;
   private Label errorLabel;
+  private String displayName;
 
 
   /**
    * Constructor for the add recipe view.
    */
-  public AddRecipeView() {
+  public AddRecipeView(String displayName) {
     this.view = new BorderPane();
+    this.displayName = displayName;
     initLayout();
   }
 
@@ -85,15 +92,48 @@ public class AddRecipeView {
    * Initialize the add recipe view.
    */
   private void initLayout() {
+
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(30);
+    sidebar.setMaxWidth(120);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text title = new Text(displayName + ", welcome!");
+    title.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(title);
+
+    // Add five options to the homepage, one per row
+    Button[] sidebarButtons = {
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> {}),
+      createButton("My Shopping List", e -> {})
+      };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 18));
+    logoutButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+    sidebar.getChildren().add(logoutButton);
+    view.setLeft(sidebar);
+
     VBox root = new VBox();
     root.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
 
-    // Back to Browser hyperlink
+    // Back to homepage hyperlink
     Hyperlink backButton = new Hyperlink("← Back to Home Page");
-    backButton.setFont(Font.font("Roboto", 20));
+    backButton.setFont(Font.font("Roboto", 16));
 
     backButton.setOnAction(e -> {
-      observer.goToBrowser();
+      observer.goToHomePage();
       // Clear all fields
       nameField.clear();
       descField.clear();
@@ -455,5 +495,15 @@ public class AddRecipeView {
 
     // Set view
     view.setCenter(scrollPane);
+  }
+
+  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
+    Button button = new Button(text);
+    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setFont(Font.font("Roboto", 18));
+    button.setMinWidth(120); // Set the fixed width for each button
+    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setOnAction(eventHandler);
+    return button;
   }
 }
