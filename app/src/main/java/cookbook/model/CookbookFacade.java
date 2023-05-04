@@ -221,12 +221,24 @@ public class CookbookFacade {
   public ArrayList<Dinner> getDinnerList(){
     ArrayList<Dinner> dinnerList = new ArrayList<Dinner>();
     LocalDate date = LocalDate.now();
+    LocalDate date2 = LocalDate.of(2023, 5, 5);
     Dinner dinner = new Dinner(date);
+    Dinner dinner2  = new Dinner(date2);
+    Recipe recipe2 = new Recipe("test2", "test2", "test2", new ArrayList<String[]>(), new ArrayList<String>());
     Recipe recipe = new Recipe("test", "test", "test", new ArrayList<String[]>(), new ArrayList<String>());
     dinner.addRecipe(recipe);
+    dinner2.addRecipe(recipe2);
     dinnerList.add(dinner);
+    dinnerList.add(dinner2);
     return dinnerList;
     
   }
 
+  public void saveWeeklyDinnerToDatabase(){
+    database.saveWeeklyDinnerListToDatabase(getDinnerList(), user.getUsername());
+  }
+
+  public void loadWeeklyDinnerFromDatebase(){
+    ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
+  }
 }
