@@ -139,15 +139,18 @@ public class MainController {
     root.setCenter(addRecipeController.getView());
   }
 
-
-  
+  /**
+   * Go to weekly dinner lists.
+   */
   public void goToWeeklyDinner() {
-    this.weeklyDinnerController 
-        = new WeeklyDinnerController(model, this, model.getUserDisplayName(), model.getDinnerList());
+    this.weeklyDinnerController = new WeeklyDinnerController(model,
+      this, model.getUserDisplayName(), model.getDinnerList());
     root.setCenter(weeklyDinnerController.getView());
   }
 
-
+  /**
+   * Log out the current user.
+   */
   public void userLogout() {
     model.userLogout();
     goToLogin();

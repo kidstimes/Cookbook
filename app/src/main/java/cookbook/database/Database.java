@@ -11,9 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
-
+import java.util.List;
 
 /**
  * Handler for the database connection.
@@ -28,12 +27,12 @@ public class Database {
   public Database() {
     try {
       connection = DriverManager.getConnection(
-        "jdbc:mysql://localhost/cookbook?user=root&password=12345678&useSSL=false");
+          "jdbc:mysql://localhost/cookbook?user=root&password=12345678&useSSL=false");
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
-    
+
   /**
    * Get the connection with the database.
    */
@@ -41,19 +40,16 @@ public class Database {
     return connection;
   }
 
-
   /**
    * Check if the username exists in the database.
    */
   public boolean checkIfUserNameExists(String userName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "SELECT * FROM users WHERE username = ?"
-        )
-    ) {
+            "SELECT * FROM users WHERE username = ?")) {
       stmt.setString(1, userName);
       ResultSet rs = stmt.executeQuery();
-      
+
       // If there is a record in the result set, then the username exists
       if (rs.next()) {
         return true;
@@ -61,7 +57,8 @@ public class Database {
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-    // If there is no record in the result set or an exception occurs, the username does not exist
+    // If there is no record in the result set or an exception occurs, the username
+    // does not exist
     return false;
   }
 
@@ -71,9 +68,7 @@ public class Database {
   public boolean userSignUp(String userName, String password, String displayName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "INSERT INTO users (username, password_hash, displayname ) VALUES (?, ?, ?)"
-        )
-    ) {
+            "INSERT INTO users (username, password_hash, displayname ) VALUES (?, ?, ?)")) {
       stmt.setString(1, userName);
       stmt.setString(2, hashPassword(password));
       stmt.setString(3, displayName);
@@ -91,9 +86,7 @@ public class Database {
   public boolean userLogin(String userName, String password) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "SELECT * FROM users WHERE username = ? AND password_hash = ?"
-        )
-    ) {
+            "SELECT * FROM users WHERE username = ? AND password_hash = ?")) {
       stmt.setString(1, userName);
       stmt.setString(2, hashPassword(password));
       ResultSet rs = stmt.executeQuery();
@@ -106,13 +99,10 @@ public class Database {
     return false;
   }
 
-
   public int getUserId(String userName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "SELECT id FROM users WHERE username = ?"
-        )
-    ) {
+            "SELECT id FROM users WHERE username = ?")) {
       stmt.setString(1, userName);
       ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
@@ -124,16 +114,13 @@ public class Database {
     return -1;
   }
 
-
   /**
    * Get the display name of the user.
    */
   public String getUserDisplayName(String userName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "SELECT displayname FROM users WHERE username = ?"
-        )
-    ) {
+            "SELECT displayname FROM users WHERE username = ?")) {
       stmt.setString(1, userName);
       ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
@@ -171,12 +158,12 @@ public class Database {
     }
   }
 
-
   /**
    * Save a recipe to the database and associate tags with the recipe.
-  */
-  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags, String userName) {
-    try { 
+   */
+  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags,
+      String userName) {
+    try {
       // Get the user id
       int userId = getUserId(userName);
       // Insert the recipe into the recipes table
@@ -189,7 +176,7 @@ public class Database {
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
           int recipeId = generatedKeys.getInt(1);
-              
+
           // Insert ingredients into the ingredients table
           for (String[] ingredient : ingredients) {
             String name = ingredient[0];
@@ -197,11 +184,11 @@ public class Database {
             String measurementUnit = ingredient[2];
             insertIngredient(recipeId, name, quantity, measurementUnit);
           }
-              
+
           // Define the predefined tags
           List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
-                      "gluten free", "starter", "main course", "dessert and sweets");
-              
+              "gluten free", "starter", "main course", "dessert and sweets");
+
           // Add tags to the database
           for (String tag : tags) {
             int tagId = getTagId(tag);
@@ -209,7 +196,8 @@ public class Database {
               // If the tag doesn't exist, insert it into the tags table
               tagId = insertTag(tag);
             }
-            // If the tag is a predefined tag, insert it into the recipe_tags table, otherwise insert it into the PersonalTags table
+            // If the tag is a predefined tag, insert it into the recipe_tags table,
+            // otherwise insert it into the PersonalTags table
             if (predefinedTags.contains(tag.toLowerCase())) {
               insertRecipeTag(recipeId, tagId);
             } else {
@@ -219,21 +207,23 @@ public class Database {
           return true;
         }
       }
-  } catch (SQLException e) {
+    } catch (SQLException e) {
       System.out.println("Error while saving recipe to the database: " + e.getMessage());
+    }
+    return false;
   }
-  return false;
-}
 
-/**
- * Insert an ingredient into the ingredients table and associate it with a recipe.
- */
-/**
- * Insert an ingredient into the ingredients table and associate it with a recipe.
- */
+  /**
+   * Insert an ingredient into the ingredients table and associate it with a
+   * recipe.
+   */
+  /**
+   * Insert an ingredient into the ingredients table and associate it with a
+   * recipe.
+   */
   private void insertIngredient(int recipeId, String name, String quantity, String measurementUnit) {
     try {
-      String query ="INSERT INTO ingredients (recipe_id, name, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
+      String query = "INSERT INTO ingredients (recipe_id, name, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, recipeId); // recipe_id
         statement.setString(2, name); // name
@@ -246,12 +236,12 @@ public class Database {
     }
   }
 
-
   /**
-   * Load recipes from the database and return arraylist of Recipe (from model) objects.
+   * Load recipes from the database and return arraylist of Recipe (from model)
+   * objects.
    */
   public ArrayList<Recipe> loadAllRecipes(String userName) {
-    ArrayList<Recipe> recipes = new ArrayList<>();     
+    ArrayList<Recipe> recipes = new ArrayList<>();
     try (
         PreparedStatement stmt = connection.prepareStatement(
             "SELECT r.id, r.name, r.description, r.instructions FROM recipes r")) {
@@ -276,29 +266,29 @@ public class Database {
     }
     return recipes;
   }
-    
+
   /**
-  * Load the ingredients of recipes from the database and 
-  * return them in an arraylist of string arrays.
-  */
+   * Load the ingredients of recipes from the database and
+   * return them in an arraylist of string arrays.
+   */
   private ArrayList<String[]> loadIngredientsForRecipe(int recipeId) {
     ArrayList<String[]> ingredients = new ArrayList<>();
-    
+
     try (
         PreparedStatement stmt = connection.prepareStatement(
-              "SELECT i.name, i.quantity, i.measurementUnit "
+            "SELECT i.name, i.quantity, i.measurementUnit "
                 + "FROM ingredients i "
                 + "WHERE i.recipe_id = ?")) {
       stmt.setInt(1, recipeId);
       ResultSet rs = stmt.executeQuery();
-    
+
       while (rs.next()) {
         String ingredientName = rs.getString(1);
         String quantity = rs.getString(2);
         String measurementUnit = rs.getString(3);
-        ingredients.add(new String[]{ingredientName, quantity, measurementUnit});
+        ingredients.add(new String[] { ingredientName, quantity, measurementUnit });
       }
-    
+
       rs.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
@@ -306,98 +296,96 @@ public class Database {
     return ingredients;
   }
 
+  /**
+   * Load the tags of recipes from the database and return them in an arraylist of
+   * String Objects.
+   */
+  private ArrayList<String> loadTagsForRecipe(int recipeId, String username) {
+    ArrayList<String> tags = new ArrayList<>();
+    try {
+      int userId = getUserId(username);
 
-    /**
-     * Load the tags of recipes from the database and return them in an arraylist of String Objects.
-     */
-    private ArrayList<String> loadTagsForRecipe(int recipeId, String username) {
-      ArrayList<String> tags = new ArrayList<>();
-      try {
-          int userId = getUserId(username);
-          
-          // Fetch tags from recipe_tags table
-          String query = "SELECT name FROM tags INNER JOIN recipe_tags ON tags.id = recipe_tags.tag_id WHERE recipe_tags.recipe_id = ?";
-          try (PreparedStatement statement = connection.prepareStatement(query)) {
-              statement.setInt(1, recipeId);
-              ResultSet resultSet = statement.executeQuery();
-              while (resultSet.next()) {
-                  tags.add(resultSet.getString("name"));
-              }
-          }
-  
-          // Fetch personal tags for the given username from PersonalTags table
-          query = "SELECT name FROM tags INNER JOIN PersonalTags ON tags.id = PersonalTags.tag_id WHERE PersonalTags.recipe_id = ? AND PersonalTags.user_id = ?";
-          try (PreparedStatement statement = connection.prepareStatement(query)) {
-              statement.setInt(1, recipeId);
-              statement.setInt(2, userId);
-              ResultSet resultSet = statement.executeQuery();
-              while (resultSet.next()) {
-                  tags.add(resultSet.getString("name"));
-              }
-          }
-  
-      } catch (SQLException e) {
-          e.printStackTrace();
+      // Fetch tags from recipe_tags table
+      String query = "SELECT name FROM tags INNER JOIN recipe_tags ON tags.id = recipe_tags.tag_id WHERE recipe_tags.recipe_id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, recipeId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+          tags.add(resultSet.getString("name"));
+        }
       }
-      return tags;
-  }
-    
 
-    public void updateTagToDatabase(ArrayList<String> tags, String recipeName, String userName) {
-      try {
-          // Get the user and recipe IDs
-          int userId = getUserId(userName);
-          int recipeId = getRecipeId(recipeName);
-  
-          // Delete existing personal tags for the user and recipe
-          deletePersonalTags(userId, recipeId);
-  
-          // Define the predefined tags
-          List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
-                  "gluten free", "starter", "main course", "dessert and sweets");
-  
-          // Add new personal tags to the database
-          for (String tag : tags) {
-              int tagId = getTagId(tag);
-              if (tagId == -1) {
-                  // If the tag doesn't exist, insert it into the tags table
-                  tagId = insertTag(tag);
-              }
-              // If the tag is a predefined tag, insert it into the recipe_tags table, otherwise insert it into the PersonalTags table
-              if (predefinedTags.contains(tag.toLowerCase())) {
-                  insertRecipeTag(recipeId, tagId);
-              } else {
-                  insertPersonalTag(userId, recipeId, tagId);
-              }
-          }
-      } catch (SQLException e) {
-          e.printStackTrace();
+      // Fetch personal tags for the given username from PersonalTags table
+      query = "SELECT name FROM tags INNER JOIN PersonalTags ON tags.id = PersonalTags.tag_id WHERE PersonalTags.recipe_id = ? AND PersonalTags.user_id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, recipeId);
+        statement.setInt(2, userId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+          tags.add(resultSet.getString("name"));
+        }
       }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return tags;
   }
-  
-  
+
+  public void updateTagToDatabase(ArrayList<String> tags, String recipeName, String userName) {
+    try {
+      // Get the user and recipe IDs
+      int userId = getUserId(userName);
+      int recipeId = getRecipeId(recipeName);
+
+      // Delete existing personal tags for the user and recipe
+      deletePersonalTags(userId, recipeId);
+
+      // Define the predefined tags
+      List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
+          "gluten free", "starter", "main course", "dessert and sweets");
+
+      // Add new personal tags to the database
+      for (String tag : tags) {
+        int tagId = getTagId(tag);
+        if (tagId == -1) {
+          // If the tag doesn't exist, insert it into the tags table
+          tagId = insertTag(tag);
+        }
+        // If the tag is a predefined tag, insert it into the recipe_tags table,
+        // otherwise insert it into the PersonalTags table
+        if (predefinedTags.contains(tag.toLowerCase())) {
+          insertRecipeTag(recipeId, tagId);
+        } else {
+          insertPersonalTag(userId, recipeId, tagId);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 
   private int getRecipeId(String recipeName) throws SQLException {
     String query = "SELECT id FROM recipes WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
-        statement.setString(1, recipeName);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet.next() ? resultSet.getInt("id") : -1;
+      statement.setString(1, recipeName);
+      ResultSet resultSet = statement.executeQuery();
+      return resultSet.next() ? resultSet.getInt("id") : -1;
     } catch (SQLException e) {
-        System.out.println("Error while getting recipe id: " + e.getMessage());
-        return -1;
+      System.out.println("Error while getting recipe id: " + e.getMessage());
+      return -1;
     }
   }
 
   private int getTagId(String tagName) throws SQLException {
     String query = "SELECT id FROM tags WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
-        statement.setString(1, tagName);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet.next() ? resultSet.getInt("id") : -1;
+      statement.setString(1, tagName);
+      ResultSet resultSet = statement.executeQuery();
+      return resultSet.next() ? resultSet.getInt("id") : -1;
     } catch (SQLException e) {
-        System.out.println("Error while getting tag id: " + e.getMessage());
-        return -1;
+      System.out.println("Error while getting tag id: " + e.getMessage());
+      return -1;
     }
   }
 
@@ -466,13 +454,9 @@ public class Database {
     return privateTags;
   }
 
-
-
-
-
   /**
-  * Close the connection with the database.
-  */
+   * Close the connection with the database.
+   */
   public void disconnect() {
     // disconnect from the database
     try {
