@@ -1,5 +1,8 @@
 package cookbook.model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 /**
  * The User class.
  */
@@ -8,6 +11,7 @@ public class User {
   private int id;
   private String username;
   private String displayName;
+  private ArrayList<Dinner> weeklyDinners;
 
   /**
    * User Constructor.
@@ -19,6 +23,7 @@ public class User {
     this.id = id;
     this.username = username;
     this.displayName = displayName;
+    this.weeklyDinners = new ArrayList<>();
   }
 
   /**
@@ -40,6 +45,27 @@ public class User {
   }
 
   /**
+   * Add a recipe to a dinner on a specific date.
+   *
+   * @param date the date of the dinner
+   * @param recipe the recipe to add to the dinner
+   * @return false if recipe is alredy in the dinner on the given date, otherwise true
+   */
+  public boolean addWeeklyDinner(LocalDate date, Recipe recipe) {
+    for (Dinner dinner : weeklyDinners) {
+      if (dinner.getDate().isEqual(date)) {
+        if (dinner.getRecipes().contains(recipe)) {
+          return false;
+        }
+        dinner.addRecipe(recipe);
+        return true;
+      }
+    }
+    weeklyDinners.add(new Dinner(date, recipe));
+    return true;
+  }
+
+  /**
    * Get the username of the user.
    *
    * @return the username
@@ -55,6 +81,19 @@ public class User {
    */
   public String getDisplayName() {
     return displayName;
+  }
+
+  /**
+   * Get the weekly dinners of the user.
+   *
+   * @return an arraylist with the dinners
+   */
+  public ArrayList<Dinner> getWeeklyDinners() {
+    ArrayList<Dinner> copyDinners = new ArrayList<>();
+    for (Dinner dinner : weeklyDinners) {
+      copyDinners.add(dinner);
+    }
+    return copyDinners;
   }
 
   /**

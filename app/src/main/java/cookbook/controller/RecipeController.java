@@ -5,7 +5,6 @@ import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.scene.Node;
@@ -22,7 +21,8 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   * @param model the cookbook facade
   * @param mainController the main controller
   */
-  public RecipeController(CookbookFacade model, MainController mainController, Recipe recipe, String displayName) {
+  public RecipeController(CookbookFacade model, MainController mainController,
+      Recipe recipe, String displayName) {
     super(model, mainController);
     this.recipeView = new RecipeView(displayName);
     this.recipeView.setRecipe(recipe);
@@ -48,7 +48,6 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   /**
    * Handle the save tags event.
    */
-  
   @Override
   public void handleSaveTagsClicked(ArrayList<String> updatedTags, String recipeName) {
     model.addTagsToRecipe(updatedTags, recipeName);
@@ -57,7 +56,7 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   }
 
   @Override
-  public void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe){
+  public void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe) {
     model.addRecipeToDinnerList(date, recipe);
   }
 

@@ -1,7 +1,6 @@
 package cookbook.model;
 
 import cookbook.database.Database;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,7 +47,11 @@ public class CookbookFacade {
     return user.getDisplayName();
   }
 
-
+  /**
+   * Get the private tags of the user from the database.
+   *
+   * @return the user's private tags
+   */
   public ArrayList<String> getPrivateTagsForUser() {
     if (user == null) {
       return new ArrayList<>();
@@ -73,7 +76,7 @@ public class CookbookFacade {
    * @param ingredients the ingredients of the recipe in an arraylist of string arrays
    * @param tags the tags of the recipe in a string array
    */
-  public void addRecipe(String recipe[], ArrayList<String[]> ingredients, ArrayList<String> tags) {
+  public void addRecipe(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags) {
     recipes.add(new Recipe(recipe[0], recipe[1], recipe[2], ingredients, tags));
   }
 
@@ -118,7 +121,7 @@ public class CookbookFacade {
   }
 
   /**
-   * Add tags to a recipe
+   * Add tags to a recipe.
    *
    * @param tags the tags in an ArrayList
    * @param recipeName the name of the recipe
@@ -188,8 +191,8 @@ public class CookbookFacade {
    * @param tags the tags to search for in the recipes
    * @return the recipes containing the all the keywords, ingredients, and tags
    */
-  public ArrayList<Recipe> getRecipesWithFilters(ArrayList<String> keywords, ArrayList<String> ingredients,
-      ArrayList<String> tags) {
+  public ArrayList<Recipe> getRecipesWithFilters(ArrayList<String> keywords, 
+      ArrayList<String> ingredients, ArrayList<String> tags) {
     ArrayList<Recipe> filteredRecipes = new ArrayList<Recipe>();
 
     // Apply keywords filter
@@ -213,25 +216,24 @@ public class CookbookFacade {
     return filteredRecipes;
   }
 
-  public void addRecipeToDinnerList(LocalDate date, Recipe recipe) {
-
-    
+  /**
+   * Add a recipe to the user's dinner list.
+   *
+   * @param date the date of the dinner
+   * @param recipe the recipe to add
+   * @return false if the recipe is already in the dinner on the given date, otherwise true
+   */
+  public boolean addRecipeToDinnerList(LocalDate date, Recipe recipe) {
+    return user.addWeeklyDinner(date, recipe);
   }
 
-  public ArrayList<Dinner> getDinnerList(){
-    ArrayList<Dinner> dinnerList = new ArrayList<Dinner>();
-    LocalDate date = LocalDate.now();
-    LocalDate date2 = LocalDate.of(2023, 5, 5);
-    Dinner dinner = new Dinner(date);
-    Dinner dinner2  = new Dinner(date2);
-    Recipe recipe2 = new Recipe("test2", "test2", "test2", new ArrayList<String[]>(), new ArrayList<String>());
-    Recipe recipe = new Recipe("test", "test", "test", new ArrayList<String[]>(), new ArrayList<String>());
-    dinner.addRecipe(recipe);
-    dinner2.addRecipe(recipe2);
-    dinnerList.add(dinner);
-    dinnerList.add(dinner2);
-    return dinnerList;
-    
+  /**
+   * Get the weekly dinners of the user.
+   *
+   * @return an arraylist with the dinners of the user
+   */
+  public ArrayList<Dinner> getDinnerList() {
+    return user.getWeeklyDinners();
   }
 
   public void saveWeeklyDinnerToDatabase(){
