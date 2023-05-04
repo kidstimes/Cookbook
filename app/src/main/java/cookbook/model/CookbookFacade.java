@@ -235,10 +235,10 @@ public class CookbookFacade {
   }
 
   public void saveWeeklyDinnerToDatabase(){
-    database.saveWeeklyDinnerListToDatabase(getDinnerList(), user.getUsername());
+    //database.saveWeeklyDinnerListToDatabase(getDinnerList(), user.getUsername());
   }
 
   public void loadWeeklyDinnerFromDatebase(){
-    ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
+    //ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
   }
 }

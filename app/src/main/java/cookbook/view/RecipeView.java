@@ -2,11 +2,9 @@ package cookbook.view;
 
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -184,6 +182,7 @@ public class RecipeView {
       if (datePicker.getValue() != null) {
         LocalDate selectedDate = datePicker.getValue();
         observer.addRecipeToWeeklyDinner(selectedDate, recipe);
+        System.out.println(displayName + " added " + recipe.getName() + " to the weekly dinner list on " + selectedDate);
       } else {
         showAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
       }

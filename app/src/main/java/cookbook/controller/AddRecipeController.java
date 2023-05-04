@@ -1,7 +1,6 @@
 package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
-import cookbook.model.Recipe;
 import cookbook.view.AddRecipeView;
 import cookbook.view.AddRecipeViewObserver;
 import java.util.ArrayList;

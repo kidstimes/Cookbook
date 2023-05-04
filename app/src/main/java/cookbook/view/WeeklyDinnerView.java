@@ -3,14 +3,12 @@ package cookbook.view;
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import cookbook.view.WeeklyDinnerViewObserver;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

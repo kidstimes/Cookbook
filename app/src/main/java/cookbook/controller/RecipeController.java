@@ -30,15 +30,6 @@ public class RecipeController extends BaseController implements RecipeViewObserv
     this.mainController = mainController;
   }
 
-  /**
-   * Set the recipe to be displayed.
-   *
-   * @param recipe the recipe to be displayed
-   */
-  public void setRecipe(Recipe recipe) {
-    System.out.println("Recipe: " + recipe);
-    this.recipeView.setRecipe(recipe);
-  }
 
   /**
    * Get the recipe view.

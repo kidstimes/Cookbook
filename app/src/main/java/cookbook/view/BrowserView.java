@@ -9,8 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -72,13 +70,6 @@ public class BrowserView {
    */
   public Node getView() {
     return view;
-  }
-
-  /**
-   * Set the user displayName.
-   */
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
   }
 
   /**
@@ -146,7 +137,7 @@ public class BrowserView {
     // Add a title to the homepage
     Text title = new Text("Recipe Browser");
     title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
-    rootVBox.setMargin(title, new Insets(0, 0, 20, 0));
+    VBox.setMargin(title, new Insets(0, 0, 20, 0));
     rootVBox.getChildren().add(title);
 
     // Add search input fields for name and ingredients

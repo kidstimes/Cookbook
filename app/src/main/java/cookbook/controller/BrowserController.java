@@ -27,7 +27,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
     ArrayList<Recipe> recipes = model.getRecipes();
     this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser(), displayName);
     this.browserView.setObserver(this);
-    this.browserView.setDisplayName(displayName);
   }
 
   /**
@@ -70,9 +69,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
     this.browserView.displayRecipes(filteredResults);
   }
 
-  public void setDisplayName(String displayName) {
-    browserView.setDisplayName(displayName);
-  }
 
 
   @Override

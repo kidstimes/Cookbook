@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 
-
 /**
  * The Cookbook application.
  * This is the main class of the application.
@@ -22,10 +21,11 @@ public class Cookbook extends Application {
     MainController mainController = new MainController(primaryStage, model);
     mainController.runCookbook();
 
-    // Set the onCloseRequest event handler for the primary stage
+    // Set the onCloseRequest event handler when user closes the program window
     primaryStage.setOnCloseRequest(event -> {
       database.disconnect();
     });
+
   }
 
 

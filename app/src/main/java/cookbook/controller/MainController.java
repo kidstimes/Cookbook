@@ -103,7 +103,6 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    
     root.setCenter(homePageController.getView());
   }
 
@@ -118,7 +117,6 @@ public class MainController {
    * Go to the browser.
    */
   public void goToBrowser() {
-    
     root.setCenter(browserController.getView());
   }
 
