@@ -19,6 +19,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -41,7 +42,7 @@ public class RecipeView {
   private BorderPane view;
   private Recipe recipe;
   private VBox vbox;
-  private VBox ingredientsVBox;
+  private GridPane ingredientsGrid;
   private HBox tagsHBox;
   private Spinner<Integer> servingSpinner;
   private int initialServings;
@@ -97,7 +98,7 @@ public class RecipeView {
     ArrayList<String> updatedTags = new ArrayList<String>();
     for (Node node : tagsHBox.getChildren()) {
       if (node instanceof Text) {
-        String tag = ((Text) node).getText().substring(2); // Remove the "#" character from the tag
+        String tag = ((Text) node).getText().substring(2);
         updatedTags.add(tag);
       }
     }
@@ -165,7 +166,6 @@ public class RecipeView {
       }
     });
 
-    // Add serving spinner
     vbox.getChildren().add(backButton);
 
     // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
@@ -182,7 +182,8 @@ public class RecipeView {
       if (datePicker.getValue() != null) {
         LocalDate selectedDate = datePicker.getValue();
         observer.addRecipeToWeeklyDinner(selectedDate, recipe);
-        System.out.println(displayName + " added " + recipe.getName() + " to the weekly dinner list on " + selectedDate);
+        System.out.println(displayName + " added " 
+            + recipe.getName() + " to the weekly dinner list on " + selectedDate);
       } else {
         showAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
       }
@@ -217,15 +218,28 @@ public class RecipeView {
     createServingSpinner();
 
     // Add ingredients as a list with reduced spacing
-    ingredientsVBox = new VBox();
-    ingredientsVBox.setSpacing(5); // Reduce the spacing between ingredients
+    ingredientsGrid = new GridPane();
+    ingredientsGrid.setVgap(0); // Reduce the vertical spacing between ingredients
+    ingredientsGrid.setHgap(10); // Set horizontal spacing between elements
+
+    int rowIndex = 0;
     for (Ingredient ingredient : recipe.getIngredients()) {
-      Text ingredientText = new Text(ingredient.toString());
-      ingredientText.setFont(Font.font("ROBOTO", 20));
-      VBox ingredientBox = new VBox(ingredientText);
-      ingredientsVBox.getChildren().add(ingredientBox);
+      Text ingredientQuantity = new Text(String.format("%.1f", ingredient.getQuantity()));
+      ingredientQuantity.setFont(Font.font("ROBOTO", 20));
+    
+      Text ingredientUnit = new Text(ingredient.getMeasurementUnit());
+      ingredientUnit.setFont(Font.font("ROBOTO", 20));
+    
+      Text ingredientName = new Text(ingredient.getName());
+      ingredientName.setFont(Font.font("ROBOTO", 20));
+
+      ingredientsGrid.add(ingredientQuantity, 0, rowIndex);
+      ingredientsGrid.add(ingredientUnit, 1, rowIndex);
+      ingredientsGrid.add(ingredientName, 2, rowIndex);
+      rowIndex++;
     }
-    vbox.getChildren().add(ingredientsVBox);
+
+    vbox.getChildren().add(ingredientsGrid);
     
  
     // Display directions
@@ -346,9 +360,9 @@ public class RecipeView {
     servingSpinner.setValueFactory(valueFactory);
     servingSpinner.setEditable(true);
     
-    servingSpinner.setMinWidth(100); // Adjust as needed
-    servingSpinner.setPrefWidth(100); // Adjust as needed
-    servingSpinner.setMaxWidth(100); // Adjust as needed
+    servingSpinner.setMinWidth(100);
+    servingSpinner.setPrefWidth(100);
+    servingSpinner.setMaxWidth(100); 
     servingSpinner.setPadding(new Insets(10));
   
     servingSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
@@ -370,25 +384,38 @@ public class RecipeView {
   private void updateIngredientQuantities(int servings) {
     double scaleFactor = (double) servings / initialServings;
 
-    VBox newIngredientsVBox = new VBox();
-    newIngredientsVBox.setSpacing(5);
-  
+    GridPane newIngredientsGrid = new GridPane();
+    newIngredientsGrid.setVgap(0); // Reduce the vertical spacing between ingredients
+    newIngredientsGrid.setHgap(10); // Set horizontal spacing between elements
+
+    int rowIndex = 0;
     for (Ingredient ingredient : recipe.getIngredients()) {
-      Ingredient adjustedIngredient 
-          = new Ingredient(ingredient.getName(),
-           (float) (ingredient.getQuantity() * scaleFactor), ingredient.getMeasurementUnit());
-      Text ingredientText = new Text(adjustedIngredient.toString());
-      ingredientText.setFont(Font.font("ROBOTO", 20));
-      VBox ingredientBox = new VBox(ingredientText);
-      newIngredientsVBox.getChildren().add(ingredientBox);
+      Ingredient adjustedIngredient
+                = new Ingredient(ingredient.getName(),
+                (float) (ingredient.getQuantity() * scaleFactor), ingredient.getMeasurementUnit());
+        
+      Text ingredientQuantity = new Text(String.format("%.1f", adjustedIngredient.getQuantity()));
+      ingredientQuantity.setFont(Font.font("ROBOTO", 20));
+
+      Text ingredientUnit = new Text(adjustedIngredient.getMeasurementUnit());
+      ingredientUnit.setFont(Font.font("ROBOTO", 20));
+
+      Text ingredientName = new Text(adjustedIngredient.getName());
+      ingredientName.setFont(Font.font("ROBOTO", 20));
+
+      newIngredientsGrid.add(ingredientQuantity, 0, rowIndex);
+      newIngredientsGrid.add(ingredientUnit, 1, rowIndex);
+      newIngredientsGrid.add(ingredientName, 2, rowIndex);
+      rowIndex++;
     }
-  
-    // Replace the old ingredients VBox with the new one
-    int ingredientsVBoxIndex = vbox.getChildren().indexOf(ingredientsVBox);
-    vbox.getChildren().remove(ingredientsVBox);
-    vbox.getChildren().add(ingredientsVBoxIndex, newIngredientsVBox);
-    ingredientsVBox = newIngredientsVBox;
+
+    // Replace the old ingredients GridPane with the new one
+    int ingredientsGridIndex = vbox.getChildren().indexOf(ingredientsGrid);
+    vbox.getChildren().remove(ingredientsGrid);
+    vbox.getChildren().add(ingredientsGridIndex, newIngredientsGrid);
+    ingredientsGrid = newIngredientsGrid;
   }
+
   
   private boolean tagAlreadyExists(String newTag) {
     for (Node node : tagsHBox.getChildren()) {

@@ -32,9 +32,9 @@ public class Recipe {
     // Create ingredient objects and add them to the recipe
     this.ingredients = new ArrayList<Ingredient>();
     for (String[] ingredient : ingredients) {
-      this.ingredients.add(new Ingredient(ingredient[0],
-          Float.parseFloat(ingredient[1]), ingredient[2]));
+      this.ingredients.add(new Ingredient(ingredient[0], Float.parseFloat(ingredient[1]), ingredient[2]));
     }
+
 
     // Initialize tags arraylist
     this.tags = new ArrayList<String>();
