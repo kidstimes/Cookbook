@@ -17,7 +17,7 @@ public class Recipe {
    *
    * @param name the name of the recipe
    * @param shortDesc the short description of the recipe
-   * @param direction the directions for the recipe
+   * @param directions the directions for the recipe
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(String name, String shortDesc, String directions, ArrayList<String[]> ingredients,
@@ -29,7 +29,8 @@ public class Recipe {
     // Create ingredient objects and add them to the recipe
     this.ingredients = new ArrayList<Ingredient>();
     for (String[] ingredient : ingredients) {
-      this.ingredients.add(new Ingredient(ingredient[0], Float.parseFloat(ingredient[1]), ingredient[2]));
+      this.ingredients.add(new Ingredient(ingredient[0],
+          Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
