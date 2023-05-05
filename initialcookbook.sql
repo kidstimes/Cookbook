@@ -16,7 +16,7 @@ CREATE TABLE ingredients (
 id INT PRIMARY KEY AUTO_INCREMENT,
 name VARCHAR(255) NOT NULL,
 recipe_id INT NOT NULL,
-quantity INT NOT NULL,
+quantity float NOT NULL,
 measurementUnit VARCHAR(50) NOT NULL,
 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
 );
@@ -53,16 +53,20 @@ FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE SET NULL
 CREATE TABLE WeeklyDinner (
 user_id INT NOT NULL,
 recipe_id INT NOT NULL,
-the_date date NOT NULL,
-PRIMARY KEY (user_id, recipe_id, the_date),
+dinner_date date NOT NULL,
+PRIMARY KEY (user_id, recipe_id, dinner_date),
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-UNIQUE (user_id, recipe_id, the_date)
+UNIQUE (user_id, recipe_id, dinner_date)
 );
 CREATE TABLE ShoppingList (
 shoppinglist_id INT PRIMARY KEY AUTO_INCREMENT,
 user_id INT NOT NULL,
-FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+ingredient_id INT NOT NULL,
+serving INT NOT NULL,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+FOREIGN KEY (ingredient_id) REFERENCES ingredients(id) ON DELETE CASCADE,
+UNIQUE (user_id, ingredient_id)
 );
 CREATE TABLE PersonalTags (
 user_id INT NOT NULL,
