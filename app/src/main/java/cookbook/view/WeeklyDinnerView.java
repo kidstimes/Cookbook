@@ -14,10 +14,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -118,14 +122,14 @@ public class WeeklyDinnerView {
     titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
     centerView.getChildren().add(titleLabel);
 
-    HBox weekNavigation = createWeekNavigation();
+    VBox weekNavigation = createWeekNavigation();
     centerView.getChildren().add(weekNavigation);
 
     updateWeekLayout(currentWeekStart);
     view.setCenter(centerView);
   }
 
-  private HBox createWeekNavigation() {
+  private VBox createWeekNavigation() {
     Button previousWeekButton = new Button("Previous Week");
     previousWeekButton.setStyle("-fx-font: 20px \"Roboto\";");
     previousWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
@@ -143,7 +147,7 @@ public class WeeklyDinnerView {
     // Add TextField for entering the week number
     TextField weekNumberInput = new TextField();
     weekNumberInput.setPromptText("Enter week number");
-    weekNumberInput.setMaxWidth(120);
+    weekNumberInput.setMaxWidth(200);
 
     // Add Button for navigating to the entered week number
     Button goToWeekButton = new Button("Go to Week");
@@ -155,7 +159,8 @@ public class WeeklyDinnerView {
         goToWeekNumber(weekNumber);
       } catch (NumberFormatException e) {
         // Handle invalid input
-        System.out.println("Please enter a valid week number.");
+        showInlineStyledAlert(AlertType.ERROR,
+            "Invalid Week Number", "Please enter a valid week number for the current year.");
       }
     });
     
@@ -164,23 +169,44 @@ public class WeeklyDinnerView {
     HBox.setHgrow(leftSpacer, Priority.ALWAYS);
     HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
-    HBox weekNavigation = new HBox(previousWeekButton, leftSpacer, weekNumberLabel,
-          yearNumberLabel, rightSpacer, weekNumberInput, goToWeekButton, nextWeekButton);
-    weekNavigation.setAlignment(Pos.CENTER);
-    weekNavigation.setSpacing(5);
+    // Create HBox for the top row of the navigation bar
+    HBox topRowNavigation = new HBox(previousWeekButton, leftSpacer, weekNumberLabel,
+        yearNumberLabel, rightSpacer, nextWeekButton);
+    topRowNavigation.setAlignment(Pos.CENTER);
+    topRowNavigation.setSpacing(5);
+
+    // Create HBox for the bottom row of the navigation bar
+    HBox bottomRowNavigation = new HBox(weekNumberInput, goToWeekButton);
+    bottomRowNavigation.setAlignment(Pos.CENTER);
+    bottomRowNavigation.setSpacing(5);
+
+    // Create a VBox to contain both the top and bottom rows
+    VBox weekNavigation = new VBox(topRowNavigation, bottomRowNavigation);
+    weekNavigation.setSpacing(10);
 
     return weekNavigation;
   }
 
   private void goToWeekNumber(int weekNumber) {
-    LocalDate firstDayOfYear = LocalDate.of(currentWeekStart.getYear(), 1, 1);
-    LocalDate firstMondayOfYear = firstDayOfYear.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
-    int currentWeekNumber = getWeekNumber(currentWeekStart);
-    int differenceInWeeks = weekNumber - currentWeekNumber;
-    currentWeekStart = firstMondayOfYear.plusWeeks(weekNumber - 1);
-    updateWeekLayout(currentWeekStart);
-}
+    int currentYear = LocalDate.now().getYear();
+    if (weekNumber > 0 && weekNumber <= getWeeksInYear(currentYear)) {
+      LocalDate firstDayOfYear = LocalDate.of(currentYear, 1, 1);
+      LocalDate firstMondayOfYear 
+          = firstDayOfYear.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+      currentWeekStart = firstMondayOfYear.plusWeeks(weekNumber - 1);
+      updateWeekLayout(currentWeekStart);
+    } else {
+      // Handle invalid input with an alert
+      showInlineStyledAlert(AlertType.ERROR,
+          "Invalid Week Number", "Please enter a valid week number for the current year.");
+    }
+  }
 
+  private int getWeeksInYear(int year) {
+    LocalDate lastDayOfYear = LocalDate.of(year, 12, 31);
+    WeekFields weekFields = WeekFields.of(Locale.getDefault());
+    return lastDayOfYear.get(weekFields.weekOfWeekBasedYear());
+  }
 
   private void updateWeekLayout(LocalDate weekStart) {
     if (daysGrid != null) {
@@ -286,6 +312,31 @@ public class WeeklyDinnerView {
     WeekFields weekFields = WeekFields.of(Locale.getDefault());
     return date.get(weekFields.weekOfWeekBasedYear());
   }
+
+  /**
+   * Show an alert with the given alert type, title, and message.
+   */
+  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    // Set custom styles for the alert
+    DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    // Set custom styles for the buttons
+    ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
+    buttonBar.getButtons().forEach(button -> {
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+    });
+    // Set custom styles for the content label
+    Label contentLabel = (Label) dialogPane.lookup(".content");
+    contentLabel.setStyle("-fx-text-fill: #3D405B;");
+    alert.showAndWait();
+  }
+
+
+
 }
      
 

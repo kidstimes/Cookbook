@@ -150,14 +150,18 @@ public class RecipeView {
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
     title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
+    title.setWrappingWidth(900); 
     VBox titleBox = new VBox(title);
+    titleBox.setMaxWidth(900); 
     vbox.getChildren().add(titleBox);
 
     // Add short description with italics
     Text shortDescription = new Text(recipe.getShortDesc());
     shortDescription.setFont(Font.font("ARIAL", FontPosture.ITALIC, 28));
     shortDescription.setFill(Color.DARKSLATEGREY);
+    shortDescription.setWrappingWidth(900); 
     VBox shortDescriptionBox = new VBox(shortDescription);
+    shortDescriptionBox.setMaxWidth(900); 
     shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
     vbox.getChildren().add(shortDescriptionBox);
 
@@ -225,11 +229,13 @@ public class RecipeView {
     vbox.getChildren().add(directionsTitle);
     Text directions = new Text(recipe.getDirections());
     directions.setFont(Font.font("Roboto", 20));
+    directions.setWrappingWidth(900); 
     // wrap text in vbox and add to vbox container
     VBox directionsTitleBox = new VBox(directionsTitle);
     directionsTitleBox.setPadding(new Insets(40, 0, 20, 0));
     vbox.getChildren().add(directionsTitleBox);
     VBox directionsBox = new VBox(directions);
+    directionsBox.setMaxWidth(900);
     vbox.getChildren().add(directionsBox);
     
     // Display tags

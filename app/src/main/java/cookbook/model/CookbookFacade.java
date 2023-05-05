@@ -247,7 +247,7 @@ public class CookbookFacade {
   public ArrayList<Dinner> loadWeeklyDinnerFromDatebase() {
     ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
     user.setWeeklyDinners(dinnerList);
-    return dinnerList;
+    return getDinnerList();
   }
 
 
