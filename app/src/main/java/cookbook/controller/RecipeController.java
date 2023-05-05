@@ -56,8 +56,12 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   }
 
   @Override
-  public void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe) {
-    model.addRecipeToDinnerList(date, recipe);
+  public boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe) {
+    if (model.addRecipeToDinnerList(date, recipe) && model.saveWeeklyDinnerToDatabase()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

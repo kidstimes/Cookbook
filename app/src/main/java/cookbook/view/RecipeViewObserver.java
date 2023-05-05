@@ -1,9 +1,8 @@
 package cookbook.view;
 
+import cookbook.model.Recipe;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import cookbook.model.Recipe;
-
 
 /**
  * Interface for the RecipeView observer.
@@ -28,8 +27,7 @@ public interface RecipeViewObserver {
 
   void goToHomePage();
 
-  void addRecipeToWeeklyDinner(LocalDate date, Recipe recipe);
-
+  boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe);
 
 
 }

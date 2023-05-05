@@ -18,4 +18,6 @@ public interface HomePageViewObserver {
   void userLogout();
 
   void goToWeeklyDinner();
+
+
 }

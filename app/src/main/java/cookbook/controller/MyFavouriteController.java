@@ -1,15 +1,15 @@
 package cookbook.controller;
 
-import cookbook.view.MyFavouriteViewObserver;
 import cookbook.model.CookbookFacade;
 import cookbook.view.MyFavouriteView;
+import cookbook.view.MyFavouriteViewObserver;
 import javafx.scene.Node;
 
 
 /**
  * Controller for the my favourite view.
  */
-public class MyFavouriteController implements MyFavouriteViewObserver{
+public class MyFavouriteController implements MyFavouriteViewObserver {
   private CookbookFacade model;
   private MainController mainController;
   private MyFavouriteView myFavouriteView;

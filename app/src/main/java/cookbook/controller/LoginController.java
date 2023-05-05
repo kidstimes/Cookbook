@@ -43,6 +43,7 @@ public class LoginController implements LoginViewObserver {
         model.setCurrentUser(username);
         mainController.initializeControllersAfterLogin();
         model.loadAllRecipes();
+        model.loadWeeklyDinnerFromDatebase();
         mainController.goToHomePage();
       } else {
         loginView.showError("Incorrect password");

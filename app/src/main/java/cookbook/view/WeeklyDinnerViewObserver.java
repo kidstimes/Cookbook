@@ -1,6 +1,10 @@
 package cookbook.view;
 
 
+
+/**
+ * Interface for the WeeklyDinnerView observer.
+ */
 public interface WeeklyDinnerViewObserver {
 
   void goToHomePage();
@@ -12,6 +16,8 @@ public interface WeeklyDinnerViewObserver {
   void userLogout();
 
   void goToWeeklyDinner();
+
+  void goToRecipe(cookbook.model.Recipe recipe);
 
   
   

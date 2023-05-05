@@ -19,7 +19,8 @@ public class HomePageController implements HomePageViewObserver {
    * @param model the facade to the model
    * @param mainController the main controller
    */
-  public HomePageController(CookbookFacade model, MainController mainController, String displayName) {
+  public HomePageController(CookbookFacade model, MainController mainController,
+      String displayName) {
     this.model = model;
     this.homePageView = new HomePageView(displayName);
     this.homePageView.setObserver(this);

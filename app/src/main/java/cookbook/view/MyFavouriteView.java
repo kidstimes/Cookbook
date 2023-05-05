@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 
 
 
-public class MyFavouriteView{
+public class MyFavouriteView { 
   private MyFavouriteViewObserver observer;
   private BorderPane view;
 

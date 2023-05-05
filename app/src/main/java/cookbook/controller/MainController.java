@@ -49,10 +49,9 @@ public class MainController {
    */
   public void initializeControllersAfterLogin() {
     String userDisplayName = model.getUserDisplayName();
-    System.out.println(model);
     this.homePageController = new HomePageController(model, this, userDisplayName);
-    this.browserController = new BrowserController(model, this, userDisplayName);
-    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);
+    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);    
+    
   }
 
   /**
@@ -82,7 +81,6 @@ public class MainController {
     this.stage.setTitle("Cookbook");
     this.stage.setScene(scene);
     this.stage.show();
-  
   }
 
   /**
@@ -110,13 +108,15 @@ public class MainController {
    * Go to admin.
    */
   public void goToAdmin() {
-    // admin.displayView();
+    //TODO implement admin view
   }
 
   /**
    * Go to the browser.
    */
   public void goToBrowser() {
+    model.loadAllRecipes();
+    this.browserController = new BrowserController(model, this, model.getUserDisplayName());
     root.setCenter(browserController.getView());
   }
 
@@ -142,7 +142,7 @@ public class MainController {
    */
   public void goToWeeklyDinner() {
     this.weeklyDinnerController = new WeeklyDinnerController(model,
-      this, model.getUserDisplayName(), model.getDinnerList());
+    this, model.getUserDisplayName(), model.getDinnerList());
     root.setCenter(weeklyDinnerController.getView());
   }
 

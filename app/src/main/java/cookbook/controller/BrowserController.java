@@ -21,7 +21,8 @@ public class BrowserController extends BaseController implements BrowserViewObse
   * @param mainController is the main controller
   * @param displayName is the display name of the user
   */
-  public BrowserController(CookbookFacade model, MainController mainController, String displayName) {
+  public BrowserController(CookbookFacade model, MainController mainController,
+       String displayName) {
     super(model, mainController);
     System.out.println(model);
     ArrayList<Recipe> recipes = model.getRecipes();

@@ -38,6 +38,7 @@ public class WeeklyDinnerView {
   private LocalDate currentDate;
   private LocalDate currentWeekStart;
   private Label weekNumberLabel;
+  private Label yearNumberLabel;
   private ArrayList<Dinner> dinnerList;
   private String displayName;
   private int daysGridIndex;
@@ -90,12 +91,13 @@ public class WeeklyDinnerView {
     sidebar.getChildren().add(title);
 
     Button[] sidebarButtons = {
+        createButton("Home Page", e -> observer.goToHomePage()),
         createButton("Browse Recipes", e -> observer.goToBrowser()),
         createButton("Add a Recipe", e -> observer.goToAddRecipe()),
         createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
         createButton("My Favorites", e -> {}),
         createButton("My Shopping List", e -> {})
-    };
+      };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
@@ -113,16 +115,13 @@ public class WeeklyDinnerView {
 
   private void createCenterView() {
     centerView = new VBox(20);
-    centerView.setPadding(new Insets(10));
+    centerView.setPadding(new Insets(40)); 
+    centerView.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
 
-    Hyperlink backButton = new Hyperlink("← Back to Home Page");
-    backButton.setFont(Font.font("ROBOTO", 16));
-    backButton.setOnAction(e -> {
-      if (observer != null) {
-        observer.goToHomePage();
-      }
-    });
-    centerView.getChildren().add(backButton);
+    // Add title above the weekly menu
+    Label titleLabel = new Label("Weekly Dinner List");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    centerView.getChildren().add(titleLabel);
 
     HBox weekNavigation = createWeekNavigation();
     centerView.getChildren().add(weekNavigation);
@@ -133,17 +132,31 @@ public class WeeklyDinnerView {
 
   private HBox createWeekNavigation() {
     Button previousWeekButton = new Button("Previous Week");
+    previousWeekButton.setStyle("-fx-font: 20px \"Roboto\";");
+    previousWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
     previousWeekButton.setOnAction(event -> handlePreviousWeek());
+
 
     Button nextWeekButton = new Button("Next Week");
     nextWeekButton.setOnAction(event -> handleNextWeek());
+    nextWeekButton.setStyle("-fx-font: 20px \"Roboto\";");
+    nextWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
 
     weekNumberLabel = new Label();
-    HBox weekNavigation = new HBox(20, previousWeekButton, weekNumberLabel, nextWeekButton);
+    yearNumberLabel = new Label();
+    
+    Region leftSpacer = new Region();
+    Region rightSpacer = new Region();
+    HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+    HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+
+    HBox weekNavigation = new HBox(previousWeekButton, leftSpacer, weekNumberLabel, 
+          yearNumberLabel, rightSpacer, nextWeekButton);
     weekNavigation.setAlignment(Pos.CENTER);
 
     return weekNavigation;
   }
+
 
   private void updateWeekLayout(LocalDate weekStart) {
     if (daysGrid != null) {
@@ -154,10 +167,21 @@ public class WeeklyDinnerView {
     daysGridIndex = centerView.getChildren().size();
     centerView.getChildren().add(daysGrid);
 
+    int year = weekStart.getYear();
+    yearNumberLabel.setText(", Year " + Integer.toString(year));
+    yearNumberLabel.setStyle("-fx-font: 20px \"Roboto\";");
     int weekNumber = getWeekNumber(weekStart);
-    weekNumberLabel.setText("Week " + weekNumber);
-    weekNumberLabel.setStyle("-fx-font: 16px \"Roboto\";");
+    weekNumberLabel.setText(" Week " + weekNumber);
+    weekNumberLabel.setStyle("-fx-font: 20px \"Roboto\";");
+
+    // Check if the displayed week is the current week
+    LocalDate today = LocalDate.now();
+    int currentWeekNumber = getWeekNumber(today);
+    if (weekNumber == currentWeekNumber && year == today.getYear()) {
+      weekNumberLabel.setText(" Current Week (Week " + weekNumber + ") ");
+    }
   }
+
 
   private GridPane createDaysGrid(LocalDate weekStart) {
     GridPane weekGrid = new GridPane();
@@ -192,21 +216,12 @@ public class WeeklyDinnerView {
 
     String dayName = dayDate.getDayOfWeek().toString();
     Label dayLabel = new Label(dayName);
-    dayLabel.setStyle("-fx-font: 16px \"Roboto\";");
+    dayLabel.setStyle("-fx-font: 18px \"Roboto\";");
     Label dateLabel = new Label(dayDate.toString());
-    dateLabel.setStyle("-fx-font: 16px \"Roboto\";");
+    dateLabel.setStyle("-fx-font: 18px \"Roboto\";");
     dayBox.getChildren().addAll(dayLabel, dateLabel);
 
     updateRecipeList(dayBox, dayDate);
-
-    /*Button addRecipeButton = new Button("Add Recipe");
-    addRecipeButton.setOnAction(event -> {
-      // Open a new window or dialog for the user to input recipe details
-      // After the user submits the new recipe, add it to the Dinner object for that date
-      // Update the day box to display the new recipe
-    });
-    dayBox.getChildren().add(addRecipeButton);*/
-
     return dayBox;
   }
 
@@ -219,12 +234,16 @@ public class WeeklyDinnerView {
           break;
         }
       }
-  
       if (matchingDinner != null) {
         for (Recipe recipe : matchingDinner.getRecipes()) {
-          Label recipeLabel = new Label(recipe.getName());
-          recipeLabel.setStyle("-fx-font: 14px \"Roboto\";");
-          dayBox.getChildren().add(recipeLabel);
+          Hyperlink recipeLink = new Hyperlink(recipe.getName());
+          recipeLink.setOnAction(event -> {
+            if (observer != null) {
+              observer.goToRecipe(recipe);
+            }
+          });
+          recipeLink.setStyle("-fx-font: 16px \"Roboto\";");
+          dayBox.getChildren().add(recipeLink);
         }
       }
     }

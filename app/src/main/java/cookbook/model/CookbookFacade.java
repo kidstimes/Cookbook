@@ -236,4 +236,19 @@ public class CookbookFacade {
     return user.getWeeklyDinners();
   }
 
+  public boolean saveWeeklyDinnerToDatabase() {
+    return database.saveWeeklyDinnerToDatabase(getDinnerList(), user.getUsername());
+  }
+
+  /**Load the weekly dinners of the user from the database.
+   *
+   * @return an arraylist with the dinners of the user
+   */
+  public ArrayList<Dinner> loadWeeklyDinnerFromDatebase() {
+    ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
+    user.setWeeklyDinners(dinnerList);
+    return dinnerList;
+  }
+
+
 }

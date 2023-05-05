@@ -32,7 +32,7 @@ public class Cookbook extends Application {
   /**
    * Main method.
    */
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     // Init UI
     launch(args);
   }

@@ -10,7 +10,7 @@ public interface AddRecipeViewObserver {
   /**
    * Add a new recipe to the cookbook.
    */
-  void handleSaveRecipeClicked(String[] recipeData,
+  boolean handleSaveRecipeClicked(String[] recipeData,
       ArrayList<String[]> ingredientsData, ArrayList<String> tagsData);
 
 

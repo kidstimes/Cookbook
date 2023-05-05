@@ -21,7 +21,8 @@ public class AddRecipeController extends BaseController implements AddRecipeView
    * @param model the facade to the model
    * @param mainController the main controller
    */
-  public AddRecipeController(CookbookFacade model, MainController mainController, String displayName) {
+  public AddRecipeController(CookbookFacade model,
+       MainController mainController, String displayName) {
     super(model, mainController);
     System.out.println(model);
     this.addRecipeView = new AddRecipeView(displayName);
@@ -36,13 +37,15 @@ public class AddRecipeController extends BaseController implements AddRecipeView
   }
 
   @Override
-  public void handleSaveRecipeClicked(String[] recipeData,
+  public boolean handleSaveRecipeClicked(String[] recipeData,
       ArrayList<String[]> ingredients, ArrayList<String> tags) {
     model.addRecipe(recipeData, ingredients, tags);
-    if (model.saveRecipeToDatabase(recipeData, ingredients, tags)){
+    if (model.saveRecipeToDatabase(recipeData, ingredients, tags)) {
       mainController.goToBrowser();
+      return true;
     } else {
       System.out.println("Error saving recipe to database");
+      return false;
     }
   }
 

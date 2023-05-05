@@ -1,6 +1,9 @@
 package cookbook.view;
 
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -8,14 +11,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import java.time.LocalDate;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+
+
 
 
 
@@ -62,6 +64,9 @@ public class HomePageView {
   
   }
 
+  /**
+   * Create a sidemenu for the home page.
+   */
   public void createSidebar() {
     // create a vbox to hold the menu buttons
     VBox sidebar = new VBox(30);
@@ -75,6 +80,7 @@ public class HomePageView {
 
     // Add five options to the homepage, one per row
     Button[] sidebarButtons = {
+      createButton("Home Page", null),
       createButton("Browse Recipes", e -> observer.goToBrowser()),
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
@@ -111,13 +117,11 @@ public class HomePageView {
     Label dateLabel = new Label("Today's Date: " + currentDate);
     Label weekLabel = new Label("Current Week Number: " + weekNumber);
     Label weeklyDinnerLabel = new Label("You have dinners planned for this week.");
+    dateLabel.setFont(Font.font("Roboto", 24));
+    weekLabel.setFont(Font.font("Roboto", 24));
+    weeklyDinnerLabel.setFont(Font.font("Roboto", 24));
     Label shoppingListLabel = new Label("You have a shopping list for this week.");
-
-    dateLabel.setFont(Font.font("Roboto", 18));
-    weekLabel.setFont(Font.font("Roboto", 18));
-    weeklyDinnerLabel.setFont(Font.font("Roboto", 18));
-    shoppingListLabel.setFont(Font.font("Roboto", 18));
-
+    shoppingListLabel.setFont(Font.font("Roboto", 24));
     centerView.getChildren().addAll(dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel);
     view.setCenter(centerView);
   }

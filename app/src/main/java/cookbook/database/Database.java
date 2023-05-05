@@ -1,5 +1,6 @@
 package cookbook.database;
 
+import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +101,11 @@ public class Database {
     return false;
   }
 
+  /**Get user id from the database based on username.
+   *
+   * @param userName the username of the user
+   * @return the id of the user
+   */
   public int getUserId(String userName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
@@ -161,14 +168,16 @@ public class Database {
   /**
    * Save a recipe to the database and associate tags with the recipe.
    */
-  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags,
+  public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients,
+       ArrayList<String> tags,
       String userName) {
     try {
       // Get the user id
       int userId = getUserId(userName);
       // Insert the recipe into the recipes table
       String query = "INSERT INTO recipes (name, description, instructions) VALUES (?, ?, ?)";
-      try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      try (PreparedStatement statement =
+           connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
         statement.setString(1, recipe[0]); // name
         statement.setString(2, recipe[1]); // description
         statement.setString(3, recipe[2]); // instructions
@@ -217,11 +226,8 @@ public class Database {
    * Insert an ingredient into the ingredients table and associate it with a
    * recipe.
    */
-  /**
-   * Insert an ingredient into the ingredients table and associate it with a
-   * recipe.
-   */
-  private void insertIngredient(int recipeId, String name, String quantity, String measurementUnit) {
+  private void insertIngredient(int recipeId, String name, String quantity,
+         String measurementUnit) {
     try {
       String query = "INSERT INTO ingredients (recipe_id, name, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -332,6 +338,12 @@ public class Database {
     return tags;
   }
 
+  /**Update the tags of a recipe in the database associated with a user.
+   *
+   * @param tags is an arraylist of strings of tags for a recipe
+   * @param recipeName is the name of the recipe
+   * @param userName is the name of the user
+   */
   public void updateTagToDatabase(ArrayList<String> tags, String recipeName, String userName) {
     try {
       // Get the user and recipe IDs
@@ -453,6 +465,141 @@ public class Database {
     }
     return privateTags;
   }
+
+  /**　
+   * Get the recipe with the given id.
+   */
+  public Recipe getRecipeById(int recipeId) {
+    Recipe recipe = null;
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT name, description, instructions FROM recipes WHERE id = ?"
+        )
+    ) {
+      stmt.setInt(1, recipeId);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        String name = rs.getString(1);
+        String description = rs.getString(2);
+        String instructions = rs.getString(3);
+
+        ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
+        ArrayList<String> tags = loadTagsForRecipe(recipeId, null);
+
+        recipe = new Recipe(name, description, instructions, ingredients, tags);
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return recipe;
+  }
+
+  /** Save weekly dinner list to database.
+   *
+   * @param weeklyDinnerList is the list of Dinner objects to save
+   * @param username is the username of the user
+   * @return true if the save was successful, false otherwise
+   */
+  public boolean saveWeeklyDinnerToDatabase(ArrayList<Dinner> weeklyDinnerList,
+       String username) {
+    boolean saveSuccessful = false;
+    try {
+      // Prepare a SQL statement to insert or update records in the WeekMenuRecipe table
+      String sql = "INSERT INTO WeekMenuRecipe (user_id, recipe_id, date) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE date = VALUES(date)";
+      PreparedStatement statement = connection.prepareStatement(sql);
+  
+      // Get the user ID from the username
+      int userId = getUserId(username);
+  
+      // Loop through each Dinner object in the weeklyDinnerList
+      for (Dinner dinner : weeklyDinnerList) {
+        // Get the date for this Dinner
+        LocalDate dinnerDate = dinner.getDate();
+  
+        // Loop through each Recipe in the Dinner
+        for (Recipe recipe : dinner.getRecipes()) {
+          // Get the recipe ID from the recipe name
+          int recipeId = getRecipeId(recipe.getName());
+  
+          // Set the values in the prepared statement
+          statement.setInt(1, userId);
+          statement.setInt(2, recipeId);
+          statement.setDate(3, java.sql.Date.valueOf(dinnerDate));
+  
+          // Execute the SQL statement to insert or update the record
+          statement.executeUpdate();
+        }
+      }
+  
+      // Close the prepared statement
+      statement.close();
+  
+      // If no exceptions were thrown, the save was successful
+      saveSuccessful = true;
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  
+    return saveSuccessful;
+  }
+
+  /**Load weekly dinner list from database.
+   *
+   * @param username is the username of the user
+   * @return the list of weekly Dinner objects loaded from the database
+   */
+  public ArrayList<Dinner> loadWeeklyDinnerListFromDatabase(String username) {
+    ArrayList<Dinner> weeklyDinnerList = new ArrayList<>();
+    try {
+      // Get the user ID from the username
+      int userId = getUserId(username);
+  
+      // Prepare a SQL statement to select records from the WeekMenuRecipe table
+      String sql = "SELECT recipe_id, date FROM WeekMenuRecipe WHERE user_id = " + userId;
+      Statement statement = connection.createStatement();
+  
+      // Execute the SQL statement and get the result set
+      ResultSet result = statement.executeQuery(sql);
+  
+      // Loop through each row in the result set
+      while (result.next()) {
+        // Get the recipe ID and date for this row
+        int recipeId = result.getInt("recipe_id");
+        LocalDate dinnerDate = result.getDate("date").toLocalDate();
+  
+        // Get the Recipe object for this recipe ID
+        Recipe recipe = getRecipeById(recipeId);
+  
+        // Check if there is already a Dinner object for this date
+        Dinner dinner = null;
+        for (Dinner d : weeklyDinnerList) {
+          if (d.getDate().equals(dinnerDate)) {
+            dinner = d;
+            break;
+          }
+        }
+  
+        // If there is no Dinner object for this date, create a new one
+        if (dinner == null) {
+          dinner = new Dinner(dinnerDate, recipe);
+          weeklyDinnerList.add(dinner);
+        } else {
+          // Add the Recipe object to the existing Dinner object
+          dinner.addRecipe(recipe);
+        }
+      }
+  
+      // Close the result set and statement
+      result.close();
+      statement.close();
+    } catch (SQLException e) {
+      System.out.println("Error loading weekly dinner list from database: " + e.getMessage());
+    }
+  
+    return weeklyDinnerList;
+  }
+  
 
   /**
    * Close the connection with the database.

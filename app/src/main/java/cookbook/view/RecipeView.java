@@ -3,15 +3,21 @@ package cookbook.view;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
 import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -29,8 +35,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.geometry.Pos;
-import javafx.scene.control.DatePicker;
+
+
 
 
 
@@ -120,6 +126,7 @@ public class RecipeView {
 
     // Add five options to the homepage, one per row
     Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
       createButton("Browse Recipes", e -> observer.goToBrowser()),
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
@@ -158,7 +165,7 @@ public class RecipeView {
     view.setCenter(scrollPane);
 
     // Add a back to broswer button
-    Hyperlink backButton = new Hyperlink("← Back to Recipe Browser");
+    /*Hyperlink backButton = new Hyperlink("← Back to Recipe Browser");
     backButton.setFont(Font.font("Roboto", 16));
     backButton.setOnAction(e -> {
       if (observer != null) {
@@ -166,11 +173,21 @@ public class RecipeView {
       }
     });
 
-    vbox.getChildren().add(backButton);
+    vbox.getChildren().add(backButton);*/
 
     // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
     DatePicker datePicker = new DatePicker();
     datePicker.setStyle("-fx-font: 16px \"Roboto\";");
+
+    // Set the minimum allowed date to today's date
+    datePicker.setDayCellFactory(picker -> new DateCell() {
+      @Override
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        LocalDate today = LocalDate.now();
+        setDisable(empty || date.compareTo(today) < 0);
+      }
+    });
 
     // Add button to add the recipe to the weekly dinner list
     Button addToWeeklyDinnerButton = new Button("Add to Weekly Dinner");
@@ -181,13 +198,23 @@ public class RecipeView {
     addToWeeklyDinnerButton.setOnAction(e -> {
       if (datePicker.getValue() != null) {
         LocalDate selectedDate = datePicker.getValue();
-        observer.addRecipeToWeeklyDinner(selectedDate, recipe);
-        System.out.println(displayName + " added " 
-            + recipe.getName() + " to the weekly dinner list on " + selectedDate);
+        int weekNumber = selectedDate.get(WeekFields.ISO.weekOfWeekBasedYear());    
+        if (observer.addRecipeToWeeklyDinner(selectedDate, recipe)) {
+          showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
+              String.format("%s added successfully to week %d, %s dinner.",
+                 recipe.getName(), weekNumber, selectedDate.toString()));
+        } else {
+          showInlineStyledAlert(Alert.AlertType.WARNING, "Warning",
+              String.format("%s already exists in weekly dinner list of week %d.",
+               recipe.getName(), weekNumber));
+        }
+        //clear the date picker
+        datePicker.setValue(null);
       } else {
-        showAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
+        showInlineStyledAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
       }
     });
+      
 
     HBox addToWeeklyDinnerBox = new HBox();
     addToWeeklyDinnerBox.setSpacing(10);
@@ -246,7 +273,6 @@ public class RecipeView {
     Text directionsTitle = new Text("Directions:");
     directionsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     vbox.getChildren().add(directionsTitle);
-
     Text directions = new Text(recipe.getDirections());
     directions.setFont(Font.font("Roboto", 20));
     // wrap text in vbox and add to vbox container
@@ -307,7 +333,7 @@ public class RecipeView {
         newTag = newTagField.getText().trim();
       }
       if (tagAlreadyExists(newTag)) {
-        showAlert(Alert.AlertType.WARNING, "Warning", "The tag already exists.");
+        showInlineStyledAlert(Alert.AlertType.WARNING, "Warning", "The tag already exists.");
         return;
       }    
       if (!newTag.isEmpty()) {
@@ -429,17 +455,12 @@ public class RecipeView {
     return false;
   }
 
-  /**
-   * Show an alert with the given alert type, title, and message.
+  /** Create styled button with the given text and event handler.
+   *
+   * @param text is the text to display on the button
+   * @param eventHandler is the event handler to execute when the button is clicked.
+   * @return the created button
    */
-  public void showAlert(Alert.AlertType alertType, String title, String message) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(message);
-    alert.showAndWait();
-  }
-
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
     button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
@@ -449,6 +470,29 @@ public class RecipeView {
     button.setOnAction(eventHandler);
     return button;
   }
+
+  /**
+   * Show an alert with the given alert type, title, and message.
+   */
+  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    // Set custom styles for the alert
+    DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    // Set custom styles for the buttons
+    ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
+    buttonBar.getButtons().forEach(button -> {
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+    });
+    // Set custom styles for the content label
+    Label contentLabel = (Label) dialogPane.lookup(".content");
+    contentLabel.setStyle("-fx-text-fill: #3D405B;");
+    alert.showAndWait();
+  }
+
 
 }
 

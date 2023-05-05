@@ -8,7 +8,6 @@ import java.util.ArrayList;
  */
 public class User {
 
-  private int id;
   private String username;
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
@@ -20,7 +19,6 @@ public class User {
    * @param displayName the display name of the user
    */
   public User(int id, String username, String displayName) {
-    this.id = id;
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
@@ -101,6 +99,10 @@ public class User {
    */
   public void deleteUser() {
     // delete user from the db
+  }
+
+  public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
+    this.weeklyDinners = dinnerList;
   }
 
 }
