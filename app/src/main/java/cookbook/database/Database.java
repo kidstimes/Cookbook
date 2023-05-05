@@ -506,7 +506,7 @@ public class Database {
     boolean saveSuccessful = false;
     try {
       // Prepare a SQL statement to insert or update records in the WeekMenuRecipe table
-      String sql = "INSERT INTO WeekMenuRecipe (user_id, recipe_id, date) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE date = VALUES(date)";
+      String sql = "INSERT INTO WeeklyDinner (user_id, recipe_id, dinner_date) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE dinner_date = VALUES(dinner_date)";
       PreparedStatement statement = connection.prepareStatement(sql);
   
       // Get the user ID from the username
@@ -556,7 +556,7 @@ public class Database {
       int userId = getUserId(username);
   
       // Prepare a SQL statement to select records from the WeekMenuRecipe table
-      String sql = "SELECT recipe_id, date FROM WeekMenuRecipe WHERE user_id = " + userId;
+      String sql = "SELECT recipe_id, dinner_date FROM WeeklyDinner WHERE user_id = " + userId;
       Statement statement = connection.createStatement();
   
       // Execute the SQL statement and get the result set
@@ -566,7 +566,7 @@ public class Database {
       while (result.next()) {
         // Get the recipe ID and date for this row
         int recipeId = result.getInt("recipe_id");
-        LocalDate dinnerDate = result.getDate("date").toLocalDate();
+        LocalDate dinnerDate = result.getDate("dinner_date").toLocalDate();
   
         // Get the Recipe object for this recipe ID
         Recipe recipe = getRecipeById(recipeId);
@@ -579,7 +579,6 @@ public class Database {
             break;
           }
         }
-  
         // If there is no Dinner object for this date, create a new one
         if (dinner == null) {
           dinner = new Dinner(dinnerDate, recipe);

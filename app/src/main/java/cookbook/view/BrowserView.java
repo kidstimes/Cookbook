@@ -166,7 +166,7 @@ public class BrowserView {
     searchButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
         + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
-    searchButton.setFont(Font.font("ROBOTO", 20));
+    searchButton.setFont(Font.font("ROBOTO", 16));
     rootVbox.setMargin(searchButton, new Insets(0, 0, 20, 0));
 
     searchButton.setOnAction(e -> {

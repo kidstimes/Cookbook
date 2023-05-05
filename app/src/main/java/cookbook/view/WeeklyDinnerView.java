@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -138,18 +139,47 @@ public class WeeklyDinnerView {
 
     weekNumberLabel = new Label();
     yearNumberLabel = new Label();
+
+    // Add TextField for entering the week number
+    TextField weekNumberInput = new TextField();
+    weekNumberInput.setPromptText("Enter week number");
+    weekNumberInput.setMaxWidth(120);
+
+    // Add Button for navigating to the entered week number
+    Button goToWeekButton = new Button("Go to Week");
+    goToWeekButton.setStyle("-fx-font: 14px \"Roboto\";");
+    goToWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
+    goToWeekButton.setOnAction(event -> {
+      try {
+        int weekNumber = Integer.parseInt(weekNumberInput.getText());
+        goToWeekNumber(weekNumber);
+      } catch (NumberFormatException e) {
+        // Handle invalid input
+        System.out.println("Please enter a valid week number.");
+      }
+    });
     
     Region leftSpacer = new Region();
     Region rightSpacer = new Region();
     HBox.setHgrow(leftSpacer, Priority.ALWAYS);
     HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
-    HBox weekNavigation = new HBox(previousWeekButton, leftSpacer, weekNumberLabel, 
-          yearNumberLabel, rightSpacer, nextWeekButton);
+    HBox weekNavigation = new HBox(previousWeekButton, leftSpacer, weekNumberLabel,
+          yearNumberLabel, rightSpacer, weekNumberInput, goToWeekButton, nextWeekButton);
     weekNavigation.setAlignment(Pos.CENTER);
+    weekNavigation.setSpacing(5);
 
     return weekNavigation;
   }
+
+  private void goToWeekNumber(int weekNumber) {
+    LocalDate firstDayOfYear = LocalDate.of(currentWeekStart.getYear(), 1, 1);
+    LocalDate firstMondayOfYear = firstDayOfYear.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));
+    int currentWeekNumber = getWeekNumber(currentWeekStart);
+    int differenceInWeeks = weekNumber - currentWeekNumber;
+    currentWeekStart = firstMondayOfYear.plusWeeks(weekNumber - 1);
+    updateWeekLayout(currentWeekStart);
+}
 
 
   private void updateWeekLayout(LocalDate weekStart) {
