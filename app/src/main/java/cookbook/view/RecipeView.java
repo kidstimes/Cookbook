@@ -36,10 +36,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
-
-
-
 /**
  * View class for the recipe page.
  */
@@ -79,43 +75,17 @@ public class RecipeView {
     initLayout();
   }
 
-  public String getRecipeName() {
-    return this.recipe.getName();
-  }
-
   /**
    * Get the view of the recipe page.
    */
   public Node getView() {
     return view;
   }
-  
-  /**.
-   * Set the user displayName
-   */
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
-  /**
-   * Get a list of updated tags.
-   */
-  public ArrayList<String> getUpdatedTags() {
-    ArrayList<String> updatedTags = new ArrayList<String>();
-    for (Node node : tagsHBox.getChildren()) {
-      if (node instanceof Text) {
-        String tag = ((Text) node).getText().substring(2);
-        updatedTags.add(tag);
-      }
-    }
-    return updatedTags;
-  }
 
   /**
    * init the layout of the recipe page.
    */
   public void initLayout() {
-
     // create a vbox to hold the menu buttons
     VBox sidebar = new VBox(30);
     sidebar.setMaxWidth(100);
@@ -153,7 +123,6 @@ public class RecipeView {
     vbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
     // Add spacing between sections in the VBox
     vbox.setSpacing(10); 
-
     view.setCenter(vbox); 
 
     //Add a scroll pane
@@ -163,17 +132,6 @@ public class RecipeView {
     scrollPane.setFitToHeight(true);
     scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     view.setCenter(scrollPane);
-
-    // Add a back to broswer button
-    /*Hyperlink backButton = new Hyperlink("← Back to Recipe Browser");
-    backButton.setFont(Font.font("Roboto", 16));
-    backButton.setOnAction(e -> {
-      if (observer != null) {
-        observer.goToBrowser();
-      }
-    });
-
-    vbox.getChildren().add(backButton);*/
 
     // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
     DatePicker datePicker = new DatePicker();
@@ -188,6 +146,20 @@ public class RecipeView {
         setDisable(empty || date.compareTo(today) < 0);
       }
     });
+
+    // Add a title (recipe name)
+    Text title = new Text(recipe.getName());
+    title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
+    VBox titleBox = new VBox(title);
+    vbox.getChildren().add(titleBox);
+
+    // Add short description with italics
+    Text shortDescription = new Text(recipe.getShortDesc());
+    shortDescription.setFont(Font.font("ARIAL", FontPosture.ITALIC, 28));
+    shortDescription.setFill(Color.DARKSLATEGREY);
+    VBox shortDescriptionBox = new VBox(shortDescription);
+    shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
+    vbox.getChildren().add(shortDescriptionBox);
 
     // Add button to add the recipe to the weekly dinner list
     Button addToWeeklyDinnerButton = new Button("Add to Weekly Dinner");
@@ -214,34 +186,17 @@ public class RecipeView {
         showInlineStyledAlert(Alert.AlertType.WARNING, "Warning", "Please select a date.");
       }
     });
-      
-
     HBox addToWeeklyDinnerBox = new HBox();
     addToWeeklyDinnerBox.setSpacing(10);
     addToWeeklyDinnerBox.getChildren().addAll(datePicker, addToWeeklyDinnerButton);
     vbox.getChildren().add(addToWeeklyDinnerBox);
 
 
-    // Add a title (recipe name)
-    Text title = new Text(recipe.getName());
-    title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
-    VBox titleBox = new VBox(title);
-    vbox.getChildren().add(titleBox);
-
-    // Add short description with italics
-    Text shortDescription = new Text(recipe.getShortDesc());
-    shortDescription.setFont(Font.font("ARIAL", FontPosture.ITALIC, 28));
-    shortDescription.setFill(Color.DARKSLATEGREY);
-    VBox shortDescriptionBox = new VBox(shortDescription);
-    shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
-    vbox.getChildren().add(shortDescriptionBox);
-
     // Add ingredients as a list
     Text ingredientsTitle = new Text("Ingredients:");
     ingredientsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     VBox ingredientsTitleBox = new VBox(ingredientsTitle);
     vbox.getChildren().add(ingredientsTitleBox);
-
     createServingSpinner();
 
     // Add ingredients as a list with reduced spacing
@@ -253,22 +208,17 @@ public class RecipeView {
     for (Ingredient ingredient : recipe.getIngredients()) {
       Text ingredientQuantity = new Text(String.format("%.1f", ingredient.getQuantity()));
       ingredientQuantity.setFont(Font.font("ROBOTO", 20));
-    
       Text ingredientUnit = new Text(ingredient.getMeasurementUnit());
       ingredientUnit.setFont(Font.font("ROBOTO", 20));
-    
       Text ingredientName = new Text(ingredient.getName());
       ingredientName.setFont(Font.font("ROBOTO", 20));
-
       ingredientsGrid.add(ingredientQuantity, 0, rowIndex);
       ingredientsGrid.add(ingredientUnit, 1, rowIndex);
       ingredientsGrid.add(ingredientName, 2, rowIndex);
       rowIndex++;
     }
-
     vbox.getChildren().add(ingredientsGrid);
-    
- 
+     
     // Display directions
     Text directionsTitle = new Text("Directions:");
     directionsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
@@ -279,18 +229,15 @@ public class RecipeView {
     VBox directionsTitleBox = new VBox(directionsTitle);
     directionsTitleBox.setPadding(new Insets(40, 0, 20, 0));
     vbox.getChildren().add(directionsTitleBox);
-    
     VBox directionsBox = new VBox(directions);
     vbox.getChildren().add(directionsBox);
     
-
     // Display tags
     Text tagsTitle = new Text("Tags:");
     tagsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
     HBox tagsTitleBox = new HBox(tagsTitle);
     tagsTitleBox.setPadding(new Insets(40, 0, 20, 0));
     vbox.getChildren().add(tagsTitleBox);
-
 
     // Display tags in a single line
     tagsHBox = new HBox(); 
@@ -360,7 +307,6 @@ public class RecipeView {
     newTagBox.getChildren().addAll(predefinedTagsComboBox, newTagField, addTagButton);
     vbox.getChildren().add(newTagBox);
 
-
     // Add "Save Tags" button
     saveButton = new Button("Save Tags");
     saveButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
@@ -385,35 +331,28 @@ public class RecipeView {
         = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 10, initialServings, 2);
     servingSpinner.setValueFactory(valueFactory);
     servingSpinner.setEditable(true);
-    
     servingSpinner.setMinWidth(100);
     servingSpinner.setPrefWidth(100);
     servingSpinner.setMaxWidth(100); 
     servingSpinner.setPadding(new Insets(10));
-  
     servingSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
       updateIngredientQuantities(newValue);
     });
-  
     HBox servingSpinnerContainer = new HBox();
     servingSpinnerContainer.setSpacing(5);
     servingSpinnerContainer.setStyle("-fx-spacing: 5; -fx-font: 16px \"Roboto\";");
     servingSpinnerContainer.setAlignment(Pos.CENTER_LEFT); // Set alignment for the HBox
-
     Label servingsLabel = new Label("Servings:");
     servingsLabel.setStyle("-fx-font-size: 20px; -fx-font-family: Roboto;");
     servingSpinnerContainer.getChildren().addAll(servingsLabel, servingSpinner);
     vbox.getChildren().add(servingSpinnerContainer);
   }
 
-
   private void updateIngredientQuantities(int servings) {
     double scaleFactor = (double) servings / initialServings;
-
     GridPane newIngredientsGrid = new GridPane();
-    newIngredientsGrid.setVgap(0); // Reduce the vertical spacing between ingredients
-    newIngredientsGrid.setHgap(10); // Set horizontal spacing between elements
-
+    newIngredientsGrid.setVgap(0); 
+    newIngredientsGrid.setHgap(10);
     int rowIndex = 0;
     for (Ingredient ingredient : recipe.getIngredients()) {
       Ingredient adjustedIngredient
@@ -422,19 +361,15 @@ public class RecipeView {
         
       Text ingredientQuantity = new Text(String.format("%.1f", adjustedIngredient.getQuantity()));
       ingredientQuantity.setFont(Font.font("ROBOTO", 20));
-
       Text ingredientUnit = new Text(adjustedIngredient.getMeasurementUnit());
       ingredientUnit.setFont(Font.font("ROBOTO", 20));
-
       Text ingredientName = new Text(adjustedIngredient.getName());
       ingredientName.setFont(Font.font("ROBOTO", 20));
-
       newIngredientsGrid.add(ingredientQuantity, 0, rowIndex);
       newIngredientsGrid.add(ingredientUnit, 1, rowIndex);
       newIngredientsGrid.add(ingredientName, 2, rowIndex);
       rowIndex++;
     }
-
     // Replace the old ingredients GridPane with the new one
     int ingredientsGridIndex = vbox.getChildren().indexOf(ingredientsGrid);
     vbox.getChildren().remove(ingredientsGrid);
@@ -442,7 +377,11 @@ public class RecipeView {
     ingredientsGrid = newIngredientsGrid;
   }
 
-  
+  /**Check if the given tag already exists.
+   *
+   * @param newTag the tag to check
+   * @return true if the tag already exists, false otherwise
+   */
   private boolean tagAlreadyExists(String newTag) {
     for (Node node : tagsHBox.getChildren()) {
       if (node instanceof Text) {
@@ -453,6 +392,20 @@ public class RecipeView {
       }
     }
     return false;
+  }
+
+  /**
+   * Get a list of updated tags.
+   */
+  public ArrayList<String> getUpdatedTags() {
+    ArrayList<String> updatedTags = new ArrayList<String>();
+    for (Node node : tagsHBox.getChildren()) {
+      if (node instanceof Text) {
+        String tag = ((Text) node).getText().substring(2);
+        updatedTags.add(tag);
+      }
+    }
+    return updatedTags;
   }
 
   /** Create styled button with the given text and event handler.
@@ -492,7 +445,6 @@ public class RecipeView {
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();
   }
-
 
 }
 

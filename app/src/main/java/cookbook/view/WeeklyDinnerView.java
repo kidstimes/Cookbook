@@ -69,19 +69,13 @@ public class WeeklyDinnerView {
     return view;
   }
 
-  /**
-   * Set the user displayName
-   */
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
   // Initialize layout
   private void initLayout() {
     createSidebar();
     createCenterView();
   }
 
+  // Create the side bar menu
   private void createSidebar() {
     VBox sidebar = new VBox(30);
     sidebar.setMaxWidth(100);
