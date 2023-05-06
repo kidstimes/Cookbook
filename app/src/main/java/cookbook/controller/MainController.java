@@ -18,13 +18,14 @@ public class MainController {
   private Stage stage;
   private BorderPane root;
   private CookbookFacade model;
+  private LoginController loginController;
+  private SignUpController signUpController;
   private HomePageController homePageController;
   private BrowserController browserController;
   private RecipeController recipeController;
   private AddRecipeController addRecipeController;
-  private LoginController loginController;
-  private SignUpController signUpController;
   private WeeklyDinnerController weeklyDinnerController;
+  private ShoppingListController shoppingListController;
 
   /**
    * Controller Constructor.
@@ -49,7 +50,6 @@ public class MainController {
    */
   public void initializeControllersAfterLogin() {
     String userDisplayName = model.getUserDisplayName();
-    this.homePageController = new HomePageController(model, this, userDisplayName);
     this.addRecipeController = new AddRecipeController(model, this, userDisplayName);    
     
   }
@@ -101,6 +101,7 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
+    this.homePageController = new HomePageController(model, this, model.getUserDisplayName());
     root.setCenter(homePageController.getView());
   }
 
@@ -138,12 +139,25 @@ public class MainController {
   }
 
   /**
+   * Go to my favorite.
+   */
+  public void goToMyFavorite() {
+    //TODO implement my favorite view
+  }
+
+  /**
    * Go to weekly dinner lists.
    */
   public void goToWeeklyDinner() {
     this.weeklyDinnerController = new WeeklyDinnerController(model,
-    this, model.getUserDisplayName(), model.getDinnerList());
+    this, model.getUserDisplayName(), model.loadWeeklyDinnerFromDatebase());
     root.setCenter(weeklyDinnerController.getView());
+  }
+
+
+  public void goToShoppingList() {
+    this.shoppingListController = new ShoppingListController(model, this, model.getUserDisplayName());
+    root.setCenter(shoppingListController.getView());
   }
 
   /**

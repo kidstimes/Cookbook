@@ -104,8 +104,8 @@ public class BrowserView {
       createButton("Browse Recipes", e -> observer.goToBrowser()),
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> {}),
-      createButton("My Shopping List", e -> {})
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList())
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -128,16 +128,6 @@ public class BrowserView {
     // clear tagsFlowPane and searchResultsVBox
     tagsFlowPane.getChildren().clear();
     searchResultsVbox.getChildren().clear();
-    // Add option to return to home
-    /*Hyperlink backButton = new Hyperlink("← Back to Home Page");
-    backButton.setFont(Font.font("ROBOTO", 16));
-    backButton.setOnAction(e -> {
-      if (observer != null) {
-        observer.goToHomePage();
-      }
-    });
-    // Add the backButton to the top of the BorderPane
-    rootVbox.getChildren().add(backButton);*/
 
     // Add a title to the homepage
     Text title = new Text("Recipe Browser");

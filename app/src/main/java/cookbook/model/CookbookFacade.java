@@ -247,8 +247,26 @@ public class CookbookFacade {
   public ArrayList<Dinner> loadWeeklyDinnerFromDatebase() {
     ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
     user.setWeeklyDinners(dinnerList);
-    return getDinnerList();
+    return dinnerList;
   }
 
+  /** Method check if a recipe name is already in the cookbook.
+   *
+   * @param recipeName the name of the recipe
+   * @return true if the recipe name is already in the cookbook, otherwise false
+   */
+  public boolean checkRecipeName(String recipeName) {
+    for (Recipe recipe : recipes) {
+      if (recipe.getName().equalsIgnoreCase(recipeName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //Check if a user has a weekly dinner on current week.
+  public boolean checkWeeklyDinner() {
+    return user.checkWeeklyDinner();
+  }
 
 }

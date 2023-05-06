@@ -19,5 +19,8 @@ public interface HomePageViewObserver {
 
   void goToWeeklyDinner();
 
+  void goToShoppingList();
+
+  void goToMyFavorite();
 
 }

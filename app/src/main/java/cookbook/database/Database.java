@@ -402,14 +402,14 @@ public class Database {
   }
 
   private int insertTag(String tagName) throws SQLException {
-    String query = "INSERT IGNORE INTO tags (name) VALUES (?)";
+    String query = "INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE name = name";
     try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       statement.setString(1, tagName);
       statement.executeUpdate();
       ResultSet generatedKeys = statement.getGeneratedKeys();
       return generatedKeys.next() ? generatedKeys.getInt(1) : -1;
     }
-  }
+}
 
   private void deletePersonalTags(int userId, int recipeId) throws SQLException {
     String query = "DELETE FROM PersonalTags WHERE user_id = ? AND recipe_id = ?";
@@ -423,7 +423,7 @@ public class Database {
   }
 
   private void insertPersonalTag(int userId, int recipeId, int tagId) throws SQLException {
-    String query = "INSERT IGNORE INTO PersonalTags (user_id, recipe_id, tag_id) VALUES (?, ?, ?)";
+    String query = "INSERT INTO PersonalTags (user_id, recipe_id, tag_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE user_id = user_id, recipe_id = recipe_id, tag_id = tag_id";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setInt(1, userId);
       statement.setInt(2, recipeId);
@@ -433,6 +433,9 @@ public class Database {
       System.out.println("Error while inserting personal tag: " + e.getMessage());
     }
   }
+
+
+
 
   private void insertRecipeTag(int recipeId, int tagId) throws SQLException {
     String query = "INSERT IGNORE INTO recipe_tags (recipe_id, tag_id) VALUES (?, ?)";

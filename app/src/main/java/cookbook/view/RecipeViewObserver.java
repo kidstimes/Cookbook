@@ -29,5 +29,9 @@ public interface RecipeViewObserver {
 
   boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe);
 
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
 
 }

@@ -158,15 +158,6 @@ public class LoginView {
     Label welcomeMessage = new Label("Welcome to Cookbook");
     welcomeMessage.setStyle("-fx-font-size: 28; -fx-font-weight: bold;");
 
-    // Image section
-    /*
-     * ImageView imageView = new ImageView(https://www.steamgriddb.com/logo/23632);
-     * Image image = new Image("images/pic.avif");
-     * imageView.setImage(image);
-     * imageView.setPreserveRatio(true);
-     * imageView.setFitWidth(600);
-     */
-
     // Login section
     GridPane loginGrid = new GridPane();
     loginGrid.setHgap(10);

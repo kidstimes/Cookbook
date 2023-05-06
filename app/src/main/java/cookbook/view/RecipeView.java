@@ -100,9 +100,10 @@ public class RecipeView {
       createButton("Browse Recipes", e -> observer.goToBrowser()),
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> {}),
-      createButton("My Shopping List", e -> {})
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList())
       };
+
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
@@ -133,19 +134,7 @@ public class RecipeView {
     scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     view.setCenter(scrollPane);
 
-    // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
-    DatePicker datePicker = new DatePicker();
-    datePicker.setStyle("-fx-font: 16px \"Roboto\";");
 
-    // Set the minimum allowed date to today's date
-    datePicker.setDayCellFactory(picker -> new DateCell() {
-      @Override
-      public void updateItem(LocalDate date, boolean empty) {
-        super.updateItem(date, empty);
-        LocalDate today = LocalDate.now();
-        setDisable(empty || date.compareTo(today) < 0);
-      }
-    });
 
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
@@ -165,6 +154,27 @@ public class RecipeView {
     shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
     vbox.getChildren().add(shortDescriptionBox);
 
+    // Add DatePicker for selecting the date to add the recipe to the weekly dinner list
+    DatePicker datePicker = new DatePicker();
+    //write select a date for user to select a date
+    Text selectDate = new Text("Select a date: ");
+    selectDate.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
+    selectDate.setFill(Color.DARKSLATEGREY);
+    HBox dateBox = new HBox(selectDate, datePicker);
+    dateBox.setSpacing(10);
+    dateBox.setAlignment(Pos.CENTER_LEFT);
+    vbox.getChildren().add(dateBox);
+    datePicker.setStyle("-fx-font: 16px \"Roboto\";");
+
+    // Set the minimum allowed date to today's date
+    datePicker.setDayCellFactory(picker -> new DateCell() {
+      @Override
+      public void updateItem(LocalDate date, boolean empty) {
+        super.updateItem(date, empty);
+        LocalDate today = LocalDate.now();
+        setDisable(empty || date.compareTo(today) < 0);
+      }
+    });
     // Add button to add the recipe to the weekly dinner list
     Button addToWeeklyDinnerButton = new Button("Add to Weekly Dinner");
     addToWeeklyDinnerButton.setFont(Font.font("Roboto", 16));
@@ -211,11 +221,11 @@ public class RecipeView {
     int rowIndex = 0;
     for (Ingredient ingredient : recipe.getIngredients()) {
       Text ingredientQuantity = new Text(String.format("%.1f", ingredient.getQuantity()));
-      ingredientQuantity.setFont(Font.font("ROBOTO", 20));
+      ingredientQuantity.setFont(Font.font("ROBOTO", 18));
       Text ingredientUnit = new Text(ingredient.getMeasurementUnit());
-      ingredientUnit.setFont(Font.font("ROBOTO", 20));
+      ingredientUnit.setFont(Font.font("ROBOTO", 18));
       Text ingredientName = new Text(ingredient.getName());
-      ingredientName.setFont(Font.font("ROBOTO", 20));
+      ingredientName.setFont(Font.font("ROBOTO", 18));
       ingredientsGrid.add(ingredientQuantity, 0, rowIndex);
       ingredientsGrid.add(ingredientUnit, 1, rowIndex);
       ingredientsGrid.add(ingredientName, 2, rowIndex);
@@ -228,7 +238,7 @@ public class RecipeView {
     directionsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     vbox.getChildren().add(directionsTitle);
     Text directions = new Text(recipe.getDirections());
-    directions.setFont(Font.font("Roboto", 20));
+    directions.setFont(Font.font("Roboto", 18));
     directions.setWrappingWidth(900); 
     // wrap text in vbox and add to vbox container
     VBox directionsTitleBox = new VBox(directionsTitle);
@@ -366,11 +376,11 @@ public class RecipeView {
                 (float) (ingredient.getQuantity() * scaleFactor), ingredient.getMeasurementUnit());
         
       Text ingredientQuantity = new Text(String.format("%.1f", adjustedIngredient.getQuantity()));
-      ingredientQuantity.setFont(Font.font("ROBOTO", 20));
+      ingredientQuantity.setFont(Font.font("ROBOTO", 18));
       Text ingredientUnit = new Text(adjustedIngredient.getMeasurementUnit());
-      ingredientUnit.setFont(Font.font("ROBOTO", 20));
+      ingredientUnit.setFont(Font.font("ROBOTO", 18));
       Text ingredientName = new Text(adjustedIngredient.getName());
-      ingredientName.setFont(Font.font("ROBOTO", 20));
+      ingredientName.setFont(Font.font("ROBOTO", 18));
       newIngredientsGrid.add(ingredientQuantity, 0, rowIndex);
       newIngredientsGrid.add(ingredientUnit, 1, rowIndex);
       newIngredientsGrid.add(ingredientName, 2, rowIndex);

@@ -113,11 +113,11 @@ public class AddRecipeView {
       }),
       createButton("My Favorites", e -> {
         clearAllInput();
-        // Your implementation for this button
+        observer.goToMyFavorite();
       }),
       createButton("My Shopping List", e -> {
         clearAllInput();
-        // Your implementation for this button
+        observer.goToShoppingList();
       })
       };
     for (Button button : sidebarButtons) {
@@ -517,7 +517,7 @@ public class AddRecipeView {
   /**
    * Show an alert with the given alert type, title, and message.
    */
-  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
+  public void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
     Alert alert = new Alert(alertType);
     alert.setTitle(title);
     alert.setHeaderText(null);

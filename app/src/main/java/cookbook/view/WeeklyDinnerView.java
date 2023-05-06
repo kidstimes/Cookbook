@@ -60,9 +60,6 @@ public class WeeklyDinnerView {
     initLayout();
   }
 
-  public void setDinnerList(ArrayList<Dinner> dinnerList) {
-    this.dinnerList = dinnerList;
-  }
 
   // Set the observer for the view
   public void setObserver(WeeklyDinnerViewObserver observer) {
@@ -94,8 +91,8 @@ public class WeeklyDinnerView {
         createButton("Browse Recipes", e -> observer.goToBrowser()),
         createButton("Add a Recipe", e -> observer.goToAddRecipe()),
         createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-        createButton("My Favorites", e -> {}),
-        createButton("My Shopping List", e -> {})
+        createButton("My Favorites", e -> observer.goToMyFavorite()),
+        createButton("My Shopping List", e -> observer.goToShoppingList())
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);

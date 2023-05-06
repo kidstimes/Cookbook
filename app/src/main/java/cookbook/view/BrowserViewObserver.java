@@ -33,6 +33,10 @@ public interface BrowserViewObserver {
 
   void userLogout();
 
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
 
 
 

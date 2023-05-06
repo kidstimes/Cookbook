@@ -27,4 +27,8 @@ public interface AddRecipeViewObserver {
 
   void goToHomePage();
 
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
 }

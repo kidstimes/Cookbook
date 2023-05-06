@@ -1,5 +1,6 @@
 package cookbook.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -52,8 +53,11 @@ public class User {
   public boolean addWeeklyDinner(LocalDate date, Recipe recipe) {
     for (Dinner dinner : weeklyDinners) {
       if (dinner.getDate().isEqual(date)) {
-        if (dinner.getRecipes().contains(recipe)) {
-          return false;
+        //check it the recipe is already in the dinner by check its name
+        for (Recipe recip : dinner.getRecipes()) {
+          if (recip.getName().equalsIgnoreCase(recipe.getName())) {
+            return false;
+          }
         }
         dinner.addRecipe(recipe);
         return true;
@@ -104,5 +108,22 @@ public class User {
   public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
     this.weeklyDinners = dinnerList;
   }
+
+  //Check if a user has a weekly dinner on current week.
+  public boolean checkWeeklyDinner() {
+    LocalDate now = LocalDate.now();
+    LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
+    LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
+
+    for (Dinner dinner : weeklyDinners) {
+      System.out.println(dinner.getDate());
+      LocalDate dinnerDate = dinner.getDate();
+      if (!dinnerDate.isBefore(startOfWeek) && !dinnerDate.isAfter(endOfWeek)) {
+        return true;
+      }
+    }
+    return false;
+}
+
 
 }

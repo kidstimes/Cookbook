@@ -5,6 +5,7 @@ import cookbook.view.AddRecipeView;
 import cookbook.view.AddRecipeViewObserver;
 import java.util.ArrayList;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 
 
 /**
@@ -39,6 +40,12 @@ public class AddRecipeController extends BaseController implements AddRecipeView
   @Override
   public boolean handleSaveRecipeClicked(String[] recipeData,
       ArrayList<String[]> ingredients, ArrayList<String> tags) {
+    //check if recipe name is already in database
+    if (model.checkRecipeName(recipeData[0])) {
+      addRecipeView.showInlineStyledAlert(Alert.AlertType.WARNING, "Recipe Exists",
+      String.format("Recip named %s already in cookbook. Please check and enter again.", recipeData[0]));
+      return false;
+    }
     model.addRecipe(recipeData, ingredients, tags);
     if (model.saveRecipeToDatabase(recipeData, ingredients, tags)) {
       mainController.goToBrowser();

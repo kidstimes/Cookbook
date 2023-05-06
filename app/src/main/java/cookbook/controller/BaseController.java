@@ -43,4 +43,11 @@ public abstract class BaseController {
     mainController.goToWeeklyDinner();
   }
 
+  public void goToShoppingList() {
+    mainController.goToShoppingList();
+  }
+
+  public void goToMyFavorite() {
+    mainController.goToMyFavorite();
+  } 
 }
