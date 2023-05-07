@@ -5,12 +5,19 @@ import cookbook.model.Recipe;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -20,11 +27,16 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -35,6 +47,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * View class for the recipe page.
@@ -135,6 +149,14 @@ public class RecipeView {
     view.setCenter(scrollPane);
 
 
+
+    Button editButton = new Button("Edit Recipe");
+    editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    editButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+            + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    editButton.setOnAction(e -> editRecipe());
+    vbox.getChildren().add(editButton);
 
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
@@ -252,7 +274,7 @@ public class RecipeView {
     Text tagsTitle = new Text("Tags:");
     tagsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
     HBox tagsTitleBox = new HBox(tagsTitle);
-    tagsTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    tagsTitleBox.setPadding(new Insets(20, 0, 20, 0));
     vbox.getChildren().add(tagsTitleBox);
 
     // Display tags in a single line
@@ -319,7 +341,7 @@ public class RecipeView {
     });
 
     HBox newTagBox = new HBox();
-    newTagBox.setSpacing(10); // Set spacing between ComboBox, TextField, and Button
+    newTagBox.setSpacing(5); // Set spacing between ComboBox, TextField, and Button
     newTagBox.getChildren().addAll(predefinedTagsComboBox, newTagField, addTagButton);
     vbox.getChildren().add(newTagBox);
 
@@ -391,6 +413,7 @@ public class RecipeView {
     vbox.getChildren().remove(ingredientsGrid);
     vbox.getChildren().add(ingredientsGridIndex, newIngredientsGrid);
     ingredientsGrid = newIngredientsGrid;
+
   }
 
   /**Check if the given tag already exists.
@@ -461,6 +484,251 @@ public class RecipeView {
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();
   }
+
+
+
+  private Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
+    for (Node node : gridPane.getChildren()) {
+        if (GridPane.getColumnIndex(node) == col && GridPane.getRowIndex(node) == row) {
+            return node;
+        }
+    }
+    return null;
+  }
+
+
+  private void editRecipe() {
+    // Create a new window for editing the recipe
+    Stage editRecipeStage = new Stage();
+    editRecipeStage.setTitle("Edit Recipe");
+
+    // Create a new VBox to hold the contents of the window
+    VBox editRecipeVBox = new VBox();
+    editRecipeVBox.setSpacing(10);
+    editRecipeVBox.setPadding(new Insets(10));
+
+    // Create a new HBox to hold the recipe name
+    HBox recipeNameHBox = new HBox();
+    recipeNameHBox.setSpacing(10);
+    recipeNameHBox.setAlignment(Pos.CENTER_LEFT);
+    Text recipeNameLabel = new Text("Recipe Name:");
+    recipeNameLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    TextField recipeNameField = new TextField(recipe.getName());
+    recipeNameField.setFont(Font.font("Roboto", 18));
+    recipeNameHBox.getChildren().addAll(recipeNameLabel, recipeNameField);
+    editRecipeVBox.getChildren().add(recipeNameHBox);
+
+    // Create a new HBox to hold the recipe short description
+    HBox recipeShortDescHBox = new HBox();
+    recipeShortDescHBox.setSpacing(10);
+    recipeShortDescHBox.setAlignment(Pos.CENTER_LEFT);
+    Text recipeShortDescLabel = new Text("Short Description:");
+    recipeShortDescLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    TextField recipeShortDescField = new TextField(recipe.getShortDesc());
+    recipeShortDescField.setFont(Font.font("Roboto", 18));
+    recipeShortDescHBox.getChildren().addAll(recipeShortDescLabel, recipeShortDescField);
+    editRecipeVBox.getChildren().add(recipeShortDescHBox);
+
+
+    // Create a new HBox to hold the recipe servings
+    HBox recipeServingsHBox = new HBox();
+    recipeServingsHBox.setSpacing(10);
+    recipeServingsHBox.setAlignment(Pos.CENTER_LEFT);
+    Text recipeServingsLabel = new Text("Servings:");
+    recipeServingsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    TextField recipeServingsField = new TextField("2");
+    recipeServingsField.setFont(Font.font("Roboto", 18));
+    recipeServingsHBox.getChildren().addAll(recipeServingsLabel, recipeServingsField);
+    editRecipeVBox.getChildren().add(recipeServingsHBox);
+
+    // Create a new VBox to hold the recipe ingredients
+    VBox recipeIngredientsVBox = new VBox();
+    recipeIngredientsVBox.setSpacing(10);
+    Text ingredientsLabel = new Text("Ingredients:");
+    ingredientsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    recipeIngredientsVBox.getChildren().add(ingredientsLabel);
+
+    for (Ingredient ingredient : recipe.getIngredients()) {
+        HBox ingredientHBox = new HBox();
+        ingredientHBox.setSpacing(10);
+        TextField ingredientQuantity = new TextField(String.format("%.1f", ingredient.getQuantity()));
+        ingredientQuantity.setFont(Font.font("ROBOTO", 18));
+        TextField ingredientUnit = new TextField(ingredient.getMeasurementUnit());
+        ingredientUnit.setFont(Font.font("ROBOTO", 18));
+        TextField ingredientName = new TextField(ingredient.getName());
+        ingredientName.setFont(Font.font("ROBOTO", 18));
+        Button deleteIngredientButton = new Button("Delete");
+        deleteIngredientButton.setOnAction(deleteEvent -> {
+            recipeIngredientsVBox.getChildren().remove(ingredientHBox);
+        });
+        ingredientHBox.getChildren().addAll(ingredientQuantity, ingredientUnit, ingredientName, deleteIngredientButton);
+        recipeIngredientsVBox.getChildren().add(ingredientHBox);
+    }
+    editRecipeVBox.getChildren().add(recipeIngredientsVBox);
+
+        // Create a new HBox to add a new ingredient
+        HBox addIngredientHBox = new HBox();
+        addIngredientHBox.setSpacing(10);
+        TextField newIngredientQuantity = new TextField();
+        newIngredientQuantity.setPromptText("Quantity");
+        TextField newIngredientUnit = new TextField();
+        newIngredientUnit.setPromptText("Unit");
+        TextField newIngredientName = new TextField();
+        newIngredientName.setPromptText("Name");
+        Button addIngredientButton = new Button("Add Ingredient");
+        addIngredientButton.setOnAction(e -> {
+            if (!newIngredientQuantity.getText().isEmpty() && !newIngredientUnit.getText().isEmpty() && !newIngredientName.getText().isEmpty()) {
+                HBox ingredientHBox = new HBox();
+                ingredientHBox.setSpacing(10);
+                TextField ingredientQuantity = new TextField(newIngredientQuantity.getText());
+                TextField ingredientUnit = new TextField(newIngredientUnit.getText());
+                TextField ingredientName = new TextField(newIngredientName.getText());
+                Button deleteIngredientButton = new Button("Delete");
+                deleteIngredientButton.setOnAction(deleteEvent -> {
+                    recipeIngredientsVBox.getChildren().remove(ingredientHBox);
+                });
+                ingredientHBox.getChildren().addAll(ingredientQuantity, ingredientUnit, ingredientName, deleteIngredientButton);
+                recipeIngredientsVBox.getChildren().add(ingredientHBox);
+    
+                newIngredientQuantity.clear();
+                newIngredientUnit.clear();
+                newIngredientName.clear();
+            }
+        });
+        addIngredientHBox.getChildren().addAll(newIngredientQuantity, newIngredientUnit, newIngredientName, addIngredientButton);
+        editRecipeVBox.getChildren().add(addIngredientHBox);
+
+    // Create a new HBox to hold the recipe instructions
+    HBox recipeInstructionsHBox = new HBox();
+    recipeInstructionsHBox.setSpacing(10);
+    recipeInstructionsHBox.setAlignment(Pos.CENTER_LEFT);
+    Text recipeInstructionsLabel = new Text("Instructions:");
+    recipeInstructionsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    
+    ListView<Label> directionsListView = new ListView<Label>();
+    ObservableList<Label> directionsList = FXCollections.observableArrayList();
+    for (String direction : recipe.getDirections().split("\n")) {
+        directionsList.add(new Label(direction.trim()));
+    }
+    directionsListView.setItems(directionsList);
+
+    // Add, modify, and delete directions
+    Button addDirectionButton = new Button("Add Direction");
+    Button modifyDirectionButton = new Button("Modify Direction");
+    Button deleteDirectionButton = new Button("Delete Direction");
+    TextField newDirectionField = new TextField();
+
+    addDirectionButton.setOnAction(e -> {
+      if (!newDirectionField.getText().isEmpty()) {
+          directionsList.add(new Label((directionsList.size() + 1) + ". " + newDirectionField.getText()));
+          newDirectionField.clear();
+      }
+  });
+
+  modifyDirectionButton.setOnAction(e -> {
+      int selectedIndex = directionsListView.getSelectionModel().getSelectedIndex();
+      if (selectedIndex != -1 && !newDirectionField.getText().isEmpty()) {
+          directionsList.set(selectedIndex, new Label((selectedIndex + 1) + ". " + newDirectionField.getText()));
+          newDirectionField.clear();
+      }
+  });
+
+  deleteDirectionButton.setOnAction(e -> {
+      int selectedIndex = directionsListView.getSelectionModel().getSelectedIndex();
+      if (selectedIndex != -1) {
+          directionsList.remove(selectedIndex);
+          updateDirectionNumbers(directionsList);
+      }
+  });
+
+    VBox directionButtonsVBox = new VBox(addDirectionButton, modifyDirectionButton, deleteDirectionButton);
+    directionButtonsVBox.setSpacing(10);
+    recipeInstructionsHBox.getChildren().addAll(recipeInstructionsLabel, directionsListView, newDirectionField, directionButtonsVBox);
+    editRecipeVBox.getChildren().add(recipeInstructionsHBox);
+
+// Create a new HBox to hold the recipe tags
+HBox recipeTagsHBox = new HBox();
+recipeTagsHBox.setSpacing(10);
+recipeTagsHBox.setAlignment(Pos.CENTER_LEFT);
+Text recipeTagsLabel = new Text("Tags:");
+recipeTagsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+
+ListView<String> tagsListView = new ListView<String>();
+tagsListView.setItems(FXCollections.observableArrayList(recipe.getTags()));
+tagsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+Button addTagButton = new Button("Add Tag");
+ComboBox<String> predefinedTagsComboBox = new ComboBox<>();
+predefinedTagsComboBox.getItems().addAll("tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7");
+TextField customTagField = new TextField();
+Button deleteTagButton = new Button("Delete Tag");
+
+predefinedTagsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+  if (newValue != null) {
+      customTagField.setDisable(true);
+  } else {
+      customTagField.setDisable(false);
+  }
+});
+
+addTagButton.setOnAction(e -> {
+  if (predefinedTagsComboBox.getValue() != null && !predefinedTagsComboBox.getValue().isEmpty()) {
+      if (!tagsListView.getItems().contains(predefinedTagsComboBox.getValue())) {
+          tagsListView.getItems().add(predefinedTagsComboBox.getValue());
+      }
+      predefinedTagsComboBox.getSelectionModel().clearSelection(); // Clear the selection after adding the tag
+  } else if (!customTagField.getText().isEmpty()) {
+      if (!tagsListView.getItems().contains(customTagField.getText())) {
+          tagsListView.getItems().add(customTagField.getText());
+      }
+  }
+});
+
+    deleteTagButton.setOnAction(e -> {
+        tagsListView.getItems().removeAll(tagsListView.getSelectionModel().getSelectedItems());
+    });
+
+    recipeTagsHBox.getChildren().addAll(recipeTagsLabel, tagsListView, addTagButton, predefinedTagsComboBox, customTagField, deleteTagButton);
+    editRecipeVBox.getChildren().add(recipeTagsHBox);
+    // Create a new HBox for adding and modifying the tags
+    HBox addTagHBox = new HBox(addTagButton, predefinedTagsComboBox, customTagField);
+    addTagHBox.setSpacing(10);
+    editRecipeVBox.getChildren().add(addTagHBox);
+
+    // Create a new HBox for deleting the tags
+    HBox deleteTagHBox = new HBox(deleteTagButton);
+    deleteTagHBox.setSpacing(10);
+    editRecipeVBox.getChildren().add(deleteTagHBox);
+
+
+    // Collect all the info from the fields and create a new recipe
+    Button editRecipeButton = new Button("Edit Recipe");
+    editRecipeButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    editRecipeButton.setOnAction(e -> {
+        // Update recipe object based on input fields and close the stage
+        editRecipeStage.close();
+    });
+
+    editRecipeVBox.getChildren().add(editRecipeButton);
+
+    // Set the scene and show the stage
+    Scene editRecipeScene = new Scene(editRecipeVBox);
+    editRecipeStage.setScene(editRecipeScene);
+    editRecipeStage.showAndWait();
+
+
+}
+
+    // Method to update direction numbers
+    private void updateDirectionNumbers(ObservableList<Label> directionsList) {
+      for (int i = 0; i < directionsList.size(); i++) {
+          String currentText = directionsList.get(i).getText();
+          currentText = currentText.substring(currentText.indexOf(".") + 1).trim();
+          directionsList.get(i).setText((i + 1) + ". " + currentText);
+      }
+  }
+
+
 
 }
 
