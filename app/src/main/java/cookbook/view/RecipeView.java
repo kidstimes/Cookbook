@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -23,6 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.control.Control;
 import javafx.geometry.Pos;
 
 
@@ -41,8 +43,6 @@ public class RecipeView {
   private Spinner<Integer> servingSpinner;
   private int initialServings;
   private Button saveButton;
-  private boolean isFavorite;
-  private Button starButton;
 
   /**
    * Recipe View Constructor.
@@ -50,7 +50,6 @@ public class RecipeView {
   public RecipeView() {
     this.view = new BorderPane();
     this.initialServings = 2;
-    this.isFavorite = false;
   }
 
   /**
@@ -66,16 +65,10 @@ public class RecipeView {
   public void setRecipe(Recipe recipe) {
     this.recipe = recipe;
     initLayout();
-    updateStarButton();
   }
 
   public String getRecipeName() {
     return this.recipe.getName();
-  }
-
-  public void setFavorite(boolean isFavorite) {
-    this.isFavorite = isFavorite;
-    updateStarButton();
   }
 
   /**
@@ -139,21 +132,6 @@ public class RecipeView {
     title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
     VBox titleBox = new VBox(title);
     vbox.getChildren().add(titleBox);
-
-    // Add a Star button
-    starButton = new Button("Star");
-    starButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
-    starButton.setStyle(
-      " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-      + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
-      starButton.setOnAction(e -> {
-        if (observer != null) {
-          observer.handleStarClicked(recipe);
-          isFavorite = !isFavorite;
-          updateStarButton();
-        }
-      });
-    vbox.getChildren().add(starButton);
 
     // Add short description with italics
     Text shortDescription = new Text(recipe.getShortDesc());
@@ -292,8 +270,6 @@ public class RecipeView {
       }
     });
     vbox.getChildren().add(saveButton);
-
-    updateStarButton();
   }
 
   private void createServingSpinner() {
@@ -358,16 +334,6 @@ public class RecipeView {
     }
     return false;
   }
-
-  public void updateStarButton() {
-    if (isFavorite) {
-      starButton.setText("Unstar");
-    } else {
-      starButton.setText("Star");
-    }
-  }
-
-
 
   /**
    * Show an alert with the given alert type, title, and message.

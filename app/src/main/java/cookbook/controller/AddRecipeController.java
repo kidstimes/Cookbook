@@ -40,7 +40,7 @@ public class AddRecipeController implements AddRecipeViewObserver {
 
   @Override
   public void handleSaveRecipeClicked(String[] recipeData,
-    ArrayList<String[]> ingredientsData, ArrayList<String> tagsData) {
+      ArrayList<String[]> ingredientsData, ArrayList<String> tagsData) {
     model.addRecipe(recipeData, ingredientsData, tagsData);
   }
 

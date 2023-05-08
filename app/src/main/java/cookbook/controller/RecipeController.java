@@ -5,10 +5,8 @@ import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
-import cookbook.view.FavoriteView; 
 import java.util.ArrayList;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 
 
 /**
@@ -19,7 +17,6 @@ public class RecipeController implements RecipeViewObserver {
   private RecipeView recipeView;
   private CookbookFacade model;
   private MainController mainController;
-  private FavoriteView favoriteView;
 
   /**Recipe Controller Constructor.
   *
@@ -32,7 +29,6 @@ public class RecipeController implements RecipeViewObserver {
     this.recipeView.setRecipe(recipe);
     this.recipeView.setObserver(this);
     this.mainController = mainController;
-    this.favoriteView = favoriteView;
   }
 
   /**
@@ -69,34 +65,5 @@ public class RecipeController implements RecipeViewObserver {
     model.updateTagToDatabase(updatedTags, recipeName);
     mainController.goToBrowser();
   }
-
-  @Override
-  public void handleStarClicked(Recipe recipe) {
-    updateFavorites(recipe);
-  }
-
-  @Override
-  public void handleAddToFavorites(Recipe recipe) {
-    updateFavorites(recipe);
-  }
-
-  private void updateFavorites(Recipe recipe) {
-    boolean isFavorite = model.toggleFavorite(recipe); 
-    favoriteView.updateFavoriteRecipe(recipe, isFavorite);
-    mainController.refreshFavoriteList();
-    recipeView.updateStarButton();
-  }
-
-  @Override
-  public void handleRemoveFromFavorites(Recipe recipe) {
-    updateFavorites(recipe);
-  }
-
-  @Override
-  public void handleBackButtonClicked() {
-    // Navigate back to the previous view
-    mainController.goBackToPreviousView();
-  }
-
 
 }

@@ -1,6 +1,7 @@
 package cookbook.view;
 
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,6 +13,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.ListCell;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.control.TableColumn;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
@@ -24,7 +28,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Priority;
+
+
 import javafx.util.Duration;
+
+
+
+
+
 
 /**
  * View class for the login page.
