@@ -60,7 +60,7 @@ public class SignUpView {
   private void initLayout() {
 
     view = new BorderPane();
-    view.setStyle("-fx-background-color: beige;");
+    view.setStyle("-fx-background-color: #F9F8F3;");
     VBox mainContainer = new VBox(10);
     mainContainer.setAlignment(Pos.CENTER);
     mainContainer.setPadding(new Insets(20));

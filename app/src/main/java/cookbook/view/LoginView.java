@@ -1,6 +1,11 @@
 package cookbook.view;
 
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -10,23 +15,15 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.animation.RotateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-
-
-
 
 
 /**
@@ -43,7 +40,7 @@ public class LoginView {
    */
   public LoginView() {
     this.view = new BorderPane();
-    view.setStyle("-fx-background-color: beige;");
+    view.setStyle("-fx-background-color: #F9F8F3;");
     createIntroAnimation();
   }
 
@@ -59,7 +56,7 @@ public class LoginView {
 
     // Create an ImageView and set the animated image to it
     ImageView animatedImageView = new ImageView(animatedImage);
-    animatedImageView.setFitWidth(600); // Set the width of the image
+    animatedImageView.setFitWidth(800); // Set the width of the image
     animatedImageView.setPreserveRatio(true); // Maintain the aspect ratio
     animatedImageView.setSmooth(true); // Enable smooth resizing
     introPane.getChildren().add(animatedImageView);
@@ -142,7 +139,7 @@ public class LoginView {
 
     // Create an ImageView and set the image to it
     ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(700); // Set the width of the image
+    imageView.setFitWidth(800); // Set the width of the image
     imageView.setPreserveRatio(true); // Maintain the aspect ratio
     imageView.setSmooth(true); // Enable smooth resizing
 

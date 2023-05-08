@@ -135,7 +135,7 @@ public class FavoriteView {
 
       // Add a tooltip with the description for the hovering effect
       Tooltip tooltip = new Tooltip(recipe.getShortDesc());
-      tooltip.setFont(Font.font("ROBOTO", 14));
+      tooltip.setFont(Font.font("ROBOTO", 18));
       tooltip.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;");
       Tooltip.install(recipeLink, tooltip);
 

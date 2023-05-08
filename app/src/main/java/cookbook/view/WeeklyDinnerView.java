@@ -329,6 +329,8 @@ public class WeeklyDinnerView {
       if (matchingDinner != null) {
         for (Recipe recipe : matchingDinner.getRecipes()) {
           Hyperlink recipeLink = new Hyperlink(recipe.getName());
+          //set style for the hyperlink
+          recipeLink.setStyle("-fx-font: 18px \"Roboto\"; -fx-cursor: hand; ");
           recipeLink.setOnAction(event -> {
             if (observer != null) {
               observer.goToRecipe(recipe);
@@ -336,10 +338,10 @@ public class WeeklyDinnerView {
           });
           // Add a tooltip with the description for the hovering effect
           Tooltip tooltip = new Tooltip(recipe.getName());
-          tooltip.setFont(Font.font("ROBOTO", 14));
-          tooltip.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;");
+          tooltip.setFont(Font.font("ROBOTO", 16));
+          tooltip.setStyle("-fx-background-color: #F9F8F3; -fx-text-fill: #3D405B;");
           Tooltip.install(recipeLink, tooltip);
-          recipeLink.setStyle("-fx-font: 16px \"Roboto\";");
+          recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
 
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
@@ -356,7 +358,7 @@ public class WeeklyDinnerView {
             updateRecipeList(dayBox, dayDate);
           });
 
-          VBox recipeBox = new VBox(5, recipeLink, deleteButton);
+          VBox recipeBox = new VBox(recipeLink, deleteButton);
           recipeBox.setAlignment(Pos.CENTER_LEFT);
           dayBox.getChildren().add(recipeBox);          
         }
