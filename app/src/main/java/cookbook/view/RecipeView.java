@@ -223,7 +223,7 @@ public class RecipeView {
         if (observer.addRecipeToWeeklyDinner(selectedDate, recipe)) {
           showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
               String.format("%s added successfully to date %s, week %d dinner list.",
-                 recipe.getName(), weekNumber, selectedDate.toString()));
+                 recipe.getName(), selectedDate.toString(), weekNumber));
         } else {
           showInlineStyledAlert(Alert.AlertType.WARNING, "Warning",
               String.format("%s already exists on %s of week %d dinner list.",
