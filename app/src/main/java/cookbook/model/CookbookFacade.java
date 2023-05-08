@@ -340,6 +340,11 @@ public class CookbookFacade {
     return user.getFavorites();
   }
 
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
+    user.removeRecipeFromWeeklyDinner(dayDate, recipeName);
+    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
+  }
+
 
 
 }

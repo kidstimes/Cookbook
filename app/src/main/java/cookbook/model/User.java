@@ -70,6 +70,28 @@ public class User {
   }
 
   /**
+   * Remove a recipe from a dinner on a specific date.
+   *
+   * @param date the date of the dinner
+   * @param recipeName the name of the recipe to remove from the dinner
+   * @return false if the recipe is not in the dinner on the given date, otherwise true
+   */
+  public boolean removeRecipeFromWeeklyDinner(LocalDate date, String recipeName) {
+    for (Dinner dinner : weeklyDinners) {
+      if (dinner.getDate().isEqual(date)) {
+        for (Recipe recipe : dinner.getRecipes()) {
+          if (recipe.getName().equalsIgnoreCase(recipeName)) {
+            dinner.getRecipes().remove(recipe);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+
+  /**
    * Get the username of the user.
    *
    * @return the username

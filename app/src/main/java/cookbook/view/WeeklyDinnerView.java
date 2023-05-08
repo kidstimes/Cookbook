@@ -15,14 +15,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -110,10 +111,17 @@ public class WeeklyDinnerView {
     view.setLeft(sidebar);
   }
 
+  /**
+   * Create a center view for displaying weekly dinner.
+   */
   private void createCenterView() {
     centerView = new VBox(20);
     centerView.setPadding(new Insets(40)); 
     centerView.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+
+    ScrollPane scrollPane = new ScrollPane(centerView);
+    scrollPane.setFitToWidth(true); 
+    scrollPane.setStyle("-fx-background-color: #F9F8F3;");
 
     // Add title above the weekly menu
     Label titleLabel = new Label("Weekly Dinner List");
@@ -124,21 +132,26 @@ public class WeeklyDinnerView {
     centerView.getChildren().add(weekNavigation);
 
     updateWeekLayout(currentWeekStart);
-    view.setCenter(centerView);
+    view.setCenter(scrollPane);
   }
 
+  /**Week navigation section for the weekly dinner view.
+   *
+   * @return a VBox containing the week navigation section
+   */
   private VBox createWeekNavigation() {
     Button previousWeekButton = new Button("Previous Week");
     previousWeekButton.setStyle("-fx-font: 20px \"Roboto\";");
-    previousWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
+    previousWeekButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
+        + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     previousWeekButton.setOnAction(event -> handlePreviousWeek());
-
-
     Button nextWeekButton = new Button("Next Week");
     nextWeekButton.setOnAction(event -> handleNextWeek());
     nextWeekButton.setStyle("-fx-font: 20px \"Roboto\";");
-    nextWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
-
+    nextWeekButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
+        + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     weekNumberLabel = new Label();
     yearNumberLabel = new Label();
 
@@ -150,7 +163,9 @@ public class WeeklyDinnerView {
     // Add Button for navigating to the entered week number
     Button goToWeekButton = new Button("Go to Week");
     goToWeekButton.setStyle("-fx-font: 14px \"Roboto\";");
-    goToWeekButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-cursor: hand;");
+    goToWeekButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
+        + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     goToWeekButton.setOnAction(event -> {
       try {
         int weekNumber = Integer.parseInt(weekNumberInput.getText());
@@ -185,6 +200,10 @@ public class WeeklyDinnerView {
     return weekNavigation;
   }
 
+  /** Select a week of current year to display its weekly dinner.
+   *
+   * @param weekNumber the week number of the current year
+   */
   private void goToWeekNumber(int weekNumber) {
     int currentYear = LocalDate.now().getYear();
     if (weekNumber > 0 && weekNumber <= getWeeksInYear(currentYear)) {
@@ -200,12 +219,21 @@ public class WeeklyDinnerView {
     }
   }
 
+  /** Get the current week number of the year.
+   *
+   * @param year the year to get the week number of
+   * @return the week number of the year
+   */
   private int getWeeksInYear(int year) {
     LocalDate lastDayOfYear = LocalDate.of(year, 12, 31);
     WeekFields weekFields = WeekFields.of(Locale.getDefault());
     return lastDayOfYear.get(weekFields.weekOfWeekBasedYear());
   }
 
+  /** Update the weekly dinner view to display another week.
+   *
+   * @param weekStart the date of the Monday of the week to display.
+   */
   private void updateWeekLayout(LocalDate weekStart) {
     if (daysGrid != null) {
       centerView.getChildren().remove(daysGridIndex);
@@ -231,6 +259,11 @@ public class WeeklyDinnerView {
   }
 
 
+  /**Create a grid for 7 days of a week.
+   *
+   * @param weekStart the date of the Monday of the week to display.
+   * @return the week grid for 7 days of a week.
+   */
   private GridPane createDaysGrid(LocalDate weekStart) {
     GridPane weekGrid = new GridPane();
     weekGrid.setHgap(10);
@@ -244,22 +277,28 @@ public class WeeklyDinnerView {
       VBox dayBox = createDayBox(weekStart.plusDays(i));
       weekGrid.add(dayBox, i, 1);
     }
-
     return weekGrid;
   }
 
+  // Handle the previous week button
   private void handlePreviousWeek() {
     currentWeekStart = currentWeekStart.minusWeeks(1);
     updateWeekLayout(currentWeekStart);
   }
 
+  // Handle the next week button
   private void handleNextWeek() {
     currentWeekStart = currentWeekStart.plusWeeks(1);
     updateWeekLayout(currentWeekStart);
   }
 
+  /** Create a VBox for a day of the week.
+   *
+   * @param dayDate the date of the day to display
+   * @return the VBox for the day
+   */
   private VBox createDayBox(LocalDate dayDate) {
-    VBox dayBox = new VBox(5);
+    VBox dayBox = new VBox(15);
     dayBox.setPadding(new Insets(5));
 
     String dayName = dayDate.getDayOfWeek().toString();
@@ -273,6 +312,11 @@ public class WeeklyDinnerView {
     return dayBox;
   }
 
+  /** Update the recipe list for a day of the week.
+   *
+   * @param dayBox the VBox for the day
+   * @param dayDate the date of the day to display
+   */
   private void updateRecipeList(VBox dayBox, LocalDate dayDate) {
     if (dinnerList != null) {
       Dinner matchingDinner = null;
@@ -291,17 +335,41 @@ public class WeeklyDinnerView {
             }
           });
           // Add a tooltip with the description for the hovering effect
-          Tooltip tooltip = new Tooltip(recipe.getShortDesc());
+          Tooltip tooltip = new Tooltip(recipe.getName());
           tooltip.setFont(Font.font("ROBOTO", 14));
           tooltip.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;");
           Tooltip.install(recipeLink, tooltip);
           recipeLink.setStyle("-fx-font: 16px \"Roboto\";");
-          dayBox.getChildren().add(recipeLink);
+
+          // Add a delete button for the recipe
+          Button deleteButton = new Button("Delete");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: #E07A5F; -fx-text-fill: white; -fx-cursor: hand; ");
+          deleteButton.setMinWidth(50);
+          deleteButton.setMaxWidth(50);
+          deleteButton.setMinHeight(20);
+          deleteButton.setMaxHeight(20);
+          deleteButton.setOnAction(event -> {
+            // Call the deleteRecipe method of your DinnerList class
+            observer.removeRecipeFromWeeklyDinner(dayDate, recipe.getName());
+            // Remove all children except dayLabel and dateLabel and update list to reflect change
+            dayBox.getChildren().removeIf(node -> dayBox.getChildren().indexOf(node) > 1);
+            updateRecipeList(dayBox, dayDate);
+          });
+
+          VBox recipeBox = new VBox(5, recipeLink, deleteButton);
+          recipeBox.setAlignment(Pos.CENTER_LEFT);
+          dayBox.getChildren().add(recipeBox);          
         }
       }
     }
   }
   
+  /** Create a button with the given text and event handler.
+   *
+   * @param text the text to display on the button
+   * @param eventHandler the event handler to handle the button click
+   * @return the button
+   */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
     button.setMaxWidth(Double.MAX_VALUE);

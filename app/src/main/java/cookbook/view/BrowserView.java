@@ -244,9 +244,15 @@ public class BrowserView {
     // Clear the previous search results (recipe count, separator, and recipe items)
     searchResultsVbox.getChildren().clear();
     // Add a Text node to display the number of recipes found
-    Text recipeCount = new Text(recipeList.size() + " recipes found");
+    String recipeCountText;
+    if (recipeList.size() == 1) {
+      recipeCountText = "1 recipe found";
+    } else {
+      recipeCountText = recipeList.size() + " recipes found";
+    }
+    Text recipeCount = new Text(recipeCountText);
     recipeCount.setFont(Font.font("ROBOTO", 16));
-    recipeCount.setId("recipeCount"); // Set the unique ID for the recipe count Text node
+    recipeCount.setId("recipeCount"); 
     searchResultsVbox.getChildren().add(recipeCount);
     // add margin to the recipeCount
     searchResultsVbox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
@@ -269,8 +275,10 @@ public class BrowserView {
       // Create star and unstar icons using ImageViews
       Image star = new Image(getClass().getResourceAsStream("/images/star.png"));
       ImageView starIcon = new ImageView(star);
+      starIcon.setStyle("-fx-background-color: #F9F8F3;");
       Image unstar = new Image(getClass().getResourceAsStream("/images/unstar.png"));
       ImageView unstarIcon = new ImageView(unstar);
+      unstarIcon.setStyle("-fx-background-color: #F9F8F3;");
       starIcon.setFitWidth(20);
       starIcon.setFitHeight(20);
       unstarIcon.setFitWidth(20);
@@ -295,7 +303,7 @@ public class BrowserView {
       });
 
       Hyperlink recipeButton = new Hyperlink(recipe.getName());
-      recipeButton.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
+      recipeButton.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
       recipeButton.setOnAction(e -> {
         if (observer != null) {
           observer.goToRecipe(recipe);

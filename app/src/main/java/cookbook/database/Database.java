@@ -602,6 +602,44 @@ public class Database {
     return weeklyDinnerList;
   }
 
+  /** Remove a recipe from the weekly dinner list in the database.
+   *
+   * @param username is the username of the user
+   * @param dayDate is the date of the dinner
+   * @param recipeName is the name of the recipe to remove
+   * @return true if the remove was successful, false otherwise
+   */
+  public boolean removeRecipeFromWeeklyDinnerInDatabase(String username, LocalDate dayDate, String recipeName) {
+    boolean deleteSuccessful = false;
+    try {
+      // Get the user ID from the username
+      int userId = getUserId(username);
+      // Get the recipe ID from the recipe name
+      int recipeId = getRecipeId(recipeName);
+      // Prepare a SQL statement to delete the record from the WeeklyDinner table
+      String sql = "DELETE FROM WeeklyDinner WHERE user_id = ? AND recipe_id = ? AND dinner_date = ?";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      // Set the values in the prepared statement
+      statement.setInt(1, userId);
+      statement.setInt(2, recipeId);
+      statement.setDate(3, java.sql.Date.valueOf(dayDate));
+
+      // Execute the SQL statement to delete the record
+      int rowsAffected = statement.executeUpdate();
+
+      // If at least one row was affected, the delete was successful
+      if (rowsAffected > 0) {
+        deleteSuccessful = true;
+      }
+
+      // Close the prepared statement
+      statement.close();
+    } catch (SQLException e) {
+      System.out.println("Error removing recipe from weekly dinner in database: " + e.getMessage());
+    }
+    return deleteSuccessful;
+  }
+
 
 
   /**

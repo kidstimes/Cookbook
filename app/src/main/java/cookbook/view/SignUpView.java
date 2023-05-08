@@ -178,11 +178,11 @@ public class SignUpView {
   }
 
   /**
-   * Validate the input.
+   * Validate the input .
    */
   private boolean validateInput(String username, String password, String confirmedPassword, 
       String displayName) {
-    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
+    if (username.trim().isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
         || displayName.isEmpty()) {
       showError("All fields must be filled in.");
       return false;

@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -48,7 +52,7 @@ public class FavoriteView {
     
     // create a vbox to hold the menu buttons
     VBox sidebar = new VBox(30);
-    sidebar.setMaxWidth(100);
+    sidebar.setMaxWidth(120);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
     Text welcomeTitle = new Text(displayName + ", welcome!");
     welcomeTitle.setFont(Font.font("Roboto", 28));
@@ -81,15 +85,36 @@ public class FavoriteView {
     VBox recipeListVbox = new VBox(10);
     recipeListVbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
 
+    ScrollPane scrollPane = new ScrollPane(recipeListVbox);
+    scrollPane.setFitToWidth(true); 
+    scrollPane.setStyle("-fx-background-color: #F9F8F3;");
     // Add title
     Text title = new Text("My Favorite Recipes");
     title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     recipeListVbox.getChildren().add(title);
 
+    // Add text about how many favorite recipes
+    String numFavoriteRecipesText;
+    if (favoriteRecipes.size() == 0) {
+      numFavoriteRecipesText = "There are no favorite recipes";
+    } else if (favoriteRecipes.size() == 1) {
+      numFavoriteRecipesText = "There is 1 favorite recipe";
+    } else {
+      numFavoriteRecipesText = "There are " + favoriteRecipes.size() + " favorite recipes";
+    }
+    Text numFavoriteRecipes = new Text(numFavoriteRecipesText);
+    numFavoriteRecipes.setFont(Font.font("ROBOTO", 18));
+    VBox.setMargin(numFavoriteRecipes, new Insets(0, 0, 20, 0));
+    recipeListVbox.getChildren().add(numFavoriteRecipes);
+
+    // Add a separator line 
+    Separator separator = new Separator(Orientation.HORIZONTAL);
+    recipeListVbox.getChildren().add(separator);
+
     for (Recipe recipe : favoriteRecipes) {
       Hyperlink recipeLink = new Hyperlink(recipe.getName());
-      recipeLink.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
+      recipeLink.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
       recipeLink.setOnAction(e -> {
         if (observer != null) {
           observer.goToRecipe(recipe);
@@ -118,15 +143,20 @@ public class FavoriteView {
       recipeHbox.setAlignment(Pos.CENTER_LEFT);
       HBox.setHgrow(recipeHbox, Priority.ALWAYS);
       recipeHbox.getChildren().addAll(recipeLink, recipeTags); // Add the recipe tags to the HBox
+      recipeHbox.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
       recipeListVbox.getChildren().add(recipeHbox);
-    }
 
-    view.setCenter(recipeListVbox);
+    }
+    view.setCenter(scrollPane);
 
   }
 
-
-
+  /** Create a button with a fixed width and a background color.
+   *
+   * @param text the text to be displayed on the button
+   * @param eventHandler the event handler for the button
+   * @return the button
+   */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
     button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");

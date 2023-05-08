@@ -34,6 +34,7 @@ public class Dinner {
     dinnerRecipes.add(recipe);
   }
 
+
   /**
    * Get the dinner recipes.
    *
@@ -52,4 +53,13 @@ public class Dinner {
     return date;
   }
   
+  /**
+   * Remove a recipe from the dinner.
+   *
+   * @param recipe the recipe to remove
+   */
+  public void removeRecipe(Recipe recipe) {
+    dinnerRecipes.remove(recipe);
+  }
+
 }

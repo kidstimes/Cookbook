@@ -1,5 +1,6 @@
 package cookbook.view;
 
+import java.time.LocalDate;
 
 
 /**
@@ -23,6 +24,7 @@ public interface WeeklyDinnerViewObserver {
 
   void goToMyFavorite();
 
+  void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName);
   
   
 }

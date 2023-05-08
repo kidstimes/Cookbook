@@ -148,8 +148,10 @@ public class RecipeView {
     // Create star and unstar icons using ImageViews
     Image star = new Image(getClass().getResourceAsStream("/images/star.png"));
     ImageView starIcon = new ImageView(star);
+    starIcon.setStyle("-fx-background-color: transparent;");
     Image unstar = new Image(getClass().getResourceAsStream("/images/unstar.png"));
     ImageView unstarIcon = new ImageView(unstar);
+    unstarIcon.setStyle("-fx-background-color: transparent;");
     starIcon.setFitWidth(30);
     starIcon.setFitHeight(30);
     unstarIcon.setFitWidth(30);
