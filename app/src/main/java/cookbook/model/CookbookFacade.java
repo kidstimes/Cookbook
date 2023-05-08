@@ -269,4 +269,25 @@ public class CookbookFacade {
     return user.checkWeeklyDinner();
   }
 
+  /**
+   * Edit a recipe's name, name, short description, directions, and tags.
+   *
+   * @param id the unique id of the recipe
+   * @param name the name of the recipe
+   * @param shortDesc the short description of the recipe
+   * @param directions the directions of the recipe
+   * @param tags the tags of the recipe
+   */
+  public void editRecipe(int id, String name, String shortDesc,
+      String directions, ArrayList<String> tags) {
+    for (Recipe recipe : recipes) {
+      if (recipe.getId() == id) {
+        recipe.setName(name);
+        recipe.setShortDesc(shortDesc);
+        recipe.setDirection(directions);
+        recipe.setTags(tags);
+      }
+    }
+  }
+
 }

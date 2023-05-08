@@ -109,7 +109,11 @@ public class User {
     this.weeklyDinners = dinnerList;
   }
 
-  //Check if a user has a weekly dinner on current week.
+  /**
+   * Check if a user has a weekly dinner on current week.
+   *
+   * @return true if the weekly dinner is in the current week, otherwise false
+   */
   public boolean checkWeeklyDinner() {
     LocalDate now = LocalDate.now();
     LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
@@ -123,7 +127,7 @@ public class User {
       }
     }
     return false;
-}
+  }
 
 
 }
