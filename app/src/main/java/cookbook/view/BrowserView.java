@@ -17,7 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -263,6 +266,34 @@ public class BrowserView {
         }
       }
 
+      // Create star and unstar icons using ImageViews
+      Image star = new Image(getClass().getResourceAsStream("/images/star.png"));
+      ImageView starIcon = new ImageView(star);
+      Image unstar = new Image(getClass().getResourceAsStream("/images/unstar.png"));
+      ImageView unstarIcon = new ImageView(unstar);
+      starIcon.setFitWidth(20);
+      starIcon.setFitHeight(20);
+      unstarIcon.setFitWidth(20);
+      unstarIcon.setFitHeight(20);
+
+      // Create a ToggleButton with the unstar icon as default
+      ToggleButton starButton = new ToggleButton("", unstarIcon);
+      starButton.setSelected(recipe.isStarred());
+      if (recipe.isStarred()) {
+        starButton.setGraphic(starIcon);
+      }
+
+      // Add an event handler to the ToggleButton to change the icon when clicked
+      starButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        if (newVal) {
+          starButton.setGraphic(starIcon);
+          observer.addRecipeToFavorite(recipe);
+        } else {
+          starButton.setGraphic(unstarIcon);
+          observer.removeRecipeFromFavorite(recipe);
+        }
+      });
+
       Hyperlink recipeButton = new Hyperlink(recipe.getName());
       recipeButton.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
       recipeButton.setOnAction(e -> {
@@ -272,13 +303,14 @@ public class BrowserView {
       });
 
       Text recipeTags = new Text(recipeTagsString);
-      recipeTags.setFont(Font.font("ROBOTO", 16));
+      recipeTags.setFont(Font.font("ROBOTO", 18));
 
-
+      HBox recipeBox = new HBox(10); 
+      recipeBox.setAlignment(Pos.CENTER_LEFT);
+      recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags); 
       FlowPane flowPane = new FlowPane();
       flowPane.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
-      flowPane.getChildren().add(recipeButton);
-      flowPane.getChildren().add(recipeTags);
+      flowPane.getChildren().add(recipeBox);
 
       // Add a tooltip with the short description for hovering effect
       Tooltip tooltip = new Tooltip(recipe.getShortDesc());
@@ -291,8 +323,6 @@ public class BrowserView {
 
     }
   }
-
-
 
   /**
    * Reset the search inputs.

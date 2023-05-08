@@ -12,6 +12,7 @@ public class User {
   private String username;
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
+  private ArrayList<Recipe> favorites;
 
   /**
    * User Constructor.
@@ -23,6 +24,7 @@ public class User {
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
+    this.favorites = new ArrayList<>(); 
   }
 
   /**
@@ -104,26 +106,78 @@ public class User {
   public void deleteUser() {
     // delete user from the db
   }
-
+  
+  /**Set the weekly dinners of the user.
+   *
+   * @param dinnerList the weekly dinner list of the user 
+   */
   public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
     this.weeklyDinners = dinnerList;
   }
 
-  //Check if a user has a weekly dinner on current week.
+  /**
+   * Check if a user has a weekly dinner on current week.
+   *
+   * @return true if the user has a weekly dinner on current week, otherwise false
+   */
   public boolean checkWeeklyDinner() {
     LocalDate now = LocalDate.now();
     LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
     LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
 
     for (Dinner dinner : weeklyDinners) {
-      System.out.println(dinner.getDate());
       LocalDate dinnerDate = dinner.getDate();
       if (!dinnerDate.isBefore(startOfWeek) && !dinnerDate.isAfter(endOfWeek)) {
         return true;
       }
     }
     return false;
-}
+  }
 
+
+  /**Set the favorite recipes of the user.
+   *
+   */
+  public void setFavorites(ArrayList<Recipe> favoriteRecipes) {
+    this.favorites = favoriteRecipes;
+  }
+
+  /**
+  * Get the favorite recipes of the user.
+  *
+  * @return an arraylist with the favorite recipes
+  */
+  public ArrayList<Recipe> getFavorites() {
+    ArrayList<Recipe> copyFavorites = new ArrayList<>();
+    for (Recipe recipe : favorites) {
+      copyFavorites.add(recipe);
+    }
+    return copyFavorites;
+  }
+
+  /** Add a recipe to the user's favorites.
+   *
+   * @param recipe the recipe to add
+   */
+  public void addToFavorites(Recipe recipe) {
+    //if recipe name is already in, do nothing, if not add it
+    for (Recipe recip : favorites) {
+      if (recip.getName().equalsIgnoreCase(recipe.getName())) {
+        return;
+      }
+    } 
+    recipe.star();
+    favorites.add(recipe);
+  }
+
+  /**
+  * Remove a recipe from the user's favorites.
+  *
+  * @param recipe the recipe to remove
+  */
+  public void removeFromFavorites(Recipe recipe) {
+    recipe.unstar();
+    favorites.remove(recipe);
+  }
 
 }

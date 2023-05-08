@@ -115,15 +115,13 @@ public class HomePageView {
     VBox centerView = new VBox(30);
     centerView.setStyle("-fx-padding: 50px 20px 20px 20px;");
     centerView.setAlignment(Pos.TOP_LEFT);
-
-    LocalDate currentDate = LocalDate.now();
-    int weekNumber = getWeekNumber(currentDate);
-
     Label title = new Label("Home Page");
     title.setFont(Font.font("Roboto", 28));
     centerView.getChildren().add(title);
     Label welcomLabel = new Label("Welcome to cookbook, " + displayName + "!");
     welcomLabel.setFont(Font.font("Roboto", 24));
+    LocalDate currentDate = LocalDate.now();
+    int weekNumber = getWeekNumber(currentDate);
     Label dateLabel = new Label("Today's Date: " + currentDate);
     Label weekLabel = new Label("Current Week Number: " + weekNumber);
     Label weeklyDinnerLabel;
@@ -139,10 +137,12 @@ public class HomePageView {
     if (hasShoppingList) {
       shoppingListLabel = new Label("You have a shopping list for this week.");
     } else {
-      shoppingListLabel = new Label("You do not have a shopping list for this week. You can create new shopping list.");
+      shoppingListLabel =
+             new Label("You do not have a shopping list for next week. You can create new a shopping list.");
     }
     shoppingListLabel.setFont(Font.font("Roboto", 24));
-    centerView.getChildren().addAll(welcomLabel, dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel);
+    centerView.getChildren().addAll(welcomLabel,
+           dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel);
     view.setCenter(centerView);
   }
 

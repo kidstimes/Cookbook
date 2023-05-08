@@ -19,14 +19,12 @@ public class BrowserController extends BaseController implements BrowserViewObse
 
   * @param model is the cookbookfacade model
   * @param mainController is the main controller
-  * @param displayName is the display name of the user
   */
-  public BrowserController(CookbookFacade model, MainController mainController,
-       String displayName) {
+  public BrowserController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
-    System.out.println(model);
     ArrayList<Recipe> recipes = model.getRecipes();
-    this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser(), displayName);
+    this.browserView =
+         new BrowserView(recipes, model.getPrivateTagsForUser(), model.getUserDisplayName());
     this.browserView.setObserver(this);
   }
 
@@ -34,7 +32,7 @@ public class BrowserController extends BaseController implements BrowserViewObse
    * Get the browser view.
    */
   public Node getView() {
-    browserView.updateRecipes(model.getRecipes());
+    //browserView.updateRecipes(model.getRecipes());
     return this.browserView.getView();
   }
 
@@ -75,6 +73,17 @@ public class BrowserController extends BaseController implements BrowserViewObse
   @Override
   public void goToRecipe(Recipe recipe) {
     mainController.goToRecipe(recipe);
+  }
+
+
+  @Override
+  public void removeRecipeFromFavorite(Recipe recipe) {
+    model.removeRecipeFromFavorites(recipe);
+  }
+
+  @Override
+  public void addRecipeToFavorite(Recipe recipe) {
+    model.addRecipeToFavorites(recipe);
   }
 
 

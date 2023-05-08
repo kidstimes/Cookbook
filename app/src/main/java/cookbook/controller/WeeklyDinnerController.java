@@ -18,10 +18,9 @@ public class WeeklyDinnerController extends BaseController implements WeeklyDinn
   /**
    * Constructor for the weekly dinner controller.
    */
-  public WeeklyDinnerController(CookbookFacade model, MainController mainController,
-        String displayName, ArrayList<Dinner> dinnerList) { 
+  public WeeklyDinnerController(CookbookFacade model, MainController mainController) { 
     super(model, mainController);
-    this.weeklyDinnerView = new WeeklyDinnerView(displayName, dinnerList);
+    this.weeklyDinnerView = new WeeklyDinnerView(model.getUserDisplayName(), model.getDinnerList());
     this.weeklyDinnerView.setObserver(this);
   }
 

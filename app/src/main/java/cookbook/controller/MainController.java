@@ -26,6 +26,7 @@ public class MainController {
   private AddRecipeController addRecipeController;
   private WeeklyDinnerController weeklyDinnerController;
   private ShoppingListController shoppingListController;
+  private FavoriteController favoriteController;
 
   /**
    * Controller Constructor.
@@ -50,7 +51,7 @@ public class MainController {
    */
   public void initializeControllersAfterLogin() {
     String userDisplayName = model.getUserDisplayName();
-    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);    
+    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);   
     
   }
 
@@ -101,23 +102,15 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    this.homePageController = new HomePageController(model, this, model.getUserDisplayName());
+    this.homePageController = new HomePageController(model, this); 
     root.setCenter(homePageController.getView());
-  }
-
-  /**
-   * Go to admin.
-   */
-  public void goToAdmin() {
-    //TODO implement admin view
   }
 
   /**
    * Go to the browser.
    */
   public void goToBrowser() {
-    model.loadAllRecipes();
-    this.browserController = new BrowserController(model, this, model.getUserDisplayName());
+    this.browserController = new BrowserController(model, this);
     root.setCenter(browserController.getView());
   }
 
@@ -127,7 +120,7 @@ public class MainController {
    * @param recipe the chosen recipe
    */
   public void goToRecipe(Recipe recipe) {
-    recipeController = new RecipeController(model, this, recipe, model.getUserDisplayName());
+    recipeController = new RecipeController(model, this, recipe);
     root.setCenter(recipeController.getView());
   }
 
@@ -139,26 +132,55 @@ public class MainController {
   }
 
   /**
-   * Go to my favorite.
+   * Go to my favorite recipes.
    */
   public void goToMyFavorite() {
-    //TODO implement my favorite view
+    this.favoriteController = new FavoriteController(model, this);
+    root.setCenter(favoriteController.getView());
   }
 
   /**
    * Go to weekly dinner lists.
    */
   public void goToWeeklyDinner() {
-    this.weeklyDinnerController = new WeeklyDinnerController(model,
-    this, model.getUserDisplayName(), model.loadWeeklyDinnerFromDatebase());
+    this.weeklyDinnerController = new WeeklyDinnerController(model, this);
     root.setCenter(weeklyDinnerController.getView());
   }
 
 
+  /**
+   * Go to shopping list.
+   */
   public void goToShoppingList() {
-    this.shoppingListController = new ShoppingListController(model, this, model.getUserDisplayName());
+    this.shoppingListController =
+         new ShoppingListController(model, this);
     root.setCenter(shoppingListController.getView());
   }
+
+
+  /**
+   * Go to my messsages.
+   */
+
+  public void goToMessages() {
+    //TODO implement my messages view
+  }
+
+
+  /**
+   * Go to admin.
+   */
+  public void goToAdmin() {
+    //TODO implement admin view
+  }
+
+  /**
+   * Go to help page.
+   */
+  public void goToHelp() {
+    //TODO implement help view
+  }
+
 
   /**
    * Log out the current user.

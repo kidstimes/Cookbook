@@ -21,6 +21,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -289,6 +290,11 @@ public class WeeklyDinnerView {
               observer.goToRecipe(recipe);
             }
           });
+          // Add a tooltip with the description for the hovering effect
+          Tooltip tooltip = new Tooltip(recipe.getShortDesc());
+          tooltip.setFont(Font.font("ROBOTO", 14));
+          tooltip.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;");
+          Tooltip.install(recipeLink, tooltip);
           recipeLink.setStyle("-fx-font: 16px \"Roboto\";");
           dayBox.getChildren().add(recipeLink);
         }
