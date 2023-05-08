@@ -1,7 +1,5 @@
 package cookbook.model;
 
-import java.util.ArrayList;
-
 /**
  * The User class.
  */
@@ -10,12 +8,10 @@ public class User {
   private int id;
   private String username;
   private String displayName;
-  private ArrayList<Recipe> favorites;
 
   /**
    * User Constructor.
    *
-   * @param id the unique id of the user
    * @param username the unique username of the user
    * @param displayName the display name of the user
    */
@@ -23,7 +19,6 @@ public class User {
     this.id = id;
     this.username = username;
     this.displayName = displayName;
-    this.favorites = new ArrayList<>(); 
   }
 
   /**
@@ -45,16 +40,6 @@ public class User {
   }
 
   /**
-   * Add a recipe to the user's favorite recipes.
-   *
-   * @param recipe the recipe to add to the favorites
-   */
-  public void addToFavorites(Recipe recipe) {
-    recipe.star();
-    this.favorites.add(recipe);
-  }
-
-  /**
    * Get the username of the user.
    *
    * @return the username
@@ -70,29 +55,6 @@ public class User {
    */
   public String getDisplayName() {
     return displayName;
-  }
-
-  /**
-   * Get the favorite recipes of the user.
-   *
-   * @return an arraylist with the favorite recipes
-   */
-  public ArrayList<Recipe> getFavorites() {
-    ArrayList<Recipe> copyFavorites = new ArrayList<>();
-    for (Recipe recipe : favorites) {
-      copyFavorites.add(recipe);
-    }
-    return copyFavorites;
-  }
-
-  /**
-   * Remove a recipe from the user's favorites.
-   *
-   * @param recipe the recipe to remove
-   */
-  public void removeFromFavorites(Recipe recipe) {
-    recipe.unstar();
-    favorites.remove(recipe);
   }
 
   /**

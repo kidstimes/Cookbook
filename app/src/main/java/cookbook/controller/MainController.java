@@ -1,15 +1,13 @@
 package cookbook.controller;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
-import cookbook.view.FavoriteView;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+
+
 
 /**
  * The Main controller.
@@ -26,8 +24,6 @@ public class MainController {
   private AddRecipeController addRecipeController;
   private LoginController loginController;
   private SignUpController signUpController;
-  private FavoriteController favoriteController;
-  private Node previousView;
 
   /**
    * Controller Constructor.
@@ -48,7 +44,6 @@ public class MainController {
     this.signUpController = new SignUpController(model, this);
     this.homePageController = new HomePageController(model, this);
     this.addRecipeController = new AddRecipeController(model, this);
-    this.favoriteController = new FavoriteController(model, this);
 
     // Initialize the main layout of the program
 
@@ -59,9 +54,15 @@ public class MainController {
    */
   public void runCookbook() {
     initMainLayout();
+    // Load data from the database
 
     // Animation & login
     goToLogin();
+    
+
+
+
+
 
     // Quit
     // quitCookbook();
@@ -100,7 +101,6 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    setPreviousView(root.getCenter());
     homePageController.setDisplayName(model.getUserDisplayName());
     root.setCenter(homePageController.getView());
   }
@@ -116,7 +116,6 @@ public class MainController {
    * Go to the browser.
    */
   public void goToBrowser() {
-    setPreviousView(root.getCenter());
     this.browserController = new BrowserController(model, this);
     root.setCenter(browserController.getView());
   }
@@ -127,7 +126,6 @@ public class MainController {
    * @param recipe the chosen recipe
    */
   public void goToRecipe(Recipe recipe) {
-    setPreviousView(root.getCenter());
     recipeController = new RecipeController(model, this, recipe);
     root.setCenter(recipeController.getView());
   }
@@ -136,65 +134,8 @@ public class MainController {
    * Go to add recipe.
    */
   public void goToAddRecipe() {
-    setPreviousView(root.getCenter());
     root.setCenter(addRecipeController.getView());
   }
-
-
-  /**
-   * Go to favorite recipes.
-   */
-  public void goToFavoriteRecipes() {
-    setPreviousView(root.getCenter());
-    favoriteController.setFavoriteRecipes(model.loadFavoriteRecipes());
-    root.setCenter(favoriteController.getView());
-  }
-  
-
-  public void handleStarButtonClicked(Recipe recipe) {
-    try {
-      String currentUser = model.getCurrentUser();
-      if (model.isRecipeFavorite(currentUser, recipe)) {
-        model.removeRecipeFromFavorites(currentUser, recipe);
-      } else {
-        model.addRecipeToFavorites(currentUser, recipe);
-      }
-    } catch (SQLException e) {
-      System.err.println("Error while handling star button click: " + e.getMessage());
-      // You may also show an error message to the user using an alert, if you wish
-    }
-  }
-  
-  public boolean isRecipeFavorite(Recipe recipe) {
-    try {
-      String currentUser = model.getCurrentUser();
-      return model.isRecipeFavorite(currentUser, recipe);
-    } catch (SQLException e) {
-      System.err.println("Error while checking if recipe is favorite: " + e.getMessage());
-      // You may also show an error message to the user using an alert, if you wish
-      return false;
-    }
-  }
-  
-  public void refreshFavoriteList() {
-    ArrayList<Recipe> favoriteRecipes = model.loadFavoriteRecipes();
-    favoriteController.getFavoriteView().setFavoriteRecipes(favoriteRecipes);
-  }
-
-  public FavoriteView getFavoriteView() {
-    return favoriteController.getFavoriteView();
-  }
-
-  public void setPreviousView(Node previousView) {
-    this.previousView = previousView;
-  }
-
-  public void goBackToPreviousView() {
-    if (previousView != null) {
-        root.setCenter(previousView);
-    }
-}
-
 
   public void userLogout() {
     model.userLogout();
