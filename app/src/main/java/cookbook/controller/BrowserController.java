@@ -12,25 +12,19 @@ import javafx.scene.Node;
 /**
  * Controller for managing the browsing of recipes.
  */
-public class BrowserController implements BrowserViewObserver {
-
+public class BrowserController extends BaseController implements BrowserViewObserver {
   private BrowserView browserView;
-  private CookbookFacade model;
-  private MainController mainController;
-
   /**
-  * Browser Controller Constructor.
-  *
-  * @param model the facade to the model
-  * @param mainController the main controller
+  * Constructor for the browser controller.
+
+  * @param model is the cookbookfacade model
+  * @param mainController is the main controller
   */
   public BrowserController(CookbookFacade model, MainController mainController) {
-    // initialize attributes
+    super(model, mainController);
     ArrayList<Recipe> recipes = model.getRecipes();
-    this.model = model;
-    this.mainController = mainController;
-    // become an observer of the browser's view.
-    this.browserView = new BrowserView(recipes, model.getPrivateTagsForUser());
+    this.browserView =
+         new BrowserView(recipes, model.getPrivateTagsForUser(), model.getUserDisplayName());
     this.browserView.setObserver(this);
   }
 
@@ -38,7 +32,7 @@ public class BrowserController implements BrowserViewObserver {
    * Get the browser view.
    */
   public Node getView() {
-    browserView.updateRecipes(model.getRecipes());
+    //browserView.updateRecipes(model.getRecipes());
     return this.browserView.getView();
   }
 
@@ -75,16 +69,23 @@ public class BrowserController implements BrowserViewObserver {
   }
 
 
-  
-  @Override
-  public void goToHomePage() {
-    mainController.goToHomePage();
-  }
 
   @Override
   public void goToRecipe(Recipe recipe) {
     mainController.goToRecipe(recipe);
   }
+
+
+  @Override
+  public void removeRecipeFromFavorite(Recipe recipe) {
+    model.removeRecipeFromFavorites(recipe);
+  }
+
+  @Override
+  public void addRecipeToFavorite(Recipe recipe) {
+    model.addRecipeToFavorites(recipe);
+  }
+
 
 
 }

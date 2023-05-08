@@ -1,7 +1,6 @@
 package cookbook.view;
 
 
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,14 +12,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.control.ListCell;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.control.TableColumn;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
-import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,10 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Priority;
-
-
 import javafx.util.Duration;
-
 
 
 
@@ -74,7 +66,7 @@ public class LoginView {
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
-    fadeTransition.setDuration(Duration.millis(6000));
+    fadeTransition.setDuration(Duration.millis(2000));
     fadeTransition.setNode(introPane);
     fadeTransition.setFromValue(4.0);
     fadeTransition.setToValue(0.0);
@@ -83,7 +75,7 @@ public class LoginView {
 
     //Create a RotateTransition
     RotateTransition rotateTransition = new RotateTransition();
-    rotateTransition.setDuration(Duration.millis(4000));
+    rotateTransition.setDuration(Duration.millis(2000));
     rotateTransition.setNode(animatedImageView);
     rotateTransition.setByAngle(360);
     rotateTransition.setCycleCount(1);
@@ -119,7 +111,7 @@ public class LoginView {
   private void createAnimation(Node node) {
     // Create a TranslateTransition
     TranslateTransition translateTransition = new TranslateTransition();
-    translateTransition.setDuration(Duration.millis(1500));
+    translateTransition.setDuration(Duration.millis(500));
     translateTransition.setNode(node);
     translateTransition.setFromY(-100);
     translateTransition.setToY(0);
@@ -128,7 +120,7 @@ public class LoginView {
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
-    fadeTransition.setDuration(Duration.millis(1000));
+    fadeTransition.setDuration(Duration.millis(500));
     fadeTransition.setNode(node);
     fadeTransition.setFromValue(0.0);
     fadeTransition.setToValue(1.0);
@@ -165,15 +157,6 @@ public class LoginView {
     // Welcome message
     Label welcomeMessage = new Label("Welcome to Cookbook");
     welcomeMessage.setStyle("-fx-font-size: 28; -fx-font-weight: bold;");
-
-    // Image section
-    /*
-     * ImageView imageView = new ImageView(https://www.steamgriddb.com/logo/23632);
-     * Image image = new Image("images/pic.avif");
-     * imageView.setImage(image);
-     * imageView.setPreserveRatio(true);
-     * imageView.setFitWidth(600);
-     */
 
     // Login section
     GridPane loginGrid = new GridPane();
@@ -265,13 +248,6 @@ public class LoginView {
 
     view.setCenter(stackPane);
 
-    // Add a PauseTransition to delay the appearance of the login page
-    PauseTransition pauseTransition = new PauseTransition(Duration.millis(3000));
-    pauseTransition.setOnFinished(e -> {
-      mainContainer.getChildren().addAll(welcomeMessage, loginGrid, signUpContainer);
-      view.setCenter(mainContainer);
-    });
-    pauseTransition.play();
   }
 
 
