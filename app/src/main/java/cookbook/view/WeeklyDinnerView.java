@@ -143,7 +143,7 @@ public class WeeklyDinnerView {
 
     // Add TextField for entering the week number
     TextField weekNumberInput = new TextField();
-    weekNumberInput.setPromptText("Enter week number");
+    weekNumberInput.setPromptText("Current year week number");
     weekNumberInput.setMaxWidth(200);
 
     // Add Button for navigating to the entered week number
