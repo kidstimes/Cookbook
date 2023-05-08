@@ -15,6 +15,10 @@ public interface HomePageViewObserver {
    */
   void goToAddRecipe();
 
+  void goToFavorites();
+
   void userLogout();
 
+
 }
+

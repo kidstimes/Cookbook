@@ -1,3 +1,5 @@
+
+
 package cookbook.database;
 
 import cookbook.model.Recipe;
@@ -390,6 +392,107 @@ public class Database {
     return privateTags;
   }
 
+  public ArrayList<Recipe> loadFavoriteRecipes(String userName) {
+    ArrayList<Recipe> favoriteRecipes = new ArrayList<>();
+    int userId = getUserId(userName);
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT r.id, r.name, r.description, r.instructions FROM recipes r " +
+            "INNER JOIN favorites f ON r.id = f.recipe_id " +
+            "WHERE f.user_id = ?"
+        )
+    ) {
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Integer recipeId = rs.getInt(1);
+            String name = rs.getString(2);
+            String description = rs.getString(3);
+            String instructions = rs.getString(4);
+
+            ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
+            ArrayList<String> tags = loadTagsForRecipe(recipeId, userName);
+
+            Recipe recipe = new Recipe(name, description, instructions, ingredients, tags);
+            favoriteRecipes.add(recipe);
+        }
+        rs.close();
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+    return favoriteRecipes;
+}
+
+public boolean addRecipeToFavorites(String userName, Recipe recipe) throws SQLException {
+  int userId = getUserId(userName);
+  int recipeId = getRecipeId(recipe.getName());
+
+  if (userId == -1 || recipeId == -1) {
+      return false;
+  }
+
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "INSERT INTO favorites (user_id, recipe_id) VALUES (?, ?)"
+      )
+  ) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, recipeId);
+      stmt.executeUpdate();
+      return true;
+  } catch (SQLException e) {
+      System.out.println(e.getMessage());
+  }
+  return false;
+}
+
+public boolean removeRecipeFromFavorites(String userName, Recipe recipe) throws SQLException {
+  int userId = getUserId(userName);
+  int recipeId = getRecipeId(recipe.getName());
+
+  if (userId == -1 || recipeId == -1) {
+      return false;
+  }
+
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "DELETE FROM favorites WHERE user_id = ? AND recipe_id = ?"
+      )
+  ) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, recipeId);
+      stmt.executeUpdate();
+      return true;
+  } catch (SQLException e) {
+      System.out.println(e.getMessage());
+  }
+  return false;
+}
+
+public boolean isRecipeFavorite(String userName, Recipe recipe) throws SQLException {
+  int userId = getUserId(userName);
+  int recipeId = getRecipeId(recipe.getName());
+
+  if (userId == -1 || recipeId == -1) {
+      return false;
+  }
+
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "SELECT * FROM favorites WHERE user_id = ? AND recipe_id = ?"
+      )
+  ) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, recipeId);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+          return true;
+      }
+  } catch (SQLException e) {
+      System.out.println(e.getMessage());
+  }
+  return false;
+}
 
 
 
@@ -408,3 +511,4 @@ public class Database {
         }
     }
 }
+

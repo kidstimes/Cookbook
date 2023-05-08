@@ -9,8 +9,8 @@ public class Recipe {
   private String directions;
   private ArrayList<String> tags;
   private ArrayList<Ingredient> ingredients;
+  private boolean starred;
   private String comments;
-  // deal with the comments method later
 
   /**
    * Recipe Constructor.
@@ -37,6 +37,8 @@ public class Recipe {
     for (String tag : tags) {
       this.tags.add(tag);
     }
+
+    starred = false;
   }
 
   public String getName() {
@@ -73,6 +75,29 @@ public class Recipe {
       copyIngredients.add(ingredient);
     }
     return copyIngredients;
+  }
+
+  /**
+   * Star recipe.
+   */
+  public void star() {
+    starred = true;
+  }
+
+  /**
+   * Unstar recipe.
+   */
+  public void unstar() {
+    starred = false;
+  }
+
+  /**
+   * Check if the recipe is starred by the user.
+   *
+   * @return true if the recipe is starred, otherwise unstarred.
+   */
+  public boolean isStarred() {
+    return starred;
   }
 
   public String getComments() {

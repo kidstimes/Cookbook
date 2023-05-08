@@ -2,7 +2,7 @@ package cookbook.view;
 
 import cookbook.model.Recipe;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
+
 
 /**
  * Interface for the BrowserView observer.
