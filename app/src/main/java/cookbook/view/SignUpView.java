@@ -17,8 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 
 
 

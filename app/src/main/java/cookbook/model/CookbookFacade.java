@@ -1,6 +1,8 @@
 package cookbook.model;
 
 import cookbook.database.Database;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,21 +32,35 @@ public class CookbookFacade {
   }
 
   public boolean userLogin(String userName, String password) {
-    return database.userLogin(userName, password);
+    boolean loginSuccess = database.userLogin(userName, password);
+    if (loginSuccess) {
+      setCurrentUser(userName);
+    }
+    return loginSuccess;
   }
+  
 
   public boolean userSignUp(String userName, String password, String displayName) {
-    return database.userSignUp(userName, password, displayName);
+    boolean signUpSuccess = database.userSignUp(userName, password, displayName);
+    if (signUpSuccess) {
+      setCurrentUser(userName);
+    }
+    return signUpSuccess;
   }
+  
 
   public void setCurrentUser(String userName) {
     user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
   }
 
   public String getUserDisplayName() {
+    if (user == null) {
+      return "Unknown User";
+    }
     System.out.println("Current user: " + user.getUsername());
     return user.getDisplayName();
   }
+  
 
 
   public ArrayList<String> getPrivateTagsForUser() {
@@ -206,4 +222,87 @@ public class CookbookFacade {
     return filteredRecipes;
   }
 
+  public boolean toggleFavorite(Recipe recipe) {
+    boolean isFavorite;
+    try {
+      if (isRecipeFavorite(user.getUsername(), recipe)) {
+        removeRecipeFromFavorites(user.getUsername(), recipe);
+        isFavorite = false;
+      } else {
+        addRecipeToFavorites(user.getUsername(), recipe);
+        isFavorite = true;
+      }
+    } catch (SQLException e) {
+      // Handle SQLException properly
+      e.printStackTrace();
+      return false;
+    }
+  
+    return isFavorite;
+  }
+  
+
+  public ArrayList<Recipe> loadFavoriteRecipes() {
+    return database.loadFavoriteRecipes(user.getUsername());
+  }
+  
+  public void addRecipeToFavorites(String username, Recipe recipe) throws SQLException {
+    database.addRecipeToFavorites(username, recipe);
+  }
+  
+  
+  public void removeRecipeFromFavorites(String username, Recipe recipe) throws SQLException {
+    database.removeRecipeFromFavorites(username, recipe);
+  }
+  
+  
+  public boolean isRecipeFavorite(String username, Recipe recipe) throws SQLException {
+    return database.isRecipeFavorite(username, recipe);
+  }
+
+  public String getCurrentUser() {
+    if (user != null) {
+      return user.getUsername();
+    } else {
+      return null;
+    }
+  }
+  
+  /**
+   * Star a recipe.
+   *
+   * @param recipe the recipe to star
+   */
+  public void starRecipe(Recipe recipe) {
+    user.addToFavorites(recipe);
+  }
+
+  /**
+   * Unstar recipe.
+   *
+   * @param recipe the recipe to unstar
+   */
+  public void unstarRecipe(Recipe recipe) {
+    user.removeFromFavorites(recipe);
+  }
+
+  /**
+   * Get the user's favorite recipes.
+   *
+   * @return an arraylist with the user's favorite recipes
+   */
+  public ArrayList<Recipe> getFavoriteRecipes() {
+    return user.getFavorites();
+  }
+
+  public boolean isFavorite(Recipe recipe) {
+    if (user == null) {
+      return false;
+    }
+
+    ArrayList<Recipe> favoriteRecipes = user.getFavorites();
+    return favoriteRecipes.stream().anyMatch(favoriteRecipe -> favoriteRecipe.getName().equals(recipe.getName()));
+  }
+
 }
+

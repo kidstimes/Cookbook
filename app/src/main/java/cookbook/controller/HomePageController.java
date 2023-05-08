@@ -1,3 +1,5 @@
+
+
 package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
@@ -24,6 +26,9 @@ public class HomePageController implements HomePageViewObserver {
     this.homePageView = new HomePageView();
     this.homePageView.setObserver(this);
     this.mainController = mainController;
+
+    setDisplayName(model.getUserDisplayName());
+    homePageView.setOnFavoriteButtonClick(e -> goToFavorites());
   }
 
   /**
@@ -49,7 +54,14 @@ public class HomePageController implements HomePageViewObserver {
   }
 
   @Override
+  public void goToFavorites() {
+    mainController.goToFavoriteRecipes();
+}
+
+
+  @Override
   public void userLogout() {
     mainController.userLogout();
   }
 }
+
