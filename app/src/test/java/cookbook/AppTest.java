@@ -1,115 +1,86 @@
 package cookbook;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import java.util.Arrays;
-import java.util.ArrayList;
-import cookbook.model.Recipe;
-import cookbook.model.Ingredient;
-import cookbook.model.CookbookFacade;
-//import cookbook.database.FileHandler;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import cookbook.database.Database;
+import cookbook.model.CookbookFacade;
+import cookbook.model.Ingredient;
+import cookbook.model.Recipe;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.junit.jupiter.api.Test;
 
 class AppTest {
-/*
-    @Test void searchRecipesByNameIngredientsOrTags() {
-        // Get test data from csv files in database package
-        FileHandler fileHandler = new FileHandler();
-        ArrayList<String[]> recipes = fileHandler.getRecipes();
-        ArrayList<String[]> ingredients = fileHandler.getIngredients();
-        ArrayList<String[]> tags = fileHandler.getTags();
 
-        // Add the recipes from the test data using the CookbookFacade class
-        CookbookFacade cookbook = new CookbookFacade(new Database());
-        for (String[] recipe : recipes) {
-            // Separate the ingredients of the recipe from the rest of the recipes
-            ArrayList<String[]> recipeIngredients = new ArrayList<String[]>();
-            for (String [] ingredient : ingredients) {
-                if (ingredient[0] == recipe[0]) {
-                    String[] tempIngredients = new String[] {ingredient[1], ingredient[2], ingredient[3]};
-                    recipeIngredients.add(tempIngredients);
-                }
-            }
+  @Test
+  void testRecipeSearchByName() {
+    CookbookFacade cookbook = new CookbookFacade(new Database());
+    cookbook.userSignUp("testUserName", "testPassword", "testDisplayName");
+    cookbook.setCurrentUser("testUserName");
+    cookbook.loadAllRecipes();
 
-            // Separate the tags of the recipe from the other recipes
-            ArrayList<String> recipeTags = new ArrayList<String>();
-            for (String[] tag : tags) {
-                if (tag[0] == recipe[0]) {
-                    recipeTags.add(tag[1]);
-                }
-            }
-
-            // Add the recipe with its ingredients
-            cookbook.addRecipe(recipe, recipeIngredients, recipeTags);
-        }
-
-        // Choose keywords to search for
-        ArrayList<String> keywords = new ArrayList<String>(
-            Arrays.asList("Chicken","Mango"));
-
-        // Perform the search by name method
-        ArrayList<Recipe> searchedRecipes = cookbook.getRecipesWithName(keywords);
-
-        // Confirm that all the recipes have at least one of the keywords in the name
-        for (Recipe recipe : searchedRecipes) {
-            assertTrue(recipe.getName().toLowerCase().contains("chicken") || recipe.getName().toLowerCase().contains("mango"));
-        }
-
-        // Choose ingredients to search for
-        ArrayList<String> ingredientNames = new ArrayList<String>(
-            Arrays.asList("Olive Oil", "Garlic"));
-
-        // Perform the search by ingredients method
-        searchedRecipes.clear();
-        searchedRecipes = cookbook.getRecipesWithIngredients(ingredientNames);
-
-        // Confirm that all the recipes have at least one of the given ingredients
-        boolean containsIngredient = false;
-        for (Recipe recipe : searchedRecipes) {
-            containsIngredient = false;
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                if (ingredient.getName().toLowerCase().contains("olive oil") || ingredient.getName().toLowerCase().contains("garlic")) {
-                    containsIngredient = true;
-                }
-            }
-            assertTrue(containsIngredient);
-        }
-
-        // Choose tags to search for
-        ArrayList<String> tagNames = new ArrayList<String>(
-            Arrays.asList("Vegan","Main Course"));
-
-        // Perform the search by tags method
-        searchedRecipes.clear();
-        searchedRecipes = cookbook.getRecipesWithTags(tagNames);
-
-        // Confirm that all the recipes have at least one of the given tags
-        for (Recipe recipe : searchedRecipes) {
-            for (String tag : recipe.getTags())
-            assertTrue(tag.toLowerCase().contains("vegan") || tag.toLowerCase().contains("main course"));
-        }
-        
+    // Choose keywords to search for
+    ArrayList<String> keywords = new ArrayList<String>(Arrays.asList("Beef", "Stir-Fry"));
+  
+    // Perform the search by name method
+    ArrayList<Recipe> searchedRecipes = cookbook.getRecipesWithName(keywords);
+  
+    // Confirm that all the recipes have both keywords in the name
+    for (Recipe recipe : searchedRecipes) {
+      assertTrue(recipe.getName().toLowerCase().contains("beef")
+          && recipe.getName().toLowerCase().contains("stir-fry"));
     }
+  }
 
-    @Test void readRecipes() {
-        FileHandler fileHandler = new FileHandler();
-        ArrayList<String[]> recipes = fileHandler.getRecipes();
+  @Test
+  void testRecipeSearchByIngredients() {
+    CookbookFacade cookbook = new CookbookFacade(new Database());
+    cookbook.setCurrentUser("testUserName");
+    cookbook.loadAllRecipes();
 
-        assertNotNull(recipes, "Unable to read recipes.csv");
+    // Choose ingredients to search for
+    ArrayList<String> ingredientNames = new ArrayList<String>(Arrays.asList("Garlic", "Onion"));
+  
+    // Perform the search by ingredients method
+    ArrayList<Recipe> searchedRecipes = cookbook.getRecipesWithIngredients(ingredientNames);
+  
+    // Confirm that all the recipes both of the given ingredients
+    boolean containsGarlic = false;
+    boolean containsOnion = false;
+    for (Recipe recipe : searchedRecipes) {
+      containsGarlic = false;
+      containsOnion = false;
+      for (Ingredient ingredient : recipe.getIngredients()) {
+        if (ingredient.getName().toLowerCase().contains("onion")) {
+          containsOnion = true;
+        }
+        if (ingredient.getName().toLowerCase().contains("garlic")) {
+          containsGarlic = true;
+        }
+      }
+      assertTrue(containsGarlic && containsOnion);
     }
+  }
 
-    @Test void readIngredients() {
-        FileHandler fileHandler = new FileHandler();
-        ArrayList<String[]> ingredients = fileHandler.getIngredients();
+  @Test
+  void testRecipeSearchByTags() {
+    CookbookFacade cookbook = new CookbookFacade(new Database());
+    cookbook.setCurrentUser("testUserName");
+    cookbook.loadAllRecipes();
 
-        assertNotNull(ingredients, "Unable to read ingredients.csv");
+    // Choose tags to search for
+    ArrayList<String> tagNames = new ArrayList<String>(Arrays.asList("Vegetarian", "Gluten Free"));
+  
+    // Perform the search by tags method
+    ArrayList<Recipe> searchedRecipes = cookbook.getRecipesWithTags(tagNames);
+  
+    // Confirm that all the recipes have both of the given tags
+    for (Recipe recipe : searchedRecipes) {
+      for (String tag : recipe.getTags()) {
+        assertTrue(tag.toLowerCase().contains("vegetarian")
+            && tag.toLowerCase().contains("gluten free"));
+      }
     }
+  }
 
-    @Test void readTags() {
-        FileHandler fileHandler = new FileHandler();
-        ArrayList<String[]> tags = fileHandler.getTags();
-
-        assertNotNull(tags, "Unable to read tags.csv");
-    }
-*/
 }
