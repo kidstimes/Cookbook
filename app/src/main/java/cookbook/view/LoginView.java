@@ -56,7 +56,7 @@ public class LoginView {
 
     // Create an ImageView and set the animated image to it
     ImageView animatedImageView = new ImageView(animatedImage);
-    animatedImageView.setFitWidth(800); // Set the width of the image
+    animatedImageView.setFitWidth(600); // Set the width of the image
     animatedImageView.setPreserveRatio(true); // Maintain the aspect ratio
     animatedImageView.setSmooth(true); // Enable smooth resizing
     introPane.getChildren().add(animatedImageView);
