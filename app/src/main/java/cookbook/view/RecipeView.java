@@ -2,6 +2,8 @@ package cookbook.view;
 
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -35,6 +37,9 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -139,7 +144,6 @@ public class RecipeView {
     // Add spacing between sections in the VBox
     vbox.setSpacing(10); 
     view.setCenter(vbox); 
-
     //Add a scroll pane
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(vbox);
@@ -161,10 +165,45 @@ public class RecipeView {
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
     title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
-    title.setWrappingWidth(900); 
-    VBox titleBox = new VBox(title);
-    titleBox.setMaxWidth(900); 
+    title.setWrappingWidth(900);
+    HBox titleBox = new HBox();
+    titleBox.setMaxWidth(900);
+
+    // Create star and unstar icons using ImageViews
+    Image star = new Image(getClass().getResourceAsStream("/images/star.png"));
+    ImageView starIcon = new ImageView(star);
+    starIcon.setStyle("-fx-background-color: transparent;");
+    Image unstar = new Image(getClass().getResourceAsStream("/images/unstar.png"));
+    ImageView unstarIcon = new ImageView(unstar);
+    unstarIcon.setStyle("-fx-background-color: transparent;");
+    starIcon.setFitWidth(30);
+    starIcon.setFitHeight(30);
+    unstarIcon.setFitWidth(30);
+    unstarIcon.setFitHeight(30);
+
+    // Create a ToggleButton with the unstar icon as default
+    ToggleButton starButton = new ToggleButton("", unstarIcon);
+    starButton.setSelected(recipe.isStarred());
+    if (recipe.isStarred()) {
+      starButton.setGraphic(starIcon);
+    }
+
+    // Add an event handler to the ToggleButton to change the icon when clicked
+    starButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        starButton.setGraphic(starIcon);
+        observer.addRecipeToFavorites(recipe);
+      } else {
+        starButton.setGraphic(unstarIcon);
+        observer.removeRecipeFromFavorites(recipe);
+      }
+    });
+
+    // Add the title and star icon to the titleBox
+    titleBox.setSpacing(10);
+    titleBox.getChildren().addAll(starButton, title);
     vbox.getChildren().add(titleBox);
+
 
     // Add short description with italics
     Text shortDescription = new Text(recipe.getShortDesc());
@@ -209,12 +248,12 @@ public class RecipeView {
         int weekNumber = selectedDate.get(WeekFields.ISO.weekOfWeekBasedYear());    
         if (observer.addRecipeToWeeklyDinner(selectedDate, recipe)) {
           showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
-              String.format("%s added successfully to week %d, %s dinner.",
-                 recipe.getName(), weekNumber, selectedDate.toString()));
+              String.format("%s added successfully to date %s, week %d dinner list.",
+                 recipe.getName(), selectedDate.toString(), weekNumber));
         } else {
           showInlineStyledAlert(Alert.AlertType.WARNING, "Warning",
-              String.format("%s already exists in weekly dinner list of week %d.",
-               recipe.getName(), weekNumber));
+              String.format("%s already exists on %s of week %d dinner list.",
+               recipe.getName(), selectedDate.toString(), weekNumber));
         }
         //clear the date picker
         datePicker.setValue(null);
@@ -248,6 +287,8 @@ public class RecipeView {
       ingredientUnit.setFont(Font.font("ROBOTO", 18));
       Text ingredientName = new Text(ingredient.getName());
       ingredientName.setFont(Font.font("ROBOTO", 18));
+      ingredientName.maxWidth(400);
+      ingredientName.setWrappingWidth(400);
       ingredientsGrid.add(ingredientQuantity, 0, rowIndex);
       ingredientsGrid.add(ingredientUnit, 1, rowIndex);
       ingredientsGrid.add(ingredientName, 2, rowIndex);

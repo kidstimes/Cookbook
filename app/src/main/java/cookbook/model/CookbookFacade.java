@@ -241,14 +241,21 @@ public class CookbookFacade {
   }
 
   /**Load the weekly dinners of the user from the database.
-   *
-   * @return an arraylist with the dinners of the user
+   *  
    */
-  public ArrayList<Dinner> loadWeeklyDinnerFromDatebase() {
+  public void loadWeeklyDinnerFromDatabase() {
     ArrayList<Dinner> dinnerList = database.loadWeeklyDinnerListFromDatabase(user.getUsername());
-    user.setWeeklyDinners(dinnerList);
-    return dinnerList;
+    for (Dinner dinner : dinnerList) {
+      for (Recipe recipe : recipes) {
+        for (Recipe dinnerRecipe : dinner.getRecipes()) {
+          if (recipe.getName().equalsIgnoreCase(dinnerRecipe.getName())) {
+            user.addWeeklyDinner(dinner.getDate(), recipe);
+          }
+        }
+      }
+    } 
   }
+
 
   /** Method check if a recipe name is already in the cookbook.
    *
@@ -269,25 +276,75 @@ public class CookbookFacade {
     return user.checkWeeklyDinner();
   }
 
-  /**
-   * Edit a recipe's name, name, short description, directions, and tags.
-   *
-   * @param id the unique id of the recipe
-   * @param name the name of the recipe
-   * @param shortDesc the short description of the recipe
-   * @param directions the directions of the recipe
-   * @param tags the tags of the recipe
-   */
-  public void editRecipe(int id, String name, String shortDesc,
-      String directions, ArrayList<String> tags) {
-    for (Recipe recipe : recipes) {
-      if (recipe.getId() == id) {
-        recipe.setName(name);
-        recipe.setShortDesc(shortDesc);
-        recipe.setDirection(directions);
-        recipe.setTags(tags);
+  /** Load the favorite recipes of the user from the database.
+  *
+  */
+  public void loadFavoriteRecipes() {
+    ArrayList<Recipe> favoriteRecipes =  database.loadFavoriteRecipes(user.getUsername());
+    //Set attribute isstar to true for all the favorite recipes in the cookbook
+    for (Recipe r : favoriteRecipes) {
+      for (Recipe recipe : recipes) {
+        if (r.getName().equalsIgnoreCase(recipe.getName())) {
+          recipe.star();
+          user.addToFavorites(recipe);
+        }
       }
     }
   }
+  
+  /** Add a recipe to the user's favorite recipes.
+   *
+   * @param recipe the recipe to add
+   * @return true if the recipe is added to the favorite recipes, otherwise false
+   */
+  public boolean addRecipeToFavorites(Recipe recipe) {
+    System.out.println(recipe);
+    user.addToFavorites(recipe);
+    //change the recipe attribute starred to true 
+    //in the arraylist of recipes in this cookbookfacade class
+    for (Recipe r : recipes) {
+      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+        r.star();
+        System.out.println(r);
+      }
+    }
+    return database.addRecipeToFavorites(user.getUsername(), recipe.getName());
+  }
+  
+  /** Remove a recipe from the user's favorite recipes.
+   *
+   * @param recipe the recipe to remove
+   * @return true if the recipe is removed from the favorite recipes, otherwise false
+   */
+  public boolean removeRecipeFromFavorites(Recipe recipe) {
+    System.out.println(recipe);
+    user.removeFromFavorites(recipe);
+    //change the recipe attribute starred to false 
+    //in the arraylist of recipes in this cookbookfacade class
+    for (Recipe r : recipes) {
+      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+        r.unstar();
+        System.out.println(r);
+      }
+    }
+    return database.removeRecipeFromFavorites(user.getUsername(), recipe.getName());
+  }
+  
+
+  /**
+   * Get the user's favorite recipes.
+   *
+   * @return an arraylist with the user's favorite recipes
+   */
+  public ArrayList<Recipe> getFavoriteRecipes() {
+    return user.getFavorites();
+  }
+
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
+    user.removeRecipeFromWeeklyDinner(dayDate, recipeName);
+    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
+  }
+
+
 
 }

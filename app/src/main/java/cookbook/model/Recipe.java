@@ -13,6 +13,7 @@ public class Recipe {
   private String directions;
   private ArrayList<String> tags;
   private ArrayList<Ingredient> ingredients;
+  private boolean starred;
   private String comments;
   // deal with the comments method later
 
@@ -72,6 +73,8 @@ public class Recipe {
     for (String tag : tags) {
       this.tags.add(tag);
     }
+
+    starred = false;
   }
 
   public int getId() {
@@ -144,6 +147,32 @@ public class Recipe {
   public String getComments() {
     return comments;
   }
+
+  /**
+   * Star recipe.
+   */
+  public void star() {
+    starred = true;
+  }
+
+  /**
+   * Unstar recipe.
+   */
+  public void unstar() {
+    starred = false;
+  }
+
+  /**
+   * Check if the recipe is starred by the user.
+   *
+   * @return true if the recipe is starred, otherwise unstarred.
+   */
+  public boolean isStarred() {
+    return starred;
+  }
+
+
+
 
   public void setComments(String comments) {
     this.comments = comments;

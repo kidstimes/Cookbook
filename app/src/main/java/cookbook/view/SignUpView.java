@@ -60,7 +60,7 @@ public class SignUpView {
   private void initLayout() {
 
     view = new BorderPane();
-    view.setStyle("-fx-background-color: beige;");
+    view.setStyle("-fx-background-color: #F9F8F3;");
     VBox mainContainer = new VBox(10);
     mainContainer.setAlignment(Pos.CENTER);
     mainContainer.setPadding(new Insets(20));
@@ -178,11 +178,11 @@ public class SignUpView {
   }
 
   /**
-   * Validate the input.
+   * Validate the input .
    */
   private boolean validateInput(String username, String password, String confirmedPassword, 
       String displayName) {
-    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
+    if (username.trim().isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
         || displayName.isEmpty()) {
       showError("All fields must be filled in.");
       return false;

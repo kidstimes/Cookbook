@@ -22,9 +22,9 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   * @param mainController the main controller
   */
   public RecipeController(CookbookFacade model, MainController mainController,
-      Recipe recipe, String displayName) {
+      Recipe recipe) {
     super(model, mainController);
-    this.recipeView = new RecipeView(displayName);
+    this.recipeView = new RecipeView(model.getUserDisplayName());
     this.recipeView.setRecipe(recipe);
     this.recipeView.setObserver(this);
     this.mainController = mainController;
@@ -62,6 +62,16 @@ public class RecipeController extends BaseController implements RecipeViewObserv
     } else {
       return false;
     }
+  }
+
+  @Override
+  public void addRecipeToFavorites(Recipe recipe) {
+    model.addRecipeToFavorites(recipe);
+  }
+
+  @Override
+  public void removeRecipeFromFavorites(Recipe recipe) {
+    model.removeRecipeFromFavorites(recipe);
   }
 
 }

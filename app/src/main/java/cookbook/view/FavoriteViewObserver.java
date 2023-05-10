@@ -1,12 +1,11 @@
 package cookbook.view;
 
-import java.time.LocalDate;
-
+import cookbook.model.Recipe;
 
 /**
- * Interface for the WeeklyDinnerView observer.
+ * Observer interface for the my favourite view.
  */
-public interface WeeklyDinnerViewObserver {
+public interface FavoriteViewObserver {
 
   void goToHomePage();
 
@@ -24,7 +23,6 @@ public interface WeeklyDinnerViewObserver {
 
   void goToMyFavorite();
 
-  void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName);
-  
+  void removeFromFavorites(Recipe recipe);
   
 }

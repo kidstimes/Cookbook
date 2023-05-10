@@ -377,7 +377,7 @@ public class Database {
     }
   }
 
-  private int getRecipeId(String recipeName) throws SQLException {
+  private int getRecipeId(String recipeName) {
     String query = "SELECT id FROM recipes WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, recipeName);
@@ -601,6 +601,142 @@ public class Database {
   
     return weeklyDinnerList;
   }
+
+  /** Remove a recipe from the weekly dinner list in the database.
+   *
+   * @param username is the username of the user
+   * @param dayDate is the date of the dinner
+   * @param recipeName is the name of the recipe to remove
+   * @return true if the remove was successful, false otherwise
+   */
+  public boolean removeRecipeFromWeeklyDinnerInDatabase(String username, LocalDate dayDate, String recipeName) {
+    boolean deleteSuccessful = false;
+    try {
+      // Get the user ID from the username
+      int userId = getUserId(username);
+      // Get the recipe ID from the recipe name
+      int recipeId = getRecipeId(recipeName);
+      // Prepare a SQL statement to delete the record from the WeeklyDinner table
+      String sql = "DELETE FROM WeeklyDinner WHERE user_id = ? AND recipe_id = ? AND dinner_date = ?";
+      PreparedStatement statement = connection.prepareStatement(sql);
+      // Set the values in the prepared statement
+      statement.setInt(1, userId);
+      statement.setInt(2, recipeId);
+      statement.setDate(3, java.sql.Date.valueOf(dayDate));
+
+      // Execute the SQL statement to delete the record
+      int rowsAffected = statement.executeUpdate();
+
+      // If at least one row was affected, the delete was successful
+      if (rowsAffected > 0) {
+        deleteSuccessful = true;
+      }
+
+      // Close the prepared statement
+      statement.close();
+    } catch (SQLException e) {
+      System.out.println("Error removing recipe from weekly dinner in database: " + e.getMessage());
+    }
+    return deleteSuccessful;
+  }
+
+
+
+  /**
+   * Get the favorite recipes for the given user.
+   *
+   * @param userName the user's name
+   * @return the list of favorite recipes of the user
+   */
+  public ArrayList<Recipe> loadFavoriteRecipes(String userName) {
+    ArrayList<Recipe> favoriteRecipes = new ArrayList<>();
+    int userId = getUserId(userName);
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT r.id, r.name, r.description, r.instructions FROM recipes r " 
+            + "INNER JOIN favorites f ON r.id = f.recipe_id " 
+            + "WHERE f.user_id = ?"
+        )
+    ) {
+      stmt.setInt(1, userId);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        Integer recipeId = rs.getInt(1);
+        String name = rs.getString(2);
+        String description = rs.getString(3);
+        String instructions = rs.getString(4);
+
+        ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
+        ArrayList<String> tags = loadTagsForRecipe(recipeId, userName);
+
+        Recipe recipe = new Recipe(name, description, instructions, ingredients, tags);
+        favoriteRecipes.add(recipe);
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return favoriteRecipes;
+  }
+
+  /**Adds a recipe to the favorites table.
+   *
+   * @param userName the user's username
+   * @param recipeName the name of recipe to add
+   * @return true if the recipe was added successfully, false otherwise
+   */
+  public boolean addRecipeToFavorites(String userName, String recipeName) {
+    int userId = getUserId(userName);
+    int recipeId = getRecipeId(recipeName);
+    if (userId == -1 || recipeId == -1) {
+      return false;
+    }
+
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "INSERT IGNORE INTO favorites (user_id, recipe_id) VALUES (?, ?)"
+        )
+    ) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, recipeId);
+      stmt.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+  
+  /**Removes a recipe from the favorites table.
+   *
+   * @param userName the user's username
+   * @param recipeName the name of recipe to remove
+   * @return true if the recipe was removed successfully, false otherwise
+   */
+  public boolean removeRecipeFromFavorites(String userName, String recipeName){
+    int userId = getUserId(userName);
+    int recipeId = getRecipeId(recipeName);
+
+    if (userId == -1 || recipeId == -1) {
+      return false;
+    }
+
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "DELETE FROM favorites WHERE user_id = ? AND recipe_id = ?"
+        )
+    ) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, recipeId);
+      stmt.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+
   
 
   /**

@@ -12,6 +12,7 @@ public class User {
   private String username;
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
+  private ArrayList<Recipe> favorites;
 
   /**
    * User Constructor.
@@ -23,6 +24,7 @@ public class User {
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
+    this.favorites = new ArrayList<>(); 
   }
 
   /**
@@ -68,6 +70,28 @@ public class User {
   }
 
   /**
+   * Remove a recipe from a dinner on a specific date.
+   *
+   * @param date the date of the dinner
+   * @param recipeName the name of the recipe to remove from the dinner
+   * @return false if the recipe is not in the dinner on the given date, otherwise true
+   */
+  public boolean removeRecipeFromWeeklyDinner(LocalDate date, String recipeName) {
+    for (Dinner dinner : weeklyDinners) {
+      if (dinner.getDate().isEqual(date)) {
+        for (Recipe recipe : dinner.getRecipes()) {
+          if (recipe.getName().equalsIgnoreCase(recipeName)) {
+            dinner.getRecipes().remove(recipe);
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+
+  /**
    * Get the username of the user.
    *
    * @return the username
@@ -104,7 +128,11 @@ public class User {
   public void deleteUser() {
     // delete user from the db
   }
-
+  
+  /**Set the weekly dinners of the user.
+   *
+   * @param dinnerList the weekly dinner list of the user 
+   */
   public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
     this.weeklyDinners = dinnerList;
   }
@@ -112,7 +140,7 @@ public class User {
   /**
    * Check if a user has a weekly dinner on current week.
    *
-   * @return true if the weekly dinner is in the current week, otherwise false
+   * @return true if the user has a weekly dinner on current week, otherwise false
    */
   public boolean checkWeeklyDinner() {
     LocalDate now = LocalDate.now();
@@ -120,7 +148,6 @@ public class User {
     LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
 
     for (Dinner dinner : weeklyDinners) {
-      System.out.println(dinner.getDate());
       LocalDate dinnerDate = dinner.getDate();
       if (!dinnerDate.isBefore(startOfWeek) && !dinnerDate.isAfter(endOfWeek)) {
         return true;
@@ -129,5 +156,50 @@ public class User {
     return false;
   }
 
+
+  /**Set the favorite recipes of the user.
+   *
+   */
+  public void setFavorites(ArrayList<Recipe> favoriteRecipes) {
+    this.favorites = favoriteRecipes;
+  }
+
+  /**
+  * Get the favorite recipes of the user.
+  *
+  * @return an arraylist with the favorite recipes
+  */
+  public ArrayList<Recipe> getFavorites() {
+    ArrayList<Recipe> copyFavorites = new ArrayList<>();
+    for (Recipe recipe : favorites) {
+      copyFavorites.add(recipe);
+    }
+    return copyFavorites;
+  }
+
+  /** Add a recipe to the user's favorites.
+   *
+   * @param recipe the recipe to add
+   */
+  public void addToFavorites(Recipe recipe) {
+    //if recipe name is already in, do nothing, if not add it
+    for (Recipe recip : favorites) {
+      if (recip.getName().equalsIgnoreCase(recipe.getName())) {
+        return;
+      }
+    } 
+    recipe.star();
+    favorites.add(recipe);
+  }
+
+  /**
+  * Remove a recipe from the user's favorites.
+  *
+  * @param recipe the recipe to remove
+  */
+  public void removeFromFavorites(Recipe recipe) {
+    recipe.unstar();
+    favorites.remove(recipe);
+  }
 
 }

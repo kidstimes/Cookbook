@@ -5,6 +5,8 @@ import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import cookbook.view.WeeklyDinnerView;
 import cookbook.view.WeeklyDinnerViewObserver;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.scene.Node;
 
@@ -18,10 +20,9 @@ public class WeeklyDinnerController extends BaseController implements WeeklyDinn
   /**
    * Constructor for the weekly dinner controller.
    */
-  public WeeklyDinnerController(CookbookFacade model, MainController mainController,
-        String displayName, ArrayList<Dinner> dinnerList) { 
+  public WeeklyDinnerController(CookbookFacade model, MainController mainController) { 
     super(model, mainController);
-    this.weeklyDinnerView = new WeeklyDinnerView(displayName, dinnerList);
+    this.weeklyDinnerView = new WeeklyDinnerView(model.getUserDisplayName(), model.getDinnerList());
     this.weeklyDinnerView.setObserver(this);
   }
 
@@ -36,5 +37,9 @@ public class WeeklyDinnerController extends BaseController implements WeeklyDinn
     mainController.goToRecipe(recipe);
   }
   
+  @Override
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
+    model.removeRecipeFromWeeklyDinner(dayDate, recipeName);
+  }
 }
 

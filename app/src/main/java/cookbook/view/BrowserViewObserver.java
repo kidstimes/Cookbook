@@ -37,6 +37,10 @@ public interface BrowserViewObserver {
 
   void goToMyFavorite();
 
+  void addRecipeToFavorite(Recipe recipe);
+
+  void removeRecipeFromFavorite(Recipe recipe);
+
 
 
 

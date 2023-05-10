@@ -33,5 +33,9 @@ public interface RecipeViewObserver {
 
   void goToMyFavorite();
 
+  void addRecipeToFavorites(Recipe recipe);
+
+  void removeRecipeFromFavorites(Recipe recipe);
+
 
 }

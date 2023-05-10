@@ -13,7 +13,7 @@ plugins {
 }
 
 javafx {
-    version = '20.0.1'
+    version = "17.0.1"
     modules = [ 'javafx.controls' ]
 }
 
@@ -31,9 +31,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
-
-    implementation 'org.openjfx:javafx-controls:20.0.1'
-    implementation 'org.openjfx:javafx-fxml:20.0.1'
 }
 
 application {
@@ -46,12 +43,3 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-run {
-    doFirst {
-        def pathToFX = System.getenv("PATH_TO_FX") ?: "/Users/lianshi/javafx-sdk-20.0.1/lib"
-        jvmArgs = [
-            '--module-path', pathToFX,
-            '--add-modules', 'javafx.controls,javafx.fxml'
-        ]
-    }
-}
