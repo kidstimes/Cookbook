@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,7 +27,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -378,6 +382,44 @@ public class RecipeView {
       }
     });
     vbox.getChildren().add(saveButton);
+
+    // Display comments
+    Text commentsTitle = new Text("Comments:");
+    commentsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
+    VBox commentsTitleBox = new VBox(commentsTitle);
+    commentsTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    vbox.getChildren().add(commentsTitleBox);
+
+    // Create a container for displaying comments
+    VBox commentsContainer = new VBox();
+    commentsContainer.setSpacing(10);
+    vbox.getChildren().add(commentsContainer);
+
+    // Create a text area for users to input their comments
+    TextArea commentInput = new TextArea();
+    commentInput.setPromptText("Write a comment...");
+    commentInput.setStyle("-fx-font: 16px \"Roboto\";");
+    commentInput.setWrapText(true);
+    commentInput.setMaxWidth(900);
+    commentInput.setMaxHeight(100);
+    vbox.getChildren().add(commentInput);
+
+    // Add a "Post Comment" button
+    Button postCommentButton = new Button("Post Comment");
+    postCommentButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    postCommentButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    postCommentButton.setOnAction(e -> {
+      String commentText = commentInput.getText().trim();
+      if (!commentText.isEmpty()) {
+        HBox commentPane = createCommentPane(commentText);
+        commentsContainer.getChildren().add(commentPane);
+        commentInput.clear();
+      }
+    });
+    vbox.getChildren().add(postCommentButton);
+  
   }
 
   private void createServingSpinner() {
@@ -500,6 +542,45 @@ public class RecipeView {
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();
   }
+
+  private HBox createCommentPane(String text) {
+    HBox commentPane = new HBox();
+    commentPane.setSpacing(10);
+    commentPane.setAlignment(Pos.CENTER_LEFT);
+  
+    Text commentText = new Text(text);
+    commentText.setFont(Font.font("Roboto", 16));
+    commentPane.getChildren().add(commentText);
+  
+    Button editButton = new Button("Edit");
+    editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+    editButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
+    editButton.setOnAction(e -> {
+      TextInputDialog editDialog = new TextInputDialog(commentText.getText());
+      editDialog.setTitle("Edit Comment");
+      editDialog.setHeaderText(null);
+      editDialog.setContentText("Edit your comment:");
+      Optional<String> result = editDialog.showAndWait();
+      result.ifPresent(updatedText -> commentText.setText(updatedText));
+    });
+    commentPane.getChildren().add(editButton);
+  
+    Button deleteButton = new Button("Delete");
+    deleteButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+    deleteButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
+    deleteButton.setOnAction(e -> {
+      commentPane.getChildren().clear();
+      commentPane.setVisible(false);
+    });
+    commentPane.getChildren().add(deleteButton);
+  
+    return commentPane;
+  }
+  
 
 }
 
