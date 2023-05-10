@@ -55,11 +55,9 @@ public class User {
   public boolean addWeeklyDinner(LocalDate date, Recipe recipe) {
     for (Dinner dinner : weeklyDinners) {
       if (dinner.getDate().isEqual(date)) {
-        //check it the recipe is already in the dinner by check its name
-        for (Recipe recip : dinner.getRecipes()) {
-          if (recip.getName().equalsIgnoreCase(recipe.getName())) {
-            return false;
-          }
+        //check it the recipe is already in the dinner by object
+        if (dinner.getRecipes().contains(recipe)) {
+          return false;
         }
         dinner.addRecipe(recipe);
         return true;
