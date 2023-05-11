@@ -472,4 +472,26 @@ public class CookbookFacade {
     return user.getShoppingList(weekNumber);
   }
 
+  /**
+   * Edit the quantity of an ingredient in the user's shopping list of a given week.
+   *
+   * @param weekNumber the number of the week
+   * @param ingredientName the name of the ingredient to edit
+   * @param newQuantity the updated quantity of the ingredient
+   */
+  public void editIngredientQuantityInUsersShoppingList(int weekNumber,
+      String ingredientName, float newQuantity) {
+    user.editIngredientQuantityInShoppingList(weekNumber, ingredientName, newQuantity);
+  }
+
+  /**
+   * Delete an ingredient from the user's shopping list of the given week.
+   *
+   * @param weekNumber the number of the week
+   * @param ingredientName the name of the ingredient to delete
+   */
+  public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
+    user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
+  }
+
 }

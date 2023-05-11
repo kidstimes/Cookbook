@@ -67,6 +67,33 @@ public class ShoppingList {
   }
 
   /**
+   * Edit the quantity of an ingredient in the shopping list.
+   *
+   * @param ingredientName the name of the ingredient to edit
+   * @param newQuantity the updated quantity
+   */
+  public void editIngredientQuantity(String ingredientName, float newQuantity) {
+    for (Ingredient ingredient : this.ingredients) {
+      if (ingredient.getName() == ingredientName) {
+        ingredient.setQuantity(newQuantity);
+      }
+    }
+  }
+
+  /**
+   * Delete an ingredient from the shopping list.
+   *
+   * @param ingredientName the name of the ingredient to delete
+   */
+  public void deleteIngredient(String ingredientName) {
+    for (Ingredient ingredient : ingredients) {
+      if (ingredient.getName() == ingredientName) {
+        ingredients.remove(ingredient);
+      }
+    }
+  }
+
+  /**
    * Get the week number of the shopping list.
    *
    * @return the number of the week
