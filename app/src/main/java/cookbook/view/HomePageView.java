@@ -32,17 +32,18 @@ public class HomePageView {
   private BorderPane view;
   private String displayName;
   boolean hasWeeklyDinner;
-  boolean hasShoppingList;
+  boolean hasNextWeekShoppingList;
 
   
   /**
    * Home Page View Constructor.
    */
-  public HomePageView(String displayName, boolean hasWeeklyDinner) {
+  public HomePageView(String displayName, boolean hasWeeklyDinner, boolean hasNextWeekShoppingList) {
     this.view = new BorderPane();
     view.setStyle("-fx-background-color: #F9F8F3;");
     this.displayName = displayName;
     this.hasWeeklyDinner = hasWeeklyDinner;
+    this.hasNextWeekShoppingList = hasNextWeekShoppingList;
     System.out.println(hasWeeklyDinner);
     initLayout();
     
@@ -90,7 +91,8 @@ public class HomePageView {
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
       createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList())
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -134,8 +136,8 @@ public class HomePageView {
     weekLabel.setFont(Font.font("Roboto", 22));
     weeklyDinnerLabel.setFont(Font.font("Roboto", 22));
     Label shoppingListLabel;
-    if (hasShoppingList) {
-      shoppingListLabel = new Label("You have a shopping list for this week.");
+    if (hasNextWeekShoppingList) {
+      shoppingListLabel = new Label("You have a shopping list for next week.");
     } else {
       shoppingListLabel =
              new Label("You do not have a shopping list for next week. You can create new a shopping list.");

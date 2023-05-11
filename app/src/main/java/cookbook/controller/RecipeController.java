@@ -49,15 +49,16 @@ public class RecipeController extends BaseController implements RecipeViewObserv
    * Handle the save tags event.
    */
   @Override
-  public void handleSaveTagsClicked(ArrayList<String> updatedTags, String recipeName) {
-    model.addTagsToRecipe(updatedTags, recipeName);
-    model.updateTagToDatabase(updatedTags, recipeName);
+  public void handleSaveTagsClicked(ArrayList<String> updatedTags, Recipe recipe) {
+    model.addTagsToRecipe(updatedTags, recipe);
+    model.updateTagToDatabase(updatedTags, recipe);
     mainController.goToBrowser();
   }
 
   @Override
-  public boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe) {
+  public boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe, int weekNumber) {
     if (model.addRecipeToDinnerList(date, recipe) && model.saveWeeklyDinnerToDatabase()) {
+      model.addRecipeToShoppingList(recipe, weekNumber);
       return true;
     } else {
       return false;
@@ -74,4 +75,15 @@ public class RecipeController extends BaseController implements RecipeViewObserv
     model.removeRecipeFromFavorites(recipe);
   }
 
+  @Override
+  public void editRecipe(Recipe recipe, String newName, String newDescription,
+      String newInstructions, ArrayList<String[]> newIngredients, ArrayList<String> newTags) {
+    model.editRecipe(recipe, newName, newDescription, newInstructions, newIngredients, newTags);
+  }
+
+  @Override
+  public void goToRecipe(Recipe recipe) {
+    mainController.goToRecipe(recipe);
+  }
 }
+

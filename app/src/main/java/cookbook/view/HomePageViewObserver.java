@@ -23,4 +23,6 @@ public interface HomePageViewObserver {
 
   void goToMyFavorite();
 
+  void goToMessages();
+
 }

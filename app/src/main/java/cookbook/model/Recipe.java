@@ -172,10 +172,20 @@ public class Recipe {
   }
 
 
-
-
   public void setComments(String comments) {
     this.comments = comments;
+  }
+
+  /** Set the ingredients of the recipe.
+   *
+   * @param editedIngredients an arraylist with the edited ingredients
+   */
+  public void setIngredients(ArrayList<String[]> editedIngredients) {
+    this.ingredients.clear();
+    for (String[] ingredient : editedIngredients) {
+      this.ingredients.add(new Ingredient(ingredient[0],
+          Float.parseFloat(ingredient[1]), ingredient[2]));
+    }
   }
 
 }

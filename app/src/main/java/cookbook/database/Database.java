@@ -1,7 +1,10 @@
 package cookbook.database;
 
 import cookbook.model.Dinner;
+import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+import cookbook.model.ShoppingList;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -263,7 +266,7 @@ public class Database {
         ArrayList<String> tags = loadTagsForRecipe(recipeId, userName);
 
         // create the recipe objects with ingredients and tags
-        Recipe recipe = new Recipe(name, description, instructions, ingredients, tags);
+        Recipe recipe = new Recipe(recipeId, name, description, instructions, ingredients, tags);
         recipes.add(recipe);
       }
       rs.close();
@@ -341,14 +344,13 @@ public class Database {
   /**Update the tags of a recipe in the database associated with a user.
    *
    * @param tags is an arraylist of strings of tags for a recipe
-   * @param recipeName is the name of the recipe
+   * @param recipeId is the ID of the recipe
    * @param userName is the name of the user
    */
-  public void updateTagToDatabase(ArrayList<String> tags, String recipeName, String userName) {
+  public void updateTagToDatabase(ArrayList<String> tags, int recipeId, String userName) {
     try {
       // Get the user and recipe IDs
       int userId = getUserId(userName);
-      int recipeId = getRecipeId(recipeName);
 
       // Delete existing personal tags for the user and recipe
       deletePersonalTags(userId, recipeId);
@@ -752,4 +754,292 @@ public class Database {
       System.out.println(ex.getMessage());
     }
   }
+
+  public void editRecipeInDatabase(int id, String recipeName, String description, String instructions, ArrayList<String[]> ingredients, ArrayList<String> tags, String userName) {
+    try {
+      // Update the recipe in the recipes table
+      String query = "UPDATE recipes SET name = ?, description = ?, instructions = ? WHERE id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setString(1, recipeName);
+        statement.setString(2, description);
+        statement.setString(3, instructions);
+        statement.setInt(4, id);
+        statement.executeUpdate();
+      }
+  
+      // Delete the existing ingredients associated with the recipe
+      query = "DELETE FROM ingredients WHERE recipe_id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, id);
+        statement.executeUpdate();
+      }
+  
+      // Insert the new ingredients
+      for (String[] ingredient : ingredients) {
+        String name = ingredient[0];
+        String quantity = ingredient[1];
+        String measurementUnit = ingredient[2];
+        insertIngredient(id, name, quantity, measurementUnit);
+      }
+  
+      // Delete the existing tags associated with the recipe
+      query = "DELETE FROM recipe_tags WHERE recipe_id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, id);
+        statement.executeUpdate();
+      }
+  
+      query = "DELETE FROM PersonalTags WHERE recipe_id = ?";
+      try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, id);
+        statement.executeUpdate();
+      }
+  
+      // Get the user id
+      int userId = getUserId(userName);
+  
+      // Add the new tags
+      List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
+          "gluten free", "starter", "main course", "dessert and sweets");
+  
+      for (String tag : tags) {
+        int tagId = getTagId(tag);
+        if (tagId == -1) {
+          // If the tag doesn't exist, insert it into the tags table
+          tagId = insertTag(tag);
+        }
+        // If the tag is a predefined tag, insert it into the recipe_tags table,
+        // otherwise insert it into the PersonalTags table
+        if (predefinedTags.contains(tag.toLowerCase())) {
+          insertRecipeTag(id, tagId);
+        } else {
+          insertPersonalTag(userId, id, tagId);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println("Error while editing recipe in the database: " + e.getMessage());
+    }
+  }
+
+  public ArrayList<ShoppingList> loadShoppingListsFromDatabase(String username) {
+    ArrayList<ShoppingList> shoppingLists = new ArrayList<>();
+    int userId = getUserId(username);
+
+    // then get the shopping lists for the user
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT sl.shoppinglist_id, i.name, sl.list_quantity, i.measurementUnit, sl.week_number "
+                + "FROM ShoppingList sl "
+                + "JOIN ingredients i ON sl.ingredient_id = i.id "
+                + "WHERE sl.user_id = ? "
+                + "ORDER BY sl.week_number, sl.shoppinglist_id")) {
+      stmt.setInt(1, userId);
+      ResultSet rs = stmt.executeQuery();
+
+      int currentWeekNumber = -1;
+      ShoppingList currentShoppingList = null;
+      while (rs.next()) {
+        int weekNumber = rs.getInt(5);
+        if (weekNumber != currentWeekNumber) {
+          // found a new shopping list
+          currentWeekNumber = weekNumber;
+          currentShoppingList = new ShoppingList(currentWeekNumber, new ArrayList<>());
+          shoppingLists.add(currentShoppingList);
+        }
+        
+        // add ingredient to the current shopping list
+        String ingredientName = rs.getString(2);
+        float quantity = rs.getFloat(3);
+        String measurementUnit = rs.getString(4);
+        Ingredient ingredient = new Ingredient(ingredientName, quantity, measurementUnit);
+        currentShoppingList.addIngredient(ingredient);
+      }
+
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return shoppingLists;
+  }
+
+  private int getIngredientId(String ingredientName) {
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT id FROM ingredients WHERE name = ?")) {
+      stmt.setString(1, ingredientName);
+      ResultSet rs = stmt.executeQuery();
+
+      if (rs.next()) {
+        return rs.getInt(1);
+      }
+
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return -1;
+  }
+
+
+  public void editIngredientQuantity(String username, String ingredientName, float newQuantity, int weekNumber) {
+    int userId = getUserId(username);
+    int ingredientId = getIngredientId(ingredientName);
+
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "UPDATE ShoppingList SET list_quantity = ? WHERE user_id = ? AND ingredient_id = ? AND week_number = ?")) {
+      stmt.setFloat(1, newQuantity);
+      stmt.setInt(2, userId);
+      stmt.setInt(3, ingredientId);
+      stmt.setInt(4, weekNumber);
+
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void deleteIngredientFromShoppingList(String username, String ingredientName, int weekNumber) {
+    int userId = getUserId(username);
+    int ingredientId =  getIngredientId(ingredientName);
+
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "DELETE FROM ShoppingList WHERE user_id = ? AND ingredient_id = ? AND week_number = ?")) {
+      stmt.setInt(1, userId);
+      stmt.setInt(2, ingredientId);
+      stmt.setInt(3, weekNumber);
+
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void addRecipeToShoppingList(String username, int recipeId, int weekNumber) {
+    try {
+      int userId = getUserId(username);
+  
+      // Retrieve the ingredients associated with the recipe
+      PreparedStatement getIngredientsStmt = connection.prepareStatement(
+          "SELECT id, quantity FROM ingredients WHERE recipe_id = ?");
+      getIngredientsStmt.setInt(1, recipeId);
+      ResultSet rs = getIngredientsStmt.executeQuery();
+  
+      // Prepare the SQL statements
+      PreparedStatement checkExistenceStmt = connection.prepareStatement(
+          "SELECT list_quantity FROM ShoppingList WHERE user_id = ? AND ingredient_id = ? AND week_number = ?");
+      PreparedStatement updateStmt = connection.prepareStatement(
+          "UPDATE ShoppingList SET list_quantity = list_quantity + ? WHERE user_id = ? AND ingredient_id = ? AND week_number = ?");
+      PreparedStatement insertStmt = connection.prepareStatement(
+          "INSERT INTO ShoppingList (user_id, ingredient_id, list_quantity, week_number) VALUES (?, ?, ?, ?)");
+  
+      // For each ingredient, add a new entry in the ShoppingList or update an existing one
+      while (rs.next()) {
+        int ingredientId = rs.getInt(1);
+        float quantity = rs.getFloat(2);
+  
+        // Check if the ingredient already exists in the ShoppingList for the given week
+        checkExistenceStmt.setInt(1, userId);
+        checkExistenceStmt.setInt(2, ingredientId);
+        checkExistenceStmt.setInt(3, weekNumber);
+        ResultSet rsExist = checkExistenceStmt.executeQuery();
+  
+        if (rsExist.next()) {  // The ingredient already exists in the ShoppingList, update it
+          updateStmt.setFloat(1, quantity);
+          updateStmt.setInt(2, userId);
+          updateStmt.setInt(3, ingredientId);
+          updateStmt.setInt(4, weekNumber);
+          updateStmt.executeUpdate();
+        } else {  // The ingredient does not exist in the ShoppingList, insert it
+          insertStmt.setInt(1, userId);
+          insertStmt.setInt(2, ingredientId);
+          insertStmt.setFloat(3, quantity);
+          insertStmt.setInt(4, weekNumber);
+          insertStmt.executeUpdate();
+        }
+  
+        rsExist.close();
+      }
+  
+      rs.close();
+      getIngredientsStmt.close();
+      checkExistenceStmt.close();
+      updateStmt.close();
+      insertStmt.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void deleteRecipeFromShoppingList(String username, int recipeId, int weekNumber) {
+    try {
+        int userId = getUserId(username);
+
+        // Retrieve the ingredients associated with the recipe
+        PreparedStatement getIngredientsStmt = connection.prepareStatement(
+            "SELECT id, quantity FROM ingredients WHERE recipe_id = ?");
+        getIngredientsStmt.setInt(1, recipeId);
+        ResultSet rs = getIngredientsStmt.executeQuery();
+
+        // Prepare the SQL statements
+        PreparedStatement checkExistenceStmt = connection.prepareStatement(
+            "SELECT list_quantity FROM ShoppingList WHERE user_id = ? AND ingredient_id = ? AND week_number = ?");
+        PreparedStatement updateStmt = connection.prepareStatement(
+            "UPDATE ShoppingList SET list_quantity = list_quantity - ? WHERE user_id = ? AND ingredient_id = ? AND week_number = ?");
+        PreparedStatement deleteStmt = connection.prepareStatement(
+            "DELETE FROM ShoppingList WHERE user_id = ? AND ingredient_id = ? AND week_number = ?");
+
+        // For each ingredient, subtract its quantity from the ShoppingList or delete it
+        while (rs.next()) {
+            int ingredientId = rs.getInt(1);
+            float quantity = rs.getFloat(2);
+
+            // Check if the ingredient exists in the ShoppingList for the given week
+            checkExistenceStmt.setInt(1, userId);
+            checkExistenceStmt.setInt(2, ingredientId);
+            checkExistenceStmt.setInt(3, weekNumber);
+            ResultSet rsExist = checkExistenceStmt.executeQuery();
+
+            if (rsExist.next()) {  // The ingredient exists in the ShoppingList
+                float currentQuantity = rsExist.getFloat(1);
+
+                if (currentQuantity - quantity <= 0) {  // If the new quantity is less or equal to 0, delete the ingredient
+                    deleteStmt.setInt(1, userId);
+                    deleteStmt.setInt(2, ingredientId);
+                    deleteStmt.setInt(3, weekNumber);
+                    deleteStmt.executeUpdate();
+                } else {  // Otherwise, subtract the quantity
+                    updateStmt.setFloat(1, quantity);
+                    updateStmt.setInt(2, userId);
+                    updateStmt.setInt(3, ingredientId);
+                    updateStmt.setInt(4, weekNumber);
+                    updateStmt.executeUpdate();
+                }
+            }
+
+            rsExist.close();
+        }
+
+        rs.close();
+        getIngredientsStmt.close();
+        checkExistenceStmt.close();
+        updateStmt.close();
+        deleteStmt.close();
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+  }
+
+  
+
+
+
 }
+
+
+
+
+  
+

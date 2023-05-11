@@ -73,18 +73,14 @@ public class User {
    * Remove a recipe from a dinner on a specific date.
    *
    * @param date the date of the dinner
-   * @param recipeName the name of the recipe to remove from the dinner
+   * @param recipe the recipe to remove from the dinner
    * @return false if the recipe is not in the dinner on the given date, otherwise true
    */
-  public boolean removeRecipeFromWeeklyDinner(LocalDate date, String recipeName) {
+  public boolean removeRecipeFromWeeklyDinner(LocalDate date, Recipe recipe) {
     for (Dinner dinner : weeklyDinners) {
       if (dinner.getDate().isEqual(date)) {
-        for (Recipe recipe : dinner.getRecipes()) {
-          if (recipe.getName().equalsIgnoreCase(recipeName)) {
-            dinner.getRecipes().remove(recipe);
-            return true;
-          }
-        }
+        dinner.getRecipes().remove(recipe);
+        return true;
       }
     }
     return false;
@@ -157,6 +153,27 @@ public class User {
   }
 
 
+  /**
+   * Check if a user has a weekly dinner on next week.
+   *
+   * @return true if the user has a weekly dinner on next week, otherwise false
+   */
+  public boolean checkNextWeekDinner() {
+    LocalDate now = LocalDate.now();
+    LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
+    LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
+    LocalDate startOfNextWeek = startOfWeek.plusWeeks(1);
+    LocalDate endOfNextWeek = endOfWeek.plusWeeks(1);
+
+    for (Dinner dinner : weeklyDinners) {
+      LocalDate dinnerDate = dinner.getDate();
+      if (!dinnerDate.isBefore(startOfNextWeek) && !dinnerDate.isAfter(endOfNextWeek)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**Set the favorite recipes of the user.
    *
    */
@@ -201,5 +218,10 @@ public class User {
     recipe.unstar();
     favorites.remove(recipe);
   }
+
+
+
+
+
 
 }

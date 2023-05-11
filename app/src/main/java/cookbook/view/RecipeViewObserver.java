@@ -17,7 +17,7 @@ public interface RecipeViewObserver {
   /**
    * Handles the save tags action when the save tags button is clicked.
    */
-  void handleSaveTagsClicked(ArrayList<String> updatedTags, String recipeName);
+  void handleSaveTagsClicked(ArrayList<String> updatedTags, Recipe recipe);
 
   void goToAddRecipe();
 
@@ -27,7 +27,7 @@ public interface RecipeViewObserver {
 
   void goToHomePage();
 
-  boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe);
+  boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe, int weekNumber);
 
   void goToShoppingList();
 
@@ -36,6 +36,13 @@ public interface RecipeViewObserver {
   void addRecipeToFavorites(Recipe recipe);
 
   void removeRecipeFromFavorites(Recipe recipe);
+
+  void goToRecipe(Recipe recipe);
+
+  void editRecipe(Recipe recipe, String newName, String newDescription, String newInstructions,
+      ArrayList<String[]> newIngredients, ArrayList<String> newTags);
+
+  void goToMessages();
 
 
 }

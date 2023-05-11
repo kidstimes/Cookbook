@@ -41,4 +41,11 @@ public class Ingredient {
     return measurementUnit;
   }
 
+  public void setQuantity(float quantity) {
+    this.quantity = quantity;
+  }
+
+  
+
+
 }

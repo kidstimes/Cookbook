@@ -1,10 +1,14 @@
 package cookbook.model;
 
 import cookbook.database.Database;
+
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 /**
  * The Cookbook facade class.
@@ -124,18 +128,16 @@ public class CookbookFacade {
    * Add tags to a recipe.
    *
    * @param tags the tags in an ArrayList
-   * @param recipeName the name of the recipe
+   * @param recipe the recipe
    */
-  public void addTagsToRecipe(ArrayList<String> tags, String recipeName) {
-    for (Recipe recipe : recipes) {
-      if (recipe.getName() == recipeName) {
-        recipe.setTags(tags);
-      }
+  public void addTagsToRecipe(ArrayList<String> tags, Recipe recipe) {
+    if (recipes.contains(recipe)) {
+      recipe.setTags(tags);
     }
   }
 
-  public void updateTagToDatabase(ArrayList<String> tags, String recipeName) {
-    database.updateTagToDatabase(tags, recipeName, user.getUsername());
+  public void updateTagToDatabase(ArrayList<String> tags, Recipe recipe) {
+    database.updateTagToDatabase(tags, recipe.getId(), user.getUsername());
   }
 
   /**
@@ -248,7 +250,7 @@ public class CookbookFacade {
     for (Dinner dinner : dinnerList) {
       for (Recipe recipe : recipes) {
         for (Recipe dinnerRecipe : dinner.getRecipes()) {
-          if (recipe.getName().equalsIgnoreCase(dinnerRecipe.getName())) {
+          if (recipe.getName().equals(dinnerRecipe.getName())) {
             user.addWeeklyDinner(dinner.getDate(), recipe);
           }
         }
@@ -264,7 +266,7 @@ public class CookbookFacade {
    */
   public boolean checkRecipeName(String recipeName) {
     for (Recipe recipe : recipes) {
-      if (recipe.getName().equalsIgnoreCase(recipeName)) {
+      if (recipe.getName().equals(recipeName)) {
         return true;
       }
     }
@@ -276,6 +278,11 @@ public class CookbookFacade {
     return user.checkWeeklyDinner();
   }
 
+  //check if a user has a weekly dinner for next week
+  public boolean checkNextWeekDinner() {
+    return user.checkNextWeekDinner();
+  }
+
   /** Load the favorite recipes of the user from the database.
   *
   */
@@ -284,7 +291,7 @@ public class CookbookFacade {
     //Set attribute isstar to true for all the favorite recipes in the cookbook
     for (Recipe r : favoriteRecipes) {
       for (Recipe recipe : recipes) {
-        if (r.getName().equalsIgnoreCase(recipe.getName())) {
+        if (r.getName().equals(recipe.getName())) {
           recipe.star();
           user.addToFavorites(recipe);
         }
@@ -303,7 +310,7 @@ public class CookbookFacade {
     //change the recipe attribute starred to true 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
-      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+      if (r.getName().equals(recipe.getName())) {
         r.star();
         System.out.println(r);
       }
@@ -322,7 +329,7 @@ public class CookbookFacade {
     //change the recipe attribute starred to false 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
-      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+      if (r.getName().equals(recipe.getName())) {
         r.unstar();
         System.out.println(r);
       }
@@ -340,11 +347,113 @@ public class CookbookFacade {
     return user.getFavorites();
   }
 
-  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
-    user.removeRecipeFromWeeklyDinner(dayDate, recipeName);
-    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe) {
+    user.removeRecipeFromWeeklyDinner(dayDate, recipe);
+    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipe.getName());
   }
 
+  /** Edit a recipe in the cookbook.
+   *
+   * @param recipe the recipe to edit
+   * @param name is the new name of the recipe
+   * @param description is the new description of the recipe
+   * @param instructions is the new instructions of the recipe
+   * @param ingredients is the new ingredients of the recipe
+   * @param tags is the new tags of the recipe
+   */
+
+  public void editRecipe(Recipe recipe, String name, String description, String instructions, 
+      ArrayList<String[]> ingredients, ArrayList<String> tags) {
+    recipe.setName(name);
+    recipe.setShortDesc(description);
+    recipe.setDirection(instructions);
+    recipe.setIngredients(ingredients);
+    recipe.setTags(tags);
+    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients, tags, user.getUsername());
+  }
+
+  public void deleteRecipeFromShoppingList(Recipe recipe, int weekNumber) {
+    database.deleteRecipeFromShoppingList(user.getUsername(), recipe.getId(), weekNumber);
+  }
+
+
+  public void addRecipeToShoppingList(Recipe recipe, int weekNumber) {
+    database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), weekNumber);
+  }
+
+
+  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
+    database.editIngredientQuantity(user.getUsername(), ingredientName, newQuantity, weekNumber);
+
+
+  }
+
+  public void deleteIngredientInShoppingList(String ingredientName, int weekNumber) {
+    database.deleteIngredientFromShoppingList(user.getUsername(), ingredientName, weekNumber);
+  }
+
+  
+
+  public ArrayList<ShoppingList> getShoppingList() {
+    ArrayList<ShoppingList> shoppingLists = new ArrayList<ShoppingList>();
+
+    // Add weekly dinner list to shopping list, first check the date, then add the ingredients of each recipe
+    for (Dinner dinner : user.getWeeklyDinners()) {
+        int weekNumber = dinner.getWeekNumber();
+        ShoppingList shoppingList = null;
+
+        // Find the existing shopping list for the week, if it exists
+        for (ShoppingList existingList : shoppingLists) {
+            if (existingList.getWeekNumber() == weekNumber) {
+                shoppingList = existingList;
+                break;
+            }
+        }
+
+        // If the shopping list for the week doesn't exist, create a new one and add it to the shoppingLists
+        if (shoppingList == null) {
+            shoppingList = new ShoppingList(weekNumber, new ArrayList<Ingredient>());
+            shoppingLists.add(shoppingList);
+        }
+
+        // Add the ingredients of each recipe to the shopping list, or update the quantity if the ingredient already exists
+        for (Recipe recipe : dinner.getRecipes()) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                boolean ingredientExists = false;
+
+                for (Ingredient existingIngredient : shoppingList.getIngredients()) {
+                    if (existingIngredient.getName().equals(ingredient.getName()) &&
+                            existingIngredient.getMeasurementUnit().equals(ingredient.getMeasurementUnit())) {
+                        existingIngredient.setQuantity(existingIngredient.getQuantity() + ingredient.getQuantity());
+                        ingredientExists = true;
+                        break;
+                    }
+                }
+
+                if (!ingredientExists) {
+                    shoppingList.addIngredient(new Ingredient(ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit()));
+                }
+            }
+        }
+    }
+
+    return shoppingLists;
+}
+
+  public ArrayList<ShoppingList> loadShoppingListsFromDatabase() {
+    return database.loadShoppingListsFromDatabase(user.getUsername());
+  }
+
+  public ArrayList<User> loadAllUsers() {
+    ArrayList<User> users = new ArrayList<User>();
+    for (User user : users) {
+      users.add(new User(0, "hi", "hihi"));
+      
+    }return users;
+  }
+
+
+  
 
 
 }

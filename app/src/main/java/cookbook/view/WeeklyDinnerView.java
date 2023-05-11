@@ -94,7 +94,8 @@ public class WeeklyDinnerView {
         createButton("Add a Recipe", e -> observer.goToAddRecipe()),
         createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
         createButton("My Favorites", e -> observer.goToMyFavorite()),
-        createButton("My Shopping List", e -> observer.goToShoppingList())
+        createButton("My Shopping List", e -> observer.goToShoppingList()),
+        createButton("Messages", e -> observer.goToMessages()),
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -219,7 +220,7 @@ public class WeeklyDinnerView {
     }
   }
 
-  /** Get the current week number of the year.
+  /** Get the total week number of the year.
    *
    * @param year the year to get the week number of
    * @return the week number of the year
@@ -351,8 +352,12 @@ public class WeeklyDinnerView {
           deleteButton.setMinHeight(20);
           deleteButton.setMaxHeight(20);
           deleteButton.setOnAction(event -> {
+            //get week number for dayDate
+            int weekNumber = getWeekNumber(dayDate);
             // Call the deleteRecipe method of your DinnerList class
-            observer.removeRecipeFromWeeklyDinner(dayDate, recipe.getName());
+            observer.removeRecipeFromWeeklyDinner(dayDate, recipe, weekNumber);
+
+           
             // Remove all children except dayLabel and dateLabel and update list to reflect change
             dayBox.getChildren().removeIf(node -> dayBox.getChildren().indexOf(node) > 1);
             updateRecipeList(dayBox, dayDate);

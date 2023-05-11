@@ -22,7 +22,7 @@ public class HomePageController implements HomePageViewObserver {
   public HomePageController(CookbookFacade model, MainController mainController) {
     this.model = model;
     this.mainController = mainController;
-    this.homePageView = new HomePageView(model.getUserDisplayName(), model.checkWeeklyDinner());
+    this.homePageView = new HomePageView(model.getUserDisplayName(), model.checkWeeklyDinner(),model.checkNextWeekDinner());
     this.homePageView.setObserver(this);
     
   }
@@ -64,5 +64,10 @@ public class HomePageController implements HomePageViewObserver {
   @Override
   public void goToMyFavorite() {
     mainController.goToMyFavorite();
+  }
+
+  @Override
+  public void goToMessages() {
+    mainController.goToMessages();
   }
 }

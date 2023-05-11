@@ -27,6 +27,7 @@ public class MainController {
   private WeeklyDinnerController weeklyDinnerController;
   private ShoppingListController shoppingListController;
   private FavoriteController favoriteController;
+  private AdminController adminController;
 
   /**
    * Controller Constructor.
@@ -152,8 +153,7 @@ public class MainController {
    * Go to shopping list.
    */
   public void goToShoppingList() {
-    this.shoppingListController =
-         new ShoppingListController(model, this);
+    this.shoppingListController = new ShoppingListController(model, this);
     root.setCenter(shoppingListController.getView());
   }
 
@@ -171,7 +171,8 @@ public class MainController {
    * Go to admin.
    */
   public void goToAdmin() {
-    //TODO implement admin view
+    this.adminController = new AdminController(model, this);
+    root.setCenter(adminController.getView());
   }
 
   /**

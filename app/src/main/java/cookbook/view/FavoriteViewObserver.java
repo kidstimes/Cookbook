@@ -24,5 +24,7 @@ public interface FavoriteViewObserver {
   void goToMyFavorite();
 
   void removeFromFavorites(Recipe recipe);
+
+  void goToMessages();
   
 }

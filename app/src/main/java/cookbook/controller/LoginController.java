@@ -40,12 +40,16 @@ public class LoginController implements LoginViewObserver {
   public void handleLogin(String username, String password) {
     if (model.checkIfUserNameExists(username)) {
       if (model.userLogin(username, password)) {
-        model.setCurrentUser(username);
-        mainController.initializeControllersAfterLogin();
-        model.loadAllRecipes();
-        model.loadWeeklyDinnerFromDatabase();
-        model.loadFavoriteRecipes();
-        mainController.goToHomePage();
+        if (username.equals("admin")) {
+          mainController.goToAdmin();
+        } else {
+          model.setCurrentUser(username);
+          mainController.initializeControllersAfterLogin();
+          model.loadAllRecipes();
+          model.loadWeeklyDinnerFromDatabase();
+          model.loadFavoriteRecipes();
+          mainController.goToHomePage();
+        }
       } else {
         loginView.showError("Incorrect password");
       }

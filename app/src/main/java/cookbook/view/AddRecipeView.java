@@ -118,6 +118,10 @@ public class AddRecipeView {
       createButton("My Shopping List", e -> {
         clearAllInput();
         observer.goToShoppingList();
+      }),
+      createButton("Messages", e -> { 
+        clearAllInput();
+        observer.goToMessages();
       })
       };
     for (Button button : sidebarButtons) {

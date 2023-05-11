@@ -38,8 +38,10 @@ public class WeeklyDinnerController extends BaseController implements WeeklyDinn
   }
   
   @Override
-  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
-    model.removeRecipeFromWeeklyDinner(dayDate, recipeName);
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe, int week_number) {
+    model.removeRecipeFromWeeklyDinner(dayDate, recipe);
+    model.deleteRecipeFromShoppingList(recipe, week_number);
   }
+
 }
 
