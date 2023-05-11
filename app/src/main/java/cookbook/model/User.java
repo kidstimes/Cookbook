@@ -231,6 +231,7 @@ public class User {
     for (ShoppingList shoppingList : shoppingLists) {
       if (shoppingList.getWeekNumber() == weekNumber) {
         shoppingList.addIngredients(ingredients);
+        return;
       }
     }
     // if there is no shopping list with the given week number create it with the ingredients

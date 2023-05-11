@@ -44,7 +44,7 @@ public class ShoppingList {
    *
    * @param newIngredient the ingredient to add
    */
-  private void addIngredient(Ingredient newIngredient) {
+  public void addIngredient(Ingredient newIngredient) {
     for (Ingredient ingredient : this.ingredients) {
       if (newIngredient.getName() == ingredient.getName()) {
         ingredient.setQuantity(ingredient.getQuantity() + newIngredient.getQuantity());
