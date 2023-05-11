@@ -268,7 +268,7 @@ public class ShoppingListView {
           ingredientListContainer.getChildren().add(titleLine);
           for (Ingredient ingredient : shoppingList.getIngredients()) {
             Button editButton = new Button("Edit quantity");
-            editButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-effect: null;-fx-cursor: hand");
+            editButton.setStyle("-fx-background-color: white; -fx-text-fill: #3D405B; -fx-effect: null;-fx-cursor: hand");
             editButton.setFont(Font.font("Roboto", 12));
             editButton.setOnAction(e -> {
               TextInputDialog inputDialog = new TextInputDialog(String.valueOf(ingredient.getQuantity()));
@@ -288,7 +288,7 @@ public class ShoppingListView {
               });
             });
             Button deleteButton = new Button("Delete");
-            deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: #E07A5F; -fx-text-fill: white; -fx-cursor: hand; ");
+            deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
             deleteButton.setFont(Font.font("Roboto", 18));
             deleteButton.setOnAction(e -> {
               observer.deleteIngredientInShoppingList(ingredient.getName(), weekNumber);

@@ -288,7 +288,7 @@ public class CookbookFacade {
   */
   public void loadFavoriteRecipes() {
     ArrayList<Recipe> favoriteRecipes =  database.loadFavoriteRecipes(user.getUsername());
-    //Set attribute isstar to true for all the favorite recipes in the cookbook
+    //Set attribute starred to true for all the favorite recipes in the cookbook
     for (Recipe r : favoriteRecipes) {
       for (Recipe recipe : recipes) {
         if (r.getName().equals(recipe.getName())) {
@@ -361,7 +361,6 @@ public class CookbookFacade {
    * @param ingredients is the new ingredients of the recipe
    * @param tags is the new tags of the recipe
    */
-
   public void editRecipe(Recipe recipe, String name, String description, String instructions, 
       ArrayList<String[]> ingredients, ArrayList<String> tags) {
     recipe.setName(name);
@@ -384,72 +383,19 @@ public class CookbookFacade {
 
   public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
     database.editIngredientQuantity(user.getUsername(), ingredientName, newQuantity, weekNumber);
-
-
   }
 
   public void deleteIngredientInShoppingList(String ingredientName, int weekNumber) {
     database.deleteIngredientFromShoppingList(user.getUsername(), ingredientName, weekNumber);
   }
 
-  
-
-  public ArrayList<ShoppingList> getShoppingList() {
-    ArrayList<ShoppingList> shoppingLists = new ArrayList<ShoppingList>();
-
-    // Add weekly dinner list to shopping list, first check the date, then add the ingredients of each recipe
-    for (Dinner dinner : user.getWeeklyDinners()) {
-        int weekNumber = dinner.getWeekNumber();
-        ShoppingList shoppingList = null;
-
-        // Find the existing shopping list for the week, if it exists
-        for (ShoppingList existingList : shoppingLists) {
-            if (existingList.getWeekNumber() == weekNumber) {
-                shoppingList = existingList;
-                break;
-            }
-        }
-
-        // If the shopping list for the week doesn't exist, create a new one and add it to the shoppingLists
-        if (shoppingList == null) {
-            shoppingList = new ShoppingList(weekNumber, new ArrayList<Ingredient>());
-            shoppingLists.add(shoppingList);
-        }
-
-        // Add the ingredients of each recipe to the shopping list, or update the quantity if the ingredient already exists
-        for (Recipe recipe : dinner.getRecipes()) {
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                boolean ingredientExists = false;
-
-                for (Ingredient existingIngredient : shoppingList.getIngredients()) {
-                    if (existingIngredient.getName().equals(ingredient.getName()) &&
-                            existingIngredient.getMeasurementUnit().equals(ingredient.getMeasurementUnit())) {
-                        existingIngredient.setQuantity(existingIngredient.getQuantity() + ingredient.getQuantity());
-                        ingredientExists = true;
-                        break;
-                    }
-                }
-
-                if (!ingredientExists) {
-                    shoppingList.addIngredient(new Ingredient(ingredient.getName(), ingredient.getQuantity(), ingredient.getMeasurementUnit()));
-                }
-            }
-        }
-    }
-
-    return shoppingLists;
-}
-
   public ArrayList<ShoppingList> loadShoppingListsFromDatabase() {
-    return database.loadShoppingListsFromDatabase(user.getUsername());
+    user.setShoppingLists(database.loadShoppingListsFromDatabase(user.getUsername()));
+    return user.getShoppingLists();
   }
 
   public ArrayList<User> loadAllUsers() {
-    ArrayList<User> users = new ArrayList<User>();
-    for (User user : users) {
-      users.add(new User(0, "hi", "hihi"));
-      
-    }return users;
+    return database.loadAllUsersFromDatabase();
   }
 
   /**

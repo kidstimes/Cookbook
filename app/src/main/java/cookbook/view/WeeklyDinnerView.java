@@ -346,7 +346,7 @@ public class WeeklyDinnerView {
 
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: #E07A5F; -fx-text-fill: white; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
@@ -357,7 +357,6 @@ public class WeeklyDinnerView {
             // Call the deleteRecipe method of your DinnerList class
             observer.removeRecipeFromWeeklyDinner(dayDate, recipe, weekNumber);
 
-           
             // Remove all children except dayLabel and dateLabel and update list to reflect change
             dayBox.getChildren().removeIf(node -> dayBox.getChildren().indexOf(node) > 1);
             updateRecipeList(dayBox, dayDate);

@@ -284,4 +284,24 @@ public class User {
     }
   }
 
+  //set shoppinglist
+  /**
+   * Set the shopping list of the user.
+   *
+   * @param shoppingLists the shopping list to set
+   */
+  public void setShoppingLists(ArrayList<ShoppingList> shoppingLists) {
+    this.shoppingLists = shoppingLists;
+  }
+
+  /**
+   * Get the shopping list of the user.
+   *
+   * @return an arraylist with the shopping lists
+   */
+  public ArrayList<ShoppingList> getShoppingLists() {
+    return shoppingLists;
+  }
+  
+  
 }

@@ -118,7 +118,7 @@ public class HomePageView {
     centerView.setStyle("-fx-padding: 50px 20px 20px 20px;");
     centerView.setAlignment(Pos.TOP_LEFT);
     Label title = new Label("Home Page");
-    title.setFont(Font.font("Roboto", 28));
+    title.setFont(Font.font("Roboto", 32));
     centerView.getChildren().add(title);
     Label welcomLabel = new Label("Welcome to cookbook, " + displayName + "!");
     welcomLabel.setFont(Font.font("Roboto", 24));
