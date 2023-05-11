@@ -1,5 +1,3 @@
-
-
 package cookbook.database;
 
 import cookbook.model.Dinner;
@@ -65,68 +63,7 @@ public class Database {
     // does not exist
     return false;
   }
-  /**
-   *  list all users in the database.
-   */
-  public List<String> listAllUsers() {
-    List<String> users = new ArrayList<>();
-    try (
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT username FROM users")
-    ) {
-      while (rs.next()) {
-        users.add(rs.getString("username"));
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    return users;
-  }
 
-  /**
-   * Add a new user to the database.
-   * true if the user was added, false otherwise.
-   * used by the admin.
-   */
-  public boolean addUser(String userName) {
-    if (checkIfUserNameExists(userName)) {
-      return false;
-    }
-    try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "INSERT INTO users (username, password_hash, displayname) VALUES (?, ?, ?)"
-        )
-    ) {
-      stmt.setString(1, userName);
-      stmt.setString(2, "");
-      stmt.setString(3, "");
-      int rowsAffected = stmt.executeUpdate();
-      return rowsAffected == 1;
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-      return false;
-    }
-  }
-
-  /**
-   * Delete a user from the database.
-   * used by the admin.
-   */
-  public boolean deleteUser(String userName) {
-    try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "DELETE FROM users WHERE username = ?"
-        )
-    ) {
-      stmt.setString(1, userName);
-      int rowsAffected = stmt.executeUpdate();
-      return rowsAffected == 1;
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-      return false;
-    }
-  }
-  
   /**
    * Sign up a new user in the database.
    */
@@ -209,12 +146,7 @@ public class Database {
     try {
       // Create a MessageDigest instance for SHA-256
       MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-      // Create a MessageDigest instance for SHA-256
-      MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 
-      // Hash the password as bytes
-      byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
-      byte[] hashedBytes = messageDigest.digest(passwordBytes);
       // Hash the password as bytes
       byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
       byte[] hashedBytes = messageDigest.digest(passwordBytes);
@@ -224,19 +156,10 @@ public class Database {
       for (byte b : hashedBytes) {
         hexString.append(String.format("%02x", b));
       }
-      // Convert the hashed bytes to a hexadecimal string
-      StringBuilder hexString = new StringBuilder();
-      for (byte b : hashedBytes) {
-        hexString.append(String.format("%02x", b));
-      }
 
-      // Return the hashed password as a hexadecimal string
-      return hexString.toString();
       // Return the hashed password as a hexadecimal string
       return hexString.toString();
     } catch (NoSuchAlgorithmException e) {
-      // Handle the exception if the hashing algorithm is not supported
-      throw new RuntimeException("SHA-256 is not supported", e);
       // Handle the exception if the hashing algorithm is not supported
       throw new RuntimeException("SHA-256 is not supported", e);
     }
@@ -460,12 +383,7 @@ public class Database {
       statement.setString(1, recipeName);
       ResultSet resultSet = statement.executeQuery();
       return resultSet.next() ? resultSet.getInt("id") : -1;
-      statement.setString(1, recipeName);
-      ResultSet resultSet = statement.executeQuery();
-      return resultSet.next() ? resultSet.getInt("id") : -1;
     } catch (SQLException e) {
-      System.out.println("Error while getting recipe id: " + e.getMessage());
-      return -1;
       System.out.println("Error while getting recipe id: " + e.getMessage());
       return -1;
     }
@@ -477,12 +395,7 @@ public class Database {
       statement.setString(1, tagName);
       ResultSet resultSet = statement.executeQuery();
       return resultSet.next() ? resultSet.getInt("id") : -1;
-      statement.setString(1, tagName);
-      ResultSet resultSet = statement.executeQuery();
-      return resultSet.next() ? resultSet.getInt("id") : -1;
     } catch (SQLException e) {
-      System.out.println("Error while getting tag id: " + e.getMessage());
-      return -1;
       System.out.println("Error while getting tag id: " + e.getMessage());
       return -1;
     }
@@ -516,12 +429,7 @@ public class Database {
       statement.setInt(2, recipeId);
       statement.setInt(3, tagId);
       statement.executeUpdate();
-      statement.setInt(1, userId);
-      statement.setInt(2, recipeId);
-      statement.setInt(3, tagId);
-      statement.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("Error while inserting personal tag: " + e.getMessage());
       System.out.println("Error while inserting personal tag: " + e.getMessage());
     }
   }
@@ -535,11 +443,7 @@ public class Database {
       statement.setInt(1, recipeId);
       statement.setInt(2, tagId);
       statement.executeUpdate();
-      statement.setInt(1, recipeId);
-      statement.setInt(2, tagId);
-      statement.executeUpdate();
     } catch (SQLException e) {
-      System.out.println("Error while inserting recipe tag: " + e.getMessage());
       System.out.println("Error while inserting recipe tag: " + e.getMessage());
     }
   }
