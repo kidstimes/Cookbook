@@ -1,41 +1,40 @@
 package cookbook.view;
 
-
 import cookbook.model.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.GridPane;
-import javafx.scene.control.ListCell;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.control.TableColumn;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.HBox;
-
-
-
-
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 
 
@@ -55,13 +54,15 @@ public class AddRecipeView {
   private ListView<String> tagsList;
   private ListView<String> directionsList;
   private Label errorLabel;
+  private String displayName;
 
 
   /**
    * Constructor for the add recipe view.
    */
-  public AddRecipeView() {
+  public AddRecipeView(String displayName) {
     this.view = new BorderPane();
+    this.displayName = displayName;
     initLayout();
   }
 
@@ -69,7 +70,6 @@ public class AddRecipeView {
   public Node getView() {
     return this.view;
   }
-
 
   /**
    * Set the observer of the add recipe view.
@@ -85,28 +85,60 @@ public class AddRecipeView {
    * Initialize the add recipe view.
    */
   private void initLayout() {
+
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(30);
+    sidebar.setMaxWidth(120);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text title = new Text(displayName + ", welcome!");
+    title.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(title);
+
+    // Add five options to the homepage, one per row
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> {
+        clearAllInput();
+        observer.goToHomePage();
+      }),
+      createButton("Browse Recipes", e -> {
+        clearAllInput();
+        observer.goToBrowser();
+      }),
+      createButton("Add a Recipe", e -> {
+        observer.goToAddRecipe();
+      }),
+      createButton("Weekly Dinner List", e -> {
+        clearAllInput();
+        observer.goToWeeklyDinner();
+      }),
+      createButton("My Favorites", e -> {
+        clearAllInput();
+        observer.goToMyFavorite();
+      }),
+      createButton("My Shopping List", e -> {
+        clearAllInput();
+        observer.goToShoppingList();
+      })
+      };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 18));
+    logoutButton.setStyle(
+        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+    sidebar.getChildren().add(logoutButton);
+    view.setLeft(sidebar);
+
     VBox root = new VBox();
     root.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
 
-    // Back to Browser hyperlink
-    Hyperlink backButton = new Hyperlink("← Back to Home Page");
-    backButton.setFont(Font.font("Roboto", 20));
-
-    backButton.setOnAction(e -> {
-      observer.goToBrowser();
-      // Clear all fields
-      nameField.clear();
-      descField.clear();
-      directionLineField.clear();
-      directionsList.getItems().clear();
-      ingredientNameField.clear();
-      quantityField.clear();
-      measureUnitField.clear();
-      ingredientsTable.getItems().clear();
-      tagsList.getItems().clear();
-    });
-
-    root.getChildren().add(backButton);
 
     // Add Recipe title
     Label titleLabel = new Label("Add a Recipe");
@@ -144,7 +176,7 @@ public class AddRecipeView {
     directionLineField.setWrapText(true);
     directionLineField.setPrefRowCount(5);
     directionLineField
-        .setPromptText("Line for adding a step of direction. Each step of direction must be in a separated new line.");
+        .setPromptText("Add a step. Each step of direction must be in a separated new line.");
     directionLineField.setStyle("-fx-border-color: transparent;-fx-border-style:none;");
     directionLineField.setMinHeight(50);
     directionLineField.setMinWidth(550);
@@ -410,7 +442,7 @@ public class AddRecipeView {
 
       // Check if any input is empty
       if (name.isEmpty() || description.isEmpty() || directions.isEmpty() 
-          || ingredientsList.isEmpty()|| tagsListItems.isEmpty()) {
+          || ingredientsList.isEmpty() || tagsListItems.isEmpty()) {
         errorLabel.setText("All fields must be filled in.");
       } else {
         if (observer != null) {
@@ -430,19 +462,15 @@ public class AddRecipeView {
           ArrayList<String> tagsData = new ArrayList<>(tagsListItems);
 
           String[] recipeData = new String[] { name, description, directionsText };
-          observer.handleSaveRecipeClicked(recipeData, ingredientsData, tagsData);
+          if (observer.handleSaveRecipeClicked(recipeData, ingredientsData, tagsData)) {
+            showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
+                String.format("Recipe %s saved successfully to cookbook.", recipeData[0]));
+            clearAllInput();
+          }
         }
 
         // Clear all fields
-        nameField.clear();
-        descField.clear();
-        directionLineField.clear();
-        directionsList.getItems().clear();
-        ingredientNameField.clear();
-        quantityField.clear();
-        measureUnitField.clear();
-        ingredientsTable.getItems().clear();
-        tagsList.getItems().clear();
+        clearAllInput();
       }
     });
     root.getChildren().add(saveButton);
@@ -456,4 +484,56 @@ public class AddRecipeView {
     // Set view
     view.setCenter(scrollPane);
   }
+
+  /** Create styled button with the given text and event handler.
+   *
+   * @param text is the text to display on the button
+   * @param eventHandler is the event handler to execute when the button is clicked.
+   * @return the created button
+   */
+  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
+    Button button = new Button(text);
+    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setFont(Font.font("Roboto", 18));
+    button.setMinWidth(120); // Set the fixed width for each button
+    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setOnAction(eventHandler);
+    return button;
+  }
+
+  // Clear all input fields
+  private void clearAllInput() {
+    nameField.clear();
+    descField.clear();
+    directionLineField.clear();
+    directionsList.getItems().clear();
+    ingredientNameField.clear();
+    quantityField.clear();
+    measureUnitField.clear();
+    ingredientsTable.getItems().clear();
+    tagsList.getItems().clear();
+  }
+
+  /**
+   * Show an alert with the given alert type, title, and message.
+   */
+  public void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    // Set custom styles for the alert
+    DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    // Set custom styles for the buttons
+    ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
+    buttonBar.getButtons().forEach(button -> {
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+    });
+    // Set custom styles for the content label
+    Label contentLabel = (Label) dialogPane.lookup(".content");
+    contentLabel.setStyle("-fx-text-fill: #3D405B;");
+    alert.showAndWait();
+  }
+
 }

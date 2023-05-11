@@ -1,24 +1,22 @@
 package cookbook.view;
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.animation.FadeTransition;
 import javafx.util.Duration;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 
 
 
@@ -62,7 +60,7 @@ public class SignUpView {
   private void initLayout() {
 
     view = new BorderPane();
-    view.setStyle("-fx-background-color: beige;");
+    view.setStyle("-fx-background-color: #F9F8F3;");
     VBox mainContainer = new VBox(10);
     mainContainer.setAlignment(Pos.CENTER);
     mainContainer.setPadding(new Insets(20));
@@ -180,11 +178,11 @@ public class SignUpView {
   }
 
   /**
-   * Validate the input.
+   * Validate the input .
    */
   private boolean validateInput(String username, String password, String confirmedPassword, 
       String displayName) {
-    if (username.isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
+    if (username.trim().isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
         || displayName.isEmpty()) {
       showError("All fields must be filled in.");
       return false;

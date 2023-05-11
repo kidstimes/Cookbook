@@ -2,7 +2,6 @@ package cookbook.view;
 
 import cookbook.model.Recipe;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 
 /**
  * Interface for the BrowserView observer.
@@ -25,6 +24,23 @@ public interface BrowserViewObserver {
    * @param recipe the chosen recipe
    */
   void goToRecipe(Recipe recipe);
+
+  void goToBrowser();
+
+  void goToWeeklyDinner();
+
+  void goToAddRecipe();
+
+  void userLogout();
+
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
+  void addRecipeToFavorite(Recipe recipe);
+
+  void removeRecipeFromFavorite(Recipe recipe);
+
 
 
 

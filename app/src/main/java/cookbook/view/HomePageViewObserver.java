@@ -17,4 +17,10 @@ public interface HomePageViewObserver {
 
   void userLogout();
 
+  void goToWeeklyDinner();
+
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
 }

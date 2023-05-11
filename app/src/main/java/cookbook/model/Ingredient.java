@@ -1,5 +1,8 @@
 package cookbook.model;
 
+/**
+ * The Ingredient class.
+ */
 public class Ingredient {
 
   private String name;
@@ -38,12 +41,4 @@ public class Ingredient {
     return measurementUnit;
   }
 
-  // here is the toString method to test the above code
-  // remove it to test folder later
-
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(quantity).append(" ").append(measurementUnit).append(" of ").append(name);
-    return sb.toString();
-  }
 }

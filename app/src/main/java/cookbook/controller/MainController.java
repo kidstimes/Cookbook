@@ -18,12 +18,15 @@ public class MainController {
   private Stage stage;
   private BorderPane root;
   private CookbookFacade model;
+  private LoginController loginController;
+  private SignUpController signUpController;
   private HomePageController homePageController;
   private BrowserController browserController;
   private RecipeController recipeController;
   private AddRecipeController addRecipeController;
-  private LoginController loginController;
-  private SignUpController signUpController;
+  private WeeklyDinnerController weeklyDinnerController;
+  private ShoppingListController shoppingListController;
+  private FavoriteController favoriteController;
 
   /**
    * Controller Constructor.
@@ -35,18 +38,21 @@ public class MainController {
     // Initialize view, model, and database
     this.stage = primaryStage;
     this.model = model;
-    
 
-    //model.setRecipes(database.loadAllRecipes());
-
-    // Initialize controllers
+    // Initialize login and sign up controllers
     this.loginController = new LoginController(model, this);
     this.signUpController = new SignUpController(model, this);
-    this.homePageController = new HomePageController(model, this);
-    this.addRecipeController = new AddRecipeController(model, this);
 
-    // Initialize the main layout of the program
+  }
 
+
+  /**
+   * Initialize controllers after successful login of a user.
+   */
+  public void initializeControllersAfterLogin() {
+    String userDisplayName = model.getUserDisplayName();
+    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);   
+    
   }
 
   /**
@@ -60,10 +66,6 @@ public class MainController {
     goToLogin();
     
 
-
-
-
-
     // Quit
     // quitCookbook();
   }
@@ -75,12 +77,11 @@ public class MainController {
   public void initMainLayout() {
     // Initialize the root pane
     this.root = new BorderPane();
-    Scene scene = new Scene(this.root, 1200, 800);
+    Scene scene = new Scene(this.root, 1440, 960);
     // Initialize the stage
     this.stage.setTitle("Cookbook");
     this.stage.setScene(scene);
     this.stage.show();
-  
   }
 
   /**
@@ -101,15 +102,8 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    homePageController.setDisplayName(model.getUserDisplayName());
+    this.homePageController = new HomePageController(model, this); 
     root.setCenter(homePageController.getView());
-  }
-
-  /**
-   * Go to admin.
-   */
-  public void goToAdmin() {
-    // admin.displayView();
   }
 
   /**
@@ -137,11 +131,65 @@ public class MainController {
     root.setCenter(addRecipeController.getView());
   }
 
+  /**
+   * Go to my favorite recipes.
+   */
+  public void goToMyFavorite() {
+    this.favoriteController = new FavoriteController(model, this);
+    root.setCenter(favoriteController.getView());
+  }
+
+  /**
+   * Go to weekly dinner lists.
+   */
+  public void goToWeeklyDinner() {
+    this.weeklyDinnerController = new WeeklyDinnerController(model, this);
+    root.setCenter(weeklyDinnerController.getView());
+  }
+
+
+  /**
+   * Go to shopping list.
+   */
+  public void goToShoppingList() {
+    this.shoppingListController =
+         new ShoppingListController(model, this);
+    root.setCenter(shoppingListController.getView());
+  }
+
+
+  /**
+   * Go to my messsages.
+   */
+
+  public void goToMessages() {
+    //TODO implement my messages view
+  }
+
+
+  /**
+   * Go to admin.
+   */
+  public void goToAdmin() {
+    //TODO implement admin view
+  }
+
+  /**
+   * Go to help page.
+   */
+  public void goToHelp() {
+    //TODO implement help view
+  }
+
+
+  /**
+   * Log out the current user.
+   */
   public void userLogout() {
     model.userLogout();
     goToLogin();
   }
-  
+
   /**
    * Quit the cookbook.
    */
