@@ -254,4 +254,19 @@ public class User {
     return new ArrayList<Ingredient>();
   }
 
+  /**
+   * Edit the quantity of an ingredient in the shopping list of a given week.
+   *
+   * @param weekNumber the number of the week
+   * @param name the name of the ingredient
+   * @param newQuantity the updated quantity of the ingredient
+   */
+  public void editIngredientQuantityInShoppingList(int weekNumber, String name, float newQuantity) {
+    for (ShoppingList shoppingList : shoppingLists) {
+      if (shoppingList.getWeekNumber() == weekNumber) {
+        shoppingList.editIngredientQuantity(name, newQuantity);
+      }
+    }
+  }
+
 }

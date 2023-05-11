@@ -67,6 +67,20 @@ public class ShoppingList {
   }
 
   /**
+   * Edit the quantity of an ingredient in the shopping list.
+   *
+   * @param name the name of the ingredient
+   * @param newQuantity the updated quantity
+   */
+  public void editIngredientQuantity(String name, float newQuantity) {
+    for (Ingredient ingredient : this.ingredients) {
+      if (ingredient.getName() == name) {
+        ingredient.setQuantity(newQuantity);
+      }
+    }
+  }
+
+  /**
    * Get the week number of the shopping list.
    *
    * @return the number of the week

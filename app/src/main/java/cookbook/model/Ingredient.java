@@ -22,9 +22,6 @@ public class Ingredient {
     this.measurementUnit = measurementUnit;
   }
 
-  // start the getters and setters
-  // setters mainly for the write recipe method later
-
   public String getName() {
     return name;
   }
@@ -33,6 +30,12 @@ public class Ingredient {
     return quantity;
   }
 
+  /**
+   * Get the quantity of the ingredient for the given serving.
+   *
+   * @param serving the number indicating serving
+   * @return the quantity of the ingredient
+   */
   public float getQuantity(int serving) {
     return quantity * serving;
   }
@@ -44,8 +47,5 @@ public class Ingredient {
   public void setQuantity(float quantity) {
     this.quantity = quantity;
   }
-
-  
-
 
 }
