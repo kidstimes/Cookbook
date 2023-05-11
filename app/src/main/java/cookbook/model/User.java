@@ -13,6 +13,7 @@ public class User {
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
+  private ArrayList<ShoppingList> shoppingLists;
 
   /**
    * User Constructor.
@@ -25,6 +26,7 @@ public class User {
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
     this.favorites = new ArrayList<>(); 
+    this.shoppingLists = new ArrayList<>();
   }
 
   /**
@@ -219,9 +221,36 @@ public class User {
     favorites.remove(recipe);
   }
 
+  /**
+   * Add ingredients to the shopping list with a given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @param ingredients the ingredients to add
+   */
+  public void addIngredientsToShoppingList(int weekNumber, ArrayList<Ingredient> ingredients) {
+    for (ShoppingList shoppingList : shoppingLists) {
+      if (shoppingList.getWeekNumber() == weekNumber) {
+        shoppingList.addIngredients(ingredients);
+      }
+    }
+    // if there is no shopping list with the given week number create it with the ingredients
+    shoppingLists.add(new ShoppingList(weekNumber, ingredients));
+  }
 
-
-
-
+  /**
+   * Get the shopping list for a given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @return and arraylsit with the ingredients of the shopping list
+   */
+  public ArrayList<Ingredient> getShoppingList(int weekNumber) {
+    for (ShoppingList shoppingList : shoppingLists) {
+      if (shoppingList.getWeekNumber() == weekNumber) {
+        return shoppingList.getIngredients();
+      }
+    }
+    // if there is no shopping list with the given week number return an empty ararylist
+    return new ArrayList<Ingredient>();
+  }
 
 }

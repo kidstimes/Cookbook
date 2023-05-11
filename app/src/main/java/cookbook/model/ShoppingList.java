@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * The ShoppingList class.
  */
 public class ShoppingList {
+
   private int weekNumber;
   private ArrayList<Ingredient> ingredients;
 
@@ -43,7 +44,7 @@ public class ShoppingList {
    *
    * @param newIngredient the ingredient to add
    */
-  public void addIngredient(Ingredient newIngredient) {
+  private void addIngredient(Ingredient newIngredient) {
     for (Ingredient ingredient : this.ingredients) {
       if (newIngredient.getName() == ingredient.getName()) {
         ingredient.setQuantity(ingredient.getQuantity() + newIngredient.getQuantity());
@@ -52,6 +53,17 @@ public class ShoppingList {
     }
     ingredients.add(new Ingredient(newIngredient.getName(),
         newIngredient.getQuantity(), newIngredient.getMeasurementUnit()));
+  }
+
+  /**
+   * Add ingredients to the shopping list.
+   *
+   * @param newIngredients an ararylist of ingredients
+   */
+  public void addIngredients(ArrayList<Ingredient> newIngredients) {
+    for (Ingredient newIngredient : newIngredients) {
+      addIngredient(newIngredient);
+    }
   }
 
   /**
