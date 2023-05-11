@@ -258,13 +258,28 @@ public class User {
    * Edit the quantity of an ingredient in the shopping list of a given week.
    *
    * @param weekNumber the number of the week
-   * @param name the name of the ingredient
+   * @param ingredientName the name of the ingredient to edit
    * @param newQuantity the updated quantity of the ingredient
    */
-  public void editIngredientQuantityInShoppingList(int weekNumber, String name, float newQuantity) {
+  public void editIngredientQuantityInShoppingList(int weekNumber,
+      String ingredientName, float newQuantity) {
     for (ShoppingList shoppingList : shoppingLists) {
       if (shoppingList.getWeekNumber() == weekNumber) {
-        shoppingList.editIngredientQuantity(name, newQuantity);
+        shoppingList.editIngredientQuantity(ingredientName, newQuantity);
+      }
+    }
+  }
+
+  /**
+   * Delete an ingredient from the shopping list of the given week.
+   *
+   * @param weekNumber the number if the week
+   * @param ingredientName the name of the ingredient to delete
+   */
+  public void deleteIngredientFromShoppingList(int weekNumber, String ingredientName) {
+    for (ShoppingList shoppingList : shoppingLists) {
+      if (shoppingList.getWeekNumber() == weekNumber) {
+        shoppingList.deleteIngredient(ingredientName);
       }
     }
   }
