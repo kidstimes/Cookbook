@@ -452,8 +452,24 @@ public class CookbookFacade {
     }return users;
   }
 
+  /**
+   * Add ingredients to the shopping list of the user with a given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @param ingredients the ingredients to add to the shopping list
+   */
+  public void addIngredientsToUsersShoppingList(int weekNumber, ArrayList<Ingredient> ingredients) {
+    user.addIngredientsToShoppingList(weekNumber, ingredients);
+  }
 
-  
-
+  /**
+   * Get the shopping list of the user for the given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @return an arraylist with the ingredients of the shopping list
+   */
+  public ArrayList<Ingredient> getUsersShoppingList(int weekNumber) {
+    return user.getShoppingList(weekNumber);
+  }
 
 }
