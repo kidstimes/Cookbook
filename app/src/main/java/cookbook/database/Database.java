@@ -1,5 +1,6 @@
 package cookbook.database;
 
+import cookbook.model.Comment;
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 /**
  * Handler for the database connection.
@@ -736,6 +738,126 @@ public class Database {
     return false;
   }
 
+  public boolean addComment(String text, String recipeName, String userName) {
+    try {
+      // Get the user id
+      String userIdQuery = "SELECT id FROM users WHERE username = ?";
+      PreparedStatement userIdStatement = connection.prepareStatement(userIdQuery);
+      userIdStatement.setString(1, userName);
+      ResultSet userIdResultSet = userIdStatement.executeQuery();
+      if (!userIdResultSet.next()) {
+        System.out.println("User does not exist.");
+        return false;
+      }
+      int userId = userIdResultSet.getInt("id");
+
+      // Get the recipe id
+      int recipeId = getRecipeId(recipeName);
+      if (recipeId == -1) {
+        System.out.println("Recipe does not exist.");
+        return false;
+      }
+
+      // Insert the comment
+      String insertQuery = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
+      PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+      insertStatement.setString(1, text);
+      insertStatement.setInt(2, recipeId);
+      insertStatement.setInt(3, userId);
+      int rowsInserted = insertStatement.executeUpdate();
+      if (rowsInserted == 0) {
+        System.out.println("Failed to add comment.");
+        return false;
+      }
+      return true;
+    } catch (SQLException e) {
+      System.out.println("Error adding comment: " + e.getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * Deletes a comment from a recipe.
+   *
+   * @param commentId the id of the comment to delete
+   * @return true if the comment was deleted successfully, false otherwise
+   */
+  public boolean deleteComment(int commentId) {
+    try {
+      String deleteQuery = "DELETE FROM comments WHERE id = ?";
+      PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
+      deleteStatement.setInt(1, commentId);
+      int rowsDeleted = deleteStatement.executeUpdate();
+      if (rowsDeleted == 0) {
+        System.out.println("Failed to delete comment.");
+        return false;
+      }
+      System.out.println("Comment deleted successfully.");
+      return true;
+    } catch (SQLException e) {
+      System.out.println("Error while deleting comment: " + e.getMessage());
+      return false;
+    }
+  }
+
+ public Comment loadComments(int commentId) throws SQLException {
+    String query = "SELECT c.id, c.text, c.recipe_id, r.name AS recipe_name, c.user_id, u.username AS user_name "
+                 + "FROM comments c "
+                 + "JOIN recipes r ON c.recipe_id = r.id "
+                 + "JOIN users u ON c.user_id = u.id "
+                 + "WHERE c.id = ?";
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setInt(1, commentId);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String text = resultSet.getString("text");
+            int recipeId = resultSet.getInt("recipe_id");
+            String recipeName = resultSet.getString("recipe_name");
+            int userId = resultSet.getInt("user_id");
+            String userName = resultSet.getString("user_name");
+            return new Comment(id, text, recipeId, recipeName, userId, userName);
+        } else {
+            return null;
+        } 
+    } catch (SQLException e) {
+        System.out.println("Error while getting comment: " + e.getMessage());
+        return null;
+    }
+  }
+
+  public boolean editComment(int commentId, String text, String userName) {
+    try {
+        // Get the user id
+        String userIdQuery = "SELECT id FROM users WHERE username = ?";
+        PreparedStatement userIdStatement = connection.prepareStatement(userIdQuery);
+        userIdStatement.setString(1, userName);
+        ResultSet userIdResultSet = userIdStatement.executeQuery();
+        if (!userIdResultSet.next()) {
+            System.out.println("User does not exist.");
+            return false;
+        }
+        int userId = userIdResultSet.getInt("id");
+
+        // Update the comment
+        String updateQuery = "UPDATE comments SET text = ?, user_id = ? WHERE id = ?";
+        PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+        updateStatement.setString(1, text);
+        updateStatement.setInt(2, userId);
+        updateStatement.setInt(3, commentId);
+        int rowsUpdated = updateStatement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Comment updated successfully.");
+            return true;
+        } else {
+            System.out.println("Could not update comment.");
+            return false;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error while updating comment: " + e.getMessage());
+        return false;
+    }
+  }
 
   
 
