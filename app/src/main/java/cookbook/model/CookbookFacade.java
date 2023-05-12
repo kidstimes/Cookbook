@@ -1,14 +1,10 @@
 package cookbook.model;
 
 import cookbook.database.Database;
-
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 /**
  * The Cookbook facade class.
@@ -43,7 +39,7 @@ public class CookbookFacade {
   }
 
   public void setCurrentUser(String userName) {
-    user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    user = new User(userName, database.getUserDisplayName(userName));
   }
 
   public String getUserDisplayName() {
@@ -107,7 +103,7 @@ public class CookbookFacade {
    *
    * @param name the name of the recipe to remove.
    */
-  public void removeRecipe(String name) {
+  public void remove(String name) {
     recipes.removeIf(recipe -> Objects.equals(name, recipe.getName()));
   }
 
@@ -361,14 +357,15 @@ public class CookbookFacade {
    * @param ingredients is the new ingredients of the recipe
    * @param tags is the new tags of the recipe
    */
-  public void editRecipe(Recipe recipe, String name, String description, String instructions, 
+  public void editRecipe(Recipe recipe, String name, String description, String instructions,
       ArrayList<String[]> ingredients, ArrayList<String> tags) {
     recipe.setName(name);
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
     recipe.setTags(tags);
-    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients, tags, user.getUsername());
+    database.editRecipeInDatabase(recipe.getId(), name, description, 
+        instructions, ingredients, tags, user.getUsername());
   }
 
   public void deleteRecipeFromShoppingList(Recipe recipe, int weekNumber) {
@@ -381,7 +378,8 @@ public class CookbookFacade {
   }
 
 
-  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
+  public void editIngredientInShoppingList(String ingredientName,
+      float newQuantity, int weekNumber) {
     database.editIngredientQuantity(user.getUsername(), ingredientName, newQuantity, weekNumber);
   }
 
@@ -439,5 +437,5 @@ public class CookbookFacade {
   public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
     user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
   }
-
+  
 }

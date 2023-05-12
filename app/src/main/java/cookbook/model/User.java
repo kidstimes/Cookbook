@@ -21,7 +21,7 @@ public class User {
    * @param username the unique username of the user
    * @param displayName the display name of the user
    */
-  public User(int id, String username, String displayName) {
+  public User(String username, String displayName) {
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
