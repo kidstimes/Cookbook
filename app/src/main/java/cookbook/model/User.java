@@ -13,6 +13,7 @@ public class User {
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
+  private int id;
 
   /**
    * User Constructor.
@@ -198,6 +199,10 @@ public class User {
   public void removeFromFavorites(Recipe recipe) {
     recipe.unstar();
     favorites.remove(recipe);
+  }
+
+  public int getId() {
+    return id;
   }
 
 }

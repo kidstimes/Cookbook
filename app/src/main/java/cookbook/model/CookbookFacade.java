@@ -3,6 +3,7 @@ package cookbook.model;
 import cookbook.database.Database;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -344,5 +345,22 @@ public class CookbookFacade {
     user.removeRecipeFromWeeklyDinner(dayDate, recipeName);
     database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
   }
+
+  public void addComment(Comment comment) {
+    database.addComment(comment);
+  }
+
+  public void updateComment(Comment comment) {
+    database.updateComment(comment);
+  }
+
+  public void deleteComment(Comment comment) {
+    database.deleteComment(comment);
+  }
+
+  public List<Comment> getComments(int recipeId) {
+    return database.getComments(recipeId);
+  }
+
 
 }
