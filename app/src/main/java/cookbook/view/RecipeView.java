@@ -1,7 +1,11 @@
 package cookbook.view;
 
+import cookbook.Cookbook;
+import cookbook.model.Comment;
+import cookbook.model.CookbookFacade;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+import cookbook.model.User;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -59,6 +63,9 @@ public class RecipeView {
   private int initialServings;
   private Button saveButton;
   private String displayName;
+  private CookbookFacade cookbookFacade;
+  private int recipeId;
+  private User user;
 
   /**
    * Recipe View Constructor.
@@ -67,6 +74,9 @@ public class RecipeView {
     this.view = new BorderPane();
     this.initialServings = 2;
     this.displayName = displayName;
+    this.cookbookFacade = cookbookFacade;
+    this.recipeId = recipeId;
+    this.user = user;
   }
 
   /**
@@ -413,6 +423,10 @@ public class RecipeView {
     postCommentButton.setOnAction(e -> {
       String commentText = commentInput.getText().trim();
       if (!commentText.isEmpty()) {
+        Comment comment = new Comment(0, commentText, recipeId, user.getId());
+        
+        cookbookFacade.addComment(comment);
+
         HBox commentPane = createCommentPane(commentText);
         commentsContainer.getChildren().add(commentPane);
         commentInput.clear();
