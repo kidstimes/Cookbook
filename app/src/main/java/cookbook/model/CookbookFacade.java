@@ -345,6 +345,4 @@ public class CookbookFacade {
     database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
   }
 
-
-
 }
