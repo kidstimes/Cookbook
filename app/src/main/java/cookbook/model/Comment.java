@@ -1,48 +1,49 @@
 package cookbook.model;
 
+/**
+ * The Comment class.
+ */
 public class Comment {
-  private int id;
+
+  private User user;
   private String text;
-  private int recipeId;
-  private int userId;
 
-  public Comment(int id, String text, int recipeId, int userId) {
-      this.id = id;
-      this.text = text;
-      this.recipeId = recipeId;
-      this.userId = userId;
+  /**
+   * Comment Constructor.
+   *
+   * @param user the user who wrote the comment
+   * @param text the text of the comment
+   */
+  public Comment(User user, String text) {
+    this.user = user;
+    this.text = text;
   }
 
-  public int getId() {
-      return id;
+  /**
+   * Get the user who wrote the comment.
+   *
+   * @return the user who wrote the comment
+   */
+  public User getUser() {
+    return user;
   }
 
-  public void setId(int id) {
-      this.id = id;
-  }
-
+  /**
+   * Get the text of the comment.
+   *
+   * @return the text of the comment
+   */
   public String getText() {
-      return text;
+    return text;
   }
 
-  public void setText(String text) {
-      this.text = text;
-  }
-
-  public int getRecipeId() {
-      return recipeId;
-  }
-
-  public void setRecipeId(int recipeId) {
-      this.recipeId = recipeId;
-  }
-
-  public int getUserId() {
-      return userId;
-  }
-
-  public void setUserId(int userId) {
-      this.userId = userId;
+  /**
+   * Set the text of the comment.
+   *
+   * @param updatedText the updated text of the comment
+   */
+  public void setText(String updatedText) {
+    text = updatedText;
   }
 
 }
