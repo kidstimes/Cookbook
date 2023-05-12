@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
@@ -404,6 +405,19 @@ public class RecipeView {
     VBox commentsContainer = new VBox();
     commentsContainer.setSpacing(10);
     vbox.getChildren().add(commentsContainer);
+
+    try {
+      // Load comments
+      List<Comment> comments = cookbookFacade.getComments(recipeId);
+  
+      //Add comments to the container
+      for (Comment comment : comments) {
+        HBox commentPane = createCommentPane(comment.getText());
+        commentsContainer.getChildren().add(commentPane);
+      }
+    } catch (Exception e) {
+      e.printStackTrace(); // Print the exception stack trace to understand the issue
+    }
 
     // Create a text area for users to input their comments
     TextArea commentInput = new TextArea();
