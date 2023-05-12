@@ -1,7 +1,5 @@
 package cookbook.view;
 
-import cookbook.model.Comment;
-import cookbook.model.CookbookFacade;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
 
@@ -415,7 +413,6 @@ public class RecipeView {
     postCommentButton.setOnAction(e -> {
       String commentText = commentInput.getText().trim();
       if (!commentText.isEmpty()) {
-
         HBox commentPane = createCommentPane(commentText);
         commentsContainer.getChildren().add(commentPane);
         commentInput.clear();
@@ -546,19 +543,15 @@ public class RecipeView {
     alert.showAndWait();
   }
 
-  private HBox createCommentPane(Comment comment) {
+  private HBox createCommentPane(String text) {
     HBox commentPane = new HBox();
     commentPane.setSpacing(10);
     commentPane.setAlignment(Pos.CENTER_LEFT);
   
-    String text = comment.getText();
     Text commentText = new Text(text);
     commentText.setFont(Font.font("Roboto", 16));
     commentPane.getChildren().add(commentText);
   
-    int commentId = comment.getId();
-    String username = comment.getUserName();
-
     Button editButton = new Button("Edit");
     editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
     editButton.setStyle(
@@ -570,10 +563,7 @@ public class RecipeView {
       editDialog.setHeaderText(null);
       editDialog.setContentText("Edit your comment:");
       Optional<String> result = editDialog.showAndWait();
-      result.ifPresent(updatedText -> {
-        commentText.setText(updatedText);
-        CookbookFacade.editComment(commentId, updatedText, username);
-      });
+      result.ifPresent(updatedText -> commentText.setText(updatedText));
     });
     commentPane.getChildren().add(editButton);
   
@@ -585,7 +575,6 @@ public class RecipeView {
     deleteButton.setOnAction(e -> {
       commentPane.getChildren().clear();
       commentPane.setVisible(false);
-      CookbookFacade.deleteComment(commentId);
     });
     commentPane.getChildren().add(deleteButton);
   

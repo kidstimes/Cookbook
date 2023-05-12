@@ -1,14 +1,10 @@
 package cookbook.model;
 
 import cookbook.database.Database;
-
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.xml.stream.events.Comment;
 
 /**
  * The Cookbook facade class.
@@ -349,23 +345,6 @@ public class CookbookFacade {
     database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
   }
 
-
-
-  public boolean addComment(String text, String recipeName, String userName) {
-    return database.addComment(text, recipeName, userName);
-  }
-
-  public boolean deleteComment(int commentId) {
-    return database.deleteComment(commentId);
-  }
-
-  public Comment loadComments(int commentId) throws SQLException {
-    return database.loadComments(commentId);
-  }
-
-  public boolean editComment(int commentId, String text, String userName) {
-    return database.editComment(commentId, text, userName);
-  }
 
 
 }
