@@ -48,6 +48,10 @@ public class CookbookFacade {
     return user.getDisplayName();
   }
 
+  public User getCurrentUser() {
+    return this.user;
+  }
+
   /**
    * Get the private tags of the user from the database.
    *
@@ -362,5 +366,9 @@ public class CookbookFacade {
     return database.getComments(recipeId);
   }
 
+  public int getRecipeId(String recipeName) {
+    return database.getRecipeId(recipeName);
+  }
+  
 
 }

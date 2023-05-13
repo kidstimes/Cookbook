@@ -140,8 +140,8 @@ public class Recipe {
    * @param user the user who wrote the comment
    * @param text the text of the comment
    */
-  public void addComment(User user, String text) {
-    comments.add(new Comment(user, text));
+  public void addComment(User user, String text, int id, int recipeId) {
+    comments.add(new Comment(id, text, recipeId, user.getId()));
   }
 
   /**

@@ -65,18 +65,16 @@ public class RecipeView {
   private Button saveButton;
   private String displayName;
   private CookbookFacade cookbookFacade;
-  private int recipeId;
   private User user;
 
   /**
    * Recipe View Constructor.
    */
-  public RecipeView(String displayName) {
+  public RecipeView(String displayName, CookbookFacade cookbookFacade, User user) {
     this.view = new BorderPane();
     this.initialServings = 2;
     this.displayName = displayName;
     this.cookbookFacade = cookbookFacade;
-    this.recipeId = recipeId;
     this.user = user;
   }
 
@@ -407,6 +405,7 @@ public class RecipeView {
     vbox.getChildren().add(commentsContainer);
 
     try {
+      int recipeId = cookbookFacade.getRecipeId(recipe.getName());
       // Load comments
       List<Comment> comments = cookbookFacade.getComments(recipeId);
   
@@ -437,13 +436,20 @@ public class RecipeView {
     postCommentButton.setOnAction(e -> {
       String commentText = commentInput.getText().trim();
       if (!commentText.isEmpty()) {
-        Comment comment = new Comment(0, commentText, recipeId, user.getId());
-        
-        cookbookFacade.addComment(comment);
-
-        HBox commentPane = createCommentPane(commentText);
-        commentsContainer.getChildren().add(commentPane);
-        commentInput.clear();
+        try {
+          // Get recipe ID by name
+          int recipeId = cookbookFacade.getRecipeId(recipe.getName());
+          
+          Comment comment = new Comment(0, commentText, recipeId, user.getId());
+          
+          cookbookFacade.addComment(comment);
+    
+          HBox commentPane = createCommentPane(commentText);
+          commentsContainer.getChildren().add(commentPane);
+          commentInput.clear();
+        } catch (Exception ex) {
+          ex.printStackTrace(); // Print the exception stack trace to understand the issue
+        }
       }
     });
     vbox.getChildren().add(postCommentButton);

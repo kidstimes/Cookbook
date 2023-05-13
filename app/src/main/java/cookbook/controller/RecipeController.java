@@ -3,6 +3,7 @@ package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
+import cookbook.model.User;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
 import java.time.LocalDate;
@@ -24,7 +25,9 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public RecipeController(CookbookFacade model, MainController mainController,
       Recipe recipe) {
     super(model, mainController);
-    this.recipeView = new RecipeView(model.getUserDisplayName());
+    String displayName = model.getUserDisplayName();
+    User currentUser = model.getCurrentUser();
+    this.recipeView = new RecipeView(displayName, model, currentUser);
     this.recipeView.setRecipe(recipe);
     this.recipeView.setObserver(this);
     this.mainController = mainController;

@@ -378,7 +378,7 @@ public class Database {
     }
   }
 
-  private int getRecipeId(String recipeName) {
+  public int getRecipeId(String recipeName) {
     String query = "SELECT id FROM recipes WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, recipeName);
@@ -786,7 +786,7 @@ public class Database {
             rs.getString("text"),
             rs.getInt("recipe_id"),
             rs.getInt("user_id")
-            );
+        );
         comments.add(comment);
       }
     } catch (SQLException e) {
