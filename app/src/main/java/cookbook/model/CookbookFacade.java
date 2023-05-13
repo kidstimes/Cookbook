@@ -40,7 +40,17 @@ public class CookbookFacade {
   }
 
   public void setCurrentUser(String userName) {
-    user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    try {
+      int userId = database.getUserId(userName);
+      String displayName = database.getUserDisplayName(userName);
+      if (userId != -1 && displayName != null) {
+        user = new User(userId, userName, displayName);
+      } else {
+        throw new Exception("User not found in the database");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public String getUserDisplayName() {
@@ -51,6 +61,7 @@ public class CookbookFacade {
   public User getCurrentUser() {
     return this.user;
   }
+
 
   /**
    * Get the private tags of the user from the database.

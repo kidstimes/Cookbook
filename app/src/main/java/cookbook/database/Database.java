@@ -738,6 +738,7 @@ public class Database {
   }
 
   public void addComment(Comment comment) {
+    
     String sql = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setString(1, comment.getText());
