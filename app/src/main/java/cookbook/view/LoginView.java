@@ -26,6 +26,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.QuadCurveTo;
@@ -143,9 +144,10 @@ public class LoginView {
 
       // Create a Path for the path
       Path heartPath = new Path();
-      heartPath.getElements().add(new MoveTo(0, 0));
-      heartPath.getElements().add(new QuadCurveTo(100, -200, 200, 0));
-
+      heartPath.getElements().add(new MoveTo(-200, 0));  // Start from the left
+      heartPath.getElements().add(new QuadCurveTo(0, -100, 200, 0));  // Move up and then down
+      heartPath.getElements().add(new LineTo(400, 0));  // Move to the right
+  
       // Create a PathTransition for the heart
       PathTransition heartPathTransition = new PathTransition();
       heartPathTransition.setDuration(Duration.millis(2000));
@@ -159,7 +161,7 @@ public class LoginView {
 
       // Play the heart animation
       heartPathTransition.play();
-      
+
       heartPathTransition.setOnFinished(e2 -> {
         view.getChildren().remove(heartPane);
         initLayout();
