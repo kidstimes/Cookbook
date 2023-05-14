@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -142,12 +143,20 @@ public class LoginView {
       heartImageView.setSmooth(true); // Enable smooth resizing
       heartPane.getChildren().add(heartImageView);
 
-      // Create a Path for the path
+      // Create a ProgressBar
+      ProgressBar progressBar = new ProgressBar();
+      progressBar.setPrefWidth(200);
+      heartPane.getChildren().add(progressBar);
+
+      // Create a Path for the heart
       Path heartPath = new Path();
-      heartPath.getElements().add(new MoveTo(-200, 0));  // Start from the left
-      heartPath.getElements().add(new QuadCurveTo(0, -100, 200, 0));  // Move up and then down
-      heartPath.getElements().add(new LineTo(400, 0));  // Move to the right
-  
+      heartPath.getElements().add(new MoveTo(-200, -200));  // Start from the left
+      for (int i = 0; i < 5; i++) {  // Jump 5 times
+        heartPath.getElements().add(new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
+      }
+      heartPath.getElements().add(new LineTo(500, -200));  // Move to the right
+
+
       // Create a PathTransition for the heart
       PathTransition heartPathTransition = new PathTransition();
       heartPathTransition.setDuration(Duration.millis(2000));
@@ -156,11 +165,26 @@ public class LoginView {
       heartPathTransition.setCycleCount(1);
       heartPathTransition.setAutoReverse(false);
 
+      // Update the progress bar as the heart moves
+      heartPathTransition.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+        double progress = newValue.toMillis() / 2000;
+        progressBar.setProgress(progress);
+      });    
+
+      // Create a RotateTransition for the heart
+      RotateTransition rotateHeartTransition = new RotateTransition();
+      rotateHeartTransition.setDuration(Duration.millis(2000));
+      rotateHeartTransition.setNode(heartImageView);
+      rotateHeartTransition.setByAngle(360);
+      rotateHeartTransition.setCycleCount(1);
+      rotateHeartTransition.setInterpolator(Interpolator.LINEAR);      
+
       // Set the view's center to the heartPane
       view.setCenter(heartPane);
 
-      // Play the heart animation
-      heartPathTransition.play();
+
+      // Play all animations simultaneously
+      new ParallelTransition(heartPathTransition, rotateHeartTransition).play();
 
       heartPathTransition.setOnFinished(e2 -> {
         view.getChildren().remove(heartPane);
