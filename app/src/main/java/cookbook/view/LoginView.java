@@ -3,10 +3,12 @@ package cookbook.view;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -143,10 +146,27 @@ public class LoginView {
       heartImageView.setSmooth(true); // Enable smooth resizing
       heartPane.getChildren().add(heartImageView);
 
+      //Add a VBox
+      VBox progressBox = new VBox();
+      progressBox.setAlignment(Pos.CENTER);
+      progressBox.setSpacing(5); 
+
+
       // Create a ProgressBar
       ProgressBar progressBar = new ProgressBar();
       progressBar.setPrefWidth(200);
       heartPane.getChildren().add(progressBar);
+
+      // Create a Label
+      Label progressLabel = new Label("Loading...");
+      progressLabel.setTextFill(Color.BLACK);
+
+      // Add the Label to the VBox
+      progressBox.getChildren().addAll(progressBar, progressLabel);
+
+      //Set Position
+      StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
+      heartPane.getChildren().add(progressBox);
 
       // Create a Path for the heart
       Path heartPath = new Path();
@@ -181,6 +201,29 @@ public class LoginView {
 
       // Set the view's center to the heartPane
       view.setCenter(heartPane);
+
+      // Create a Timeline
+      Timeline timeline = new Timeline();
+
+      // Add key frames to the Timeline
+      for (int i = 0; i < 5; i++) {
+        double progress = (i + 1) / 5.0;
+        timeline.getKeyFrames().add(
+          new KeyFrame(Duration.seconds((i + 1) * 2),
+              evt -> {
+                // Update the progress of the ProgressBar and the text of the Label
+                progressBar.setProgress(progress);
+                progressLabel.setText("Loading... " + (int) (progress * 100) + "%");
+              }
+          )
+        );
+      }
+
+      // Set the cycle count of the Timeline
+      timeline.setCycleCount(1);
+
+      // Start the Timeline
+      timeline.play();
 
 
       // Play all animations simultaneously
