@@ -23,10 +23,10 @@ public class AddRecipeController extends BaseController implements AddRecipeView
    * @param mainController the main controller
    */
   public AddRecipeController(CookbookFacade model,
-       MainController mainController, String displayName) {
+       MainController mainController) {
     super(model, mainController);
     System.out.println(model);
-    this.addRecipeView = new AddRecipeView(displayName);
+    this.addRecipeView = new AddRecipeView(model.getUserDisplayName());
     this.addRecipeView.setObserver(this);
   }
 
@@ -43,7 +43,7 @@ public class AddRecipeController extends BaseController implements AddRecipeView
     //check if recipe name is already in database
     if (model.checkRecipeName(recipeData[0])) {
       addRecipeView.showInlineStyledAlert(Alert.AlertType.WARNING, "Recipe Exists",
-      String.format("Recip named %s already in cookbook. Please check and enter again.", recipeData[0]));
+          String.format("Recip named %s already in cookbook. Please check and enter again.", recipeData[0]));
       return false;
     }
     model.addRecipe(recipeData, ingredients, tags);

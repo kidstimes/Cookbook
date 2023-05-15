@@ -48,15 +48,6 @@ public class MainController {
 
 
   /**
-   * Initialize controllers after successful login of a user.
-   */
-  public void initializeControllersAfterLogin() {
-    String userDisplayName = model.getUserDisplayName();
-    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);   
-    
-  }
-
-  /**
    * Run the cookbook.
    */
   public void runCookbook() {
@@ -129,6 +120,7 @@ public class MainController {
    * Go to add recipe.
    */
   public void goToAddRecipe() {
+    this.addRecipeController = new AddRecipeController(model, this); 
     root.setCenter(addRecipeController.getView());
   }
 

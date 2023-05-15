@@ -5,14 +5,14 @@ package cookbook.view;
  */
 public interface AdminViewObserver {
 
-  void addUser(String username, String password, String displayName);
+  boolean addUser(String username, String password, String displayName);
 
-  void deleteUser(String username);
+  void deleteUser(int userId);
 
-  void editUser(String username, String password, String displayName);
-
-  void logout();
+  void userLogout();
 
   void goToAdmin();
+
+  void editUser(int userId, String userName, String password, String displayName);
   
 }

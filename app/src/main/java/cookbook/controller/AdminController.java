@@ -8,11 +8,16 @@ import javafx.scene.Node;
 /**
  * Controller for managing the admin view.
  */
-public class AdminController implements AdminViewObserver{
+public class AdminController implements AdminViewObserver {
   private CookbookFacade model;
   private MainController mainController;
   private AdminView adminView;
 
+  /** Constructor for the admin controller.
+   *
+   * @param model the cookbook facade
+   * @param mainController the main controller
+   */
   public AdminController(CookbookFacade model, MainController mainController) {
     this.model = model;
     this.mainController = mainController;
@@ -20,23 +25,33 @@ public class AdminController implements AdminViewObserver{
     this.adminView.setObserver(this);
   }
 
-  public void addUser(String username, String password, String displayName) {
-    
+  public Node getView() {
+    return this.adminView.getView();
+  }
+
+  /**
+   * Add a user to the database.
+   */
+  public boolean addUser(String username, String password, String displayName) {
+    if (model.checkIfUserNameExists(username)) {
+      adminView.showError("Username already exists");
+      return false;
+    } else {
+      model.userSignUp(username, password, displayName);
+      return true;
+    }
   }
 
   public void deleteUser(String username) {
     
   }
 
-  public void editUser(String username, String password, String displayName) {
-    
+  @Override
+  public void deleteUser(int userId) {
+    model.deleteUser(userId);
   }
 
-  public Node getView() {
-    return this.adminView.getView();
-  }
-
-  public void logout() {
+  public void userLogout() {
     mainController.userLogout();
   }
 
@@ -44,6 +59,21 @@ public class AdminController implements AdminViewObserver{
     mainController.goToAdmin();
   }
 
+  @Override
+  public void editUser(int userId, String userName,  String password, String displayName) {
+    if (model.checkIfUserNameExistsExceptSelf(userName, userId)) {
+      adminView.showError("Username already exists");
+    } else {
+      model.editUser(userId, userName, password, displayName);
+    }
+  }
+
 
   
+
+    
 }
+
+
+  
+
