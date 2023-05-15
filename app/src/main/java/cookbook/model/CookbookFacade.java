@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
 /**
  * The Cookbook facade class.
  */
@@ -13,6 +17,7 @@ public class CookbookFacade {
   private User user;
   private Database database;
   private ArrayList<Recipe> recipes;
+
 
   /**
    * Cookbook Constructor.
@@ -30,6 +35,10 @@ public class CookbookFacade {
     return database.checkIfUserNameExists(userName);
   }
 
+  public boolean checkIfUserNameExistsExceptSelf(String userName, int userId) {
+    return database.checkIfUserNameExistsExceptSelf(userName, userId);
+  }
+
   public boolean userLogin(String userName, String password) {
     return database.userLogin(userName, password);
   }
@@ -38,13 +47,36 @@ public class CookbookFacade {
     return database.userSignUp(userName, password, displayName);
   }
 
+  public boolean checkPasswordForUser(String password) {
+    return database.checkPasswordForUserInDatabase(user.getUsername(), password);
+  }
+
+  public boolean changePasswordForUser(String newPassword) {
+    return database.changePasswordForUserInDatabase(user.getUsername(), newPassword);
+  }
+
+  public boolean changeDisplayNameForUser(String newDisplayName) {
+    user.modifyDisplayName(newDisplayName);
+    return database.changeDisplayNameForUserInDatabase(user.getUsername(), newDisplayName);
+  }
+
+  public void deleteUser(int userId) {
+    database.deleteUser(userId);
+  }
+
   public void setCurrentUser(String userName) {
     user = new User(userName, database.getUserDisplayName(userName));
   }
 
   public String getUserDisplayName() {
-    System.out.println("Current user: " + user.getUsername());
     return user.getDisplayName();
+  }
+
+  /*
+   * editUser to edit the user's username and display name.
+   */
+  public void editUser(int userId, String userName, String password, String displayName) {
+    database.editUser(userId, userName, password, displayName);
   }
 
   /**
@@ -132,6 +164,11 @@ public class CookbookFacade {
     }
   }
 
+  /** Update the tags of a recipe in the database.
+   *
+   * @param tags the tags
+   * @param recipe the recipe
+   */
   public void updateTagToDatabase(ArrayList<String> tags, Recipe recipe) {
     database.updateTagToDatabase(tags, recipe.getId(), user.getUsername());
   }
@@ -343,6 +380,11 @@ public class CookbookFacade {
     return user.getFavorites();
   }
 
+  /**Remove a recipe from the weekly dinner of the user.
+   *
+   * @param dayDate the date of the dinner
+   * @param recipe the recipe to remove
+   */
   public void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe) {
     user.removeRecipeFromWeeklyDinner(dayDate, recipe);
     database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipe.getName());
@@ -355,43 +397,85 @@ public class CookbookFacade {
    * @param description is the new description of the recipe
    * @param instructions is the new instructions of the recipe
    * @param ingredients is the new ingredients of the recipe
-   * @param tags is the new tags of the recipe
    */
+<<<<<<< HEAD
   public void editRecipe(Recipe recipe, String name, String description, String instructions,
       ArrayList<String[]> ingredients, ArrayList<String> tags) {
+=======
+  public void editRecipe(Recipe recipe, String name, String description, String instructions, 
+      ArrayList<String[]> ingredients) {
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
     recipe.setName(name);
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
+<<<<<<< HEAD
     recipe.setTags(tags);
     database.editRecipeInDatabase(recipe.getId(), name, description, 
         instructions, ingredients, tags, user.getUsername());
+=======
+    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients);
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
   }
 
-  public void deleteRecipeFromShoppingList(Recipe recipe, int weekNumber) {
-    database.deleteRecipeFromShoppingList(user.getUsername(), recipe.getId(), weekNumber);
-  }
-
-
+  /** Add all ingredients of a recipe to the shopping list of the user.
+   *
+   * @param recipe the recipe to add
+   * @param weekNumber the week number of the dinner
+   */
   public void addRecipeToShoppingList(Recipe recipe, int weekNumber) {
     database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), weekNumber);
   }
 
 
+<<<<<<< HEAD
   public void editIngredientInShoppingList(String ingredientName,
       float newQuantity, int weekNumber) {
     database.editIngredientQuantity(user.getUsername(), ingredientName, newQuantity, weekNumber);
+=======
+  /**
+   * Refresh the shopping list of the user with the most updated weekly dinner list.
+   */
+  public void refreshShoppingListWithWeeklyDinnerList() {
+    database.clearUserShoppingList(user.getUsername());
+    for (Dinner dinner : user.getWeeklyDinners()) {
+      for (Recipe recipe : dinner.getRecipes()) {
+        database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), dinner.getWeekNumber());
+      }
+    }
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
   }
 
+
+  /**Edit a ingredient in the shopping list of the user.
+   * 
+   * @param ingredientName the name of the ingredient
+   * @param newQuantity the new quantity of the ingredient
+   * @param weekNumber the week number of the shopping list
+   */
+  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
+    database.editIngredientQuantityInShoppingList(user.getUsername(), ingredientName, newQuantity, weekNumber);
+  }
+
+  /** Delete a ingredient in the shopping list of the user.
+   *
+   * @param ingredientName the name of the ingredient
+   * @param weekNumber the week number of the shopping list
+   */
   public void deleteIngredientInShoppingList(String ingredientName, int weekNumber) {
     database.deleteIngredientFromShoppingList(user.getUsername(), ingredientName, weekNumber);
   }
 
+  //Load the shopping list of the user from the database.
   public ArrayList<ShoppingList> loadShoppingListsFromDatabase() {
     user.setShoppingLists(database.loadShoppingListsFromDatabase(user.getUsername()));
     return user.getShoppingLists();
   }
 
+  /** Load all users from the database.
+   *
+   * @return an arraylist with all the users
+   */
   public ArrayList<User> loadAllUsers() {
     return database.loadAllUsersFromDatabase();
   }
@@ -437,5 +521,11 @@ public class CookbookFacade {
   public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
     user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
   }
+<<<<<<< HEAD
   
+=======
+
+
+
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
 }

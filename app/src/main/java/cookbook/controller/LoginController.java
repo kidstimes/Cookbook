@@ -44,7 +44,6 @@ public class LoginController implements LoginViewObserver {
           mainController.goToAdmin();
         } else {
           model.setCurrentUser(username);
-          mainController.initializeControllersAfterLogin();
           model.loadAllRecipes();
           model.loadWeeklyDinnerFromDatabase();
           model.loadFavoriteRecipes();

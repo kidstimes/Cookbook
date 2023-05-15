@@ -40,7 +40,7 @@ public interface RecipeViewObserver {
   void goToRecipe(Recipe recipe);
 
   void editRecipe(Recipe recipe, String newName, String newDescription, String newInstructions,
-      ArrayList<String[]> newIngredients, ArrayList<String> newTags);
+      ArrayList<String[]> newIngredients);
 
   void goToMessages();
 

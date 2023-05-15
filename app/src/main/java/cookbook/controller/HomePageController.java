@@ -9,10 +9,8 @@ import javafx.scene.Node;
 /**
  * Controller for managing the home page.
  */
-public class HomePageController implements HomePageViewObserver {
+public class HomePageController extends BaseController implements HomePageViewObserver {
   private HomePageView homePageView;
-  private CookbookFacade model;
-  private MainController mainController;
 
   /** Home Page Controller Constructor.
    *
@@ -20,9 +18,9 @@ public class HomePageController implements HomePageViewObserver {
    * @param mainController the main controller
    */
   public HomePageController(CookbookFacade model, MainController mainController) {
-    this.model = model;
-    this.mainController = mainController;
-    this.homePageView = new HomePageView(model.getUserDisplayName(), model.checkWeeklyDinner(),model.checkNextWeekDinner());
+    super(model, mainController);
+    this.homePageView = new HomePageView(model.getUserDisplayName(),
+       model.checkWeeklyDinner(), model.checkNextWeekDinner());
     this.homePageView.setObserver(this);
     
   }
@@ -34,40 +32,26 @@ public class HomePageController implements HomePageViewObserver {
     return this.homePageView.getView();
   }
 
-
+  
   @Override
-  public void goToBrowser() {
-    mainController.goToBrowser();
-  }
-
-
-  @Override
-  public void goToAddRecipe() {
-    mainController.goToAddRecipe();
-  }
-
-  @Override
-  public void userLogout() {
-    mainController.userLogout();
+  public void handlePasswordChange(String oldPassword, String newPassword) {
+    if (model.checkPasswordForUser(oldPassword)) {
+      if (model.changePasswordForUser(newPassword)) {
+        mainController.goToHomePage();
+      } else {
+        homePageView.showError("Password change failed");
+      }
+    } else {
+      homePageView.showError("Old password is incorrect");
+    }
   }
 
   @Override
-  public void goToWeeklyDinner() {
-    mainController.goToWeeklyDinner();
-  }
-
-  @Override
-  public void goToShoppingList() {
-    mainController.goToShoppingList();
-  }
-
-  @Override
-  public void goToMyFavorite() {
-    mainController.goToMyFavorite();
-  }
-
-  @Override
-  public void goToMessages() {
-    mainController.goToMessages();
+  public void changeDisplayName(String newDisplayName) {
+    if (model.changeDisplayNameForUser(newDisplayName)) {
+      mainController.goToHomePage();
+    } else {
+      homePageView.showError("Display name change failed");
+    }
   }
 }

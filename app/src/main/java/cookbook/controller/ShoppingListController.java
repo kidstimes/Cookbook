@@ -1,7 +1,6 @@
 package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
-import cookbook.model.Ingredient;
 import cookbook.view.ShoppingListView;
 import cookbook.view.ShoppingListViewObserver;
 import javafx.scene.Node;
@@ -19,18 +18,18 @@ public class ShoppingListController extends BaseController implements ShoppingLi
    */
   public ShoppingListController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
-    this.shoppingListView = new ShoppingListView(model.getUserDisplayName(), model.loadShoppingListsFromDatabase());
+    this.shoppingListView = new ShoppingListView(model.getUserDisplayName(),
+         model.loadShoppingListsFromDatabase());
     this.shoppingListView.setObserver(this);
   }
-
-
 
   public Node getView() {
     return this.shoppingListView.getView();
   }
 
 
-  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
+  public void editIngredientInShoppingList(String ingredientName,
+       float newQuantity, int weekNumber) {
     model.editIngredientInShoppingList(ingredientName, newQuantity, weekNumber);
   }
 
@@ -39,6 +38,10 @@ public class ShoppingListController extends BaseController implements ShoppingLi
   }
 
 
+  @Override
+  public void refreshShoppingListWithWeeklyDinnerList() {
+    model.refreshShoppingListWithWeeklyDinnerList();
+  }
 
   
 }

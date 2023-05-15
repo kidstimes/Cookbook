@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -137,7 +138,23 @@ public class ShoppingListView {
     // Add title above the weekly menu
     Label titleLabel = new Label("Shopping List");
     titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
-    centerView.getChildren().add(titleLabel);
+
+    Button refreshButton = new Button("Refresh Shopping List");
+
+    refreshButton.setOnAction(event -> {
+      observer.refreshShoppingListWithWeeklyDinnerList();
+      observer.goToShoppingList();
+    });
+    //add a hovering text for refresh button
+    Tooltip tooltip = new Tooltip("Refresh the shopping list with the updated weekly dinner list");
+    Tooltip.install(refreshButton, tooltip);
+
+
+    refreshButton.setStyle("-fx-font: 18px \"Roboto\";");
+    refreshButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
+        + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:"
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    centerView.getChildren().addAll(titleLabel, refreshButton);
 
     VBox weekNavigation = createWeekNavigation();
     centerView.getChildren().add(weekNavigation);

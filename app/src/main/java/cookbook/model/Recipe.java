@@ -124,6 +124,7 @@ public class Recipe {
    * @param tags an arraylist with the tags
    */
   public void setTags(ArrayList<String> tags) {
+    this.tags.clear();
     for (String tag : tags) {
       if (!this.tags.contains(tag)) {
         this.tags.add(tag);

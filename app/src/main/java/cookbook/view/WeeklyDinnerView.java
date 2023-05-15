@@ -343,7 +343,6 @@ public class WeeklyDinnerView {
           tooltip.setStyle("-fx-background-color: #F9F8F3; -fx-text-fill: #3D405B;");
           Tooltip.install(recipeLink, tooltip);
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
-
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
           deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
@@ -352,16 +351,12 @@ public class WeeklyDinnerView {
           deleteButton.setMinHeight(20);
           deleteButton.setMaxHeight(20);
           deleteButton.setOnAction(event -> {
-            //get week number for dayDate
-            int weekNumber = getWeekNumber(dayDate);
             // Call the deleteRecipe method of your DinnerList class
-            observer.removeRecipeFromWeeklyDinner(dayDate, recipe, weekNumber);
-
+            observer.removeRecipeFromWeeklyDinner(dayDate, recipe);
             // Remove all children except dayLabel and dateLabel and update list to reflect change
             dayBox.getChildren().removeIf(node -> dayBox.getChildren().indexOf(node) > 1);
             updateRecipeList(dayBox, dayDate);
           });
-
           VBox recipeBox = new VBox(recipeLink, deleteButton);
           recipeBox.setAlignment(Pos.CENTER_LEFT);
           dayBox.getChildren().add(recipeBox);          

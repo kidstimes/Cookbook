@@ -199,6 +199,22 @@ public class SignUpView {
       showError("Username cannot be admin.");
       return false;
     }
+    if (username.contains(" ")) {
+      showError("Username cannot contain spaces.");
+      return false;
+    }
+    if (username.length() < 3 || username.length() > 15) {
+      showError("Username must be between 3 and 15 characters long.");
+      return false;
+    }
+    if (displayName.length() < 3 || displayName.length() > 15) {
+      showError("Display name must be between 3 and 15 characters long.");
+      return false;
+    }
+    if (displayName.equalsIgnoreCase("DELETED USER")) {
+      showError("Display name cannot be deleted user.");
+      return false;
+    }
     return true;
   }
 

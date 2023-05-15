@@ -26,7 +26,7 @@ public interface WeeklyDinnerViewObserver {
 
   void goToMyFavorite();
 
-  void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe, int week_number);
+  void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe);
 
   void goToMessages();
   

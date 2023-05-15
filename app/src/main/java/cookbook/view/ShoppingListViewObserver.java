@@ -25,5 +25,7 @@ public interface ShoppingListViewObserver {
   void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber);
 
   void deleteIngredientInShoppingList(String ingredientName, int weekNumber);
+
+  void refreshShoppingListWithWeeklyDinnerList();
   
 }

@@ -14,6 +14,7 @@ public class User {
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
   private ArrayList<ShoppingList> shoppingLists;
+  private int id;
 
   /**
    * User Constructor.
@@ -21,12 +22,22 @@ public class User {
    * @param username the unique username of the user
    * @param displayName the display name of the user
    */
+<<<<<<< HEAD
   public User(String username, String displayName) {
+=======
+  public User(int id, String username, String displayName) {
+    this.id = id;
+>>>>>>> dceebf9 (add refresh shopping list and edit recipe)
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();
     this.favorites = new ArrayList<>(); 
     this.shoppingLists = new ArrayList<>();
+  }
+
+  public User(String username, String displayName) {
+    this.username = username;
+    this.displayName = displayName;
   }
 
   /**
@@ -88,6 +99,13 @@ public class User {
     return false;
   }
 
+  /**
+   * Get user id
+   * @return user id
+   */
+  public int getId() {
+    return id;
+  }
 
   /**
    * Get the username of the user.
