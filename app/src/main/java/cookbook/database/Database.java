@@ -1,5 +1,6 @@
 package cookbook.database;
 
+import cookbook.model.Comment;
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import java.nio.charset.StandardCharsets;
@@ -377,7 +378,7 @@ public class Database {
     }
   }
 
-  private int getRecipeId(String recipeName) {
+  public int getRecipeId(String recipeName) {
     String query = "SELECT id FROM recipes WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, recipeName);
@@ -736,8 +737,66 @@ public class Database {
     return false;
   }
 
+  public void addComment(Comment comment) {
+    
+    String sql = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, comment.getText());
+      pstmt.setInt(2, comment.getRecipeId());
+      pstmt.setInt(3, comment.getUserId());
 
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void updateComment(Comment comment) {
+    String sql = "UPDATE comments SET text = ? WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, comment.getText());
+      pstmt.setInt(2, comment.getId());
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
   
+  public void deleteComment(Comment comment) {
+    String sql = "DELETE FROM comments WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setInt(1, comment.getId());
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public List<Comment> getComments(int recipeId) {
+    List<Comment> comments = new ArrayList<>();
+    String sql = "SELECT * FROM comments WHERE recipe_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setInt(1, recipeId);
+      ResultSet rs = pstmt.executeQuery();
+      while (rs.next()) {
+        Comment comment = new Comment(
+            rs.getInt("id"),
+            rs.getString("text"),
+            rs.getInt("recipe_id"),
+            rs.getInt("user_id")
+        );
+        comments.add(comment);
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return comments;
+  }
+
 
   /**
    * Close the connection with the database.

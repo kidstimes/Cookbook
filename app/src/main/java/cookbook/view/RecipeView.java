@@ -1,13 +1,20 @@
 package cookbook.view;
 
+import cookbook.Cookbook;
+import cookbook.model.Comment;
+import cookbook.model.CookbookFacade;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+import cookbook.model.User;
 
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,7 +32,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,14 +64,18 @@ public class RecipeView {
   private int initialServings;
   private Button saveButton;
   private String displayName;
+  private CookbookFacade cookbookFacade;
+  private User user;
 
   /**
    * Recipe View Constructor.
    */
-  public RecipeView(String displayName) {
+  public RecipeView(String displayName, CookbookFacade cookbookFacade, User user) {
     this.view = new BorderPane();
     this.initialServings = 2;
     this.displayName = displayName;
+    this.cookbookFacade = cookbookFacade;
+    this.user = user;
   }
 
   /**
@@ -378,6 +391,69 @@ public class RecipeView {
       }
     });
     vbox.getChildren().add(saveButton);
+
+    // Display comments
+    Text commentsTitle = new Text("Comments:");
+    commentsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
+    VBox commentsTitleBox = new VBox(commentsTitle);
+    commentsTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    vbox.getChildren().add(commentsTitleBox);
+
+    // Create a container for displaying comments
+    VBox commentsContainer = new VBox();
+    commentsContainer.setSpacing(10);
+    vbox.getChildren().add(commentsContainer);
+
+    try {
+      int recipeId = cookbookFacade.getRecipeId(recipe.getName());
+      // Load comments
+      List<Comment> comments = cookbookFacade.getComments(recipeId);
+  
+      //Add comments to the container
+      for (Comment comment : comments) {
+        HBox commentPane = createCommentPane(comment.getText());
+        commentsContainer.getChildren().add(commentPane);
+      }
+    } catch (Exception e) {
+      e.printStackTrace(); // Print the exception stack trace to understand the issue
+    }
+
+    // Create a text area for users to input their comments
+    TextArea commentInput = new TextArea();
+    commentInput.setPromptText("Write a comment...");
+    commentInput.setStyle("-fx-font: 16px \"Roboto\";");
+    commentInput.setWrapText(true);
+    commentInput.setMaxWidth(900);
+    commentInput.setMaxHeight(100);
+    vbox.getChildren().add(commentInput);
+
+    // Add a "Post Comment" button
+    Button postCommentButton = new Button("Post Comment");
+    postCommentButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    postCommentButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    postCommentButton.setOnAction(e -> {
+      String commentText = commentInput.getText().trim();
+      if (!commentText.isEmpty()) {
+        try {
+          // Get recipe ID by name
+          int recipeId = cookbookFacade.getRecipeId(recipe.getName());
+          
+          Comment comment = new Comment(0, commentText, recipeId, user.getId());
+          
+          cookbookFacade.addComment(comment);
+    
+          HBox commentPane = createCommentPane(commentText);
+          commentsContainer.getChildren().add(commentPane);
+          commentInput.clear();
+        } catch (Exception ex) {
+          ex.printStackTrace(); // Print the exception stack trace to understand the issue
+        }
+      }
+    });
+    vbox.getChildren().add(postCommentButton);
+  
   }
 
   private void createServingSpinner() {
@@ -500,6 +576,45 @@ public class RecipeView {
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();
   }
+
+  private HBox createCommentPane(String text) {
+    HBox commentPane = new HBox();
+    commentPane.setSpacing(10);
+    commentPane.setAlignment(Pos.CENTER_LEFT);
+  
+    Text commentText = new Text(text);
+    commentText.setFont(Font.font("Roboto", 16));
+    commentPane.getChildren().add(commentText);
+  
+    Button editButton = new Button("Edit");
+    editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+    editButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
+    editButton.setOnAction(e -> {
+      TextInputDialog editDialog = new TextInputDialog(commentText.getText());
+      editDialog.setTitle("Edit Comment");
+      editDialog.setHeaderText(null);
+      editDialog.setContentText("Edit your comment:");
+      Optional<String> result = editDialog.showAndWait();
+      result.ifPresent(updatedText -> commentText.setText(updatedText));
+    });
+    commentPane.getChildren().add(editButton);
+  
+    Button deleteButton = new Button("Delete");
+    deleteButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+    deleteButton.setStyle(
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
+    deleteButton.setOnAction(e -> {
+      commentPane.getChildren().clear();
+      commentPane.setVisible(false);
+    });
+    commentPane.getChildren().add(deleteButton);
+  
+    return commentPane;
+  }
+  
 
 }
 

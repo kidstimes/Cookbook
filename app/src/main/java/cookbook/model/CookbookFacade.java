@@ -3,6 +3,7 @@ package cookbook.model;
 import cookbook.database.Database;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -39,13 +40,28 @@ public class CookbookFacade {
   }
 
   public void setCurrentUser(String userName) {
-    user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    try {
+      int userId = database.getUserId(userName);
+      String displayName = database.getUserDisplayName(userName);
+      if (userId != -1 && displayName != null) {
+        user = new User(userId, userName, displayName);
+      } else {
+        throw new Exception("User not found in the database");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public String getUserDisplayName() {
     System.out.println("Current user: " + user.getUsername());
     return user.getDisplayName();
   }
+
+  public User getCurrentUser() {
+    return this.user;
+  }
+
 
   /**
    * Get the private tags of the user from the database.
@@ -345,6 +361,25 @@ public class CookbookFacade {
     database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
   }
 
+  public void addComment(Comment comment) {
+    database.addComment(comment);
+  }
 
+  public void updateComment(Comment comment) {
+    database.updateComment(comment);
+  }
+
+  public void deleteComment(Comment comment) {
+    database.deleteComment(comment);
+  }
+
+  public List<Comment> getComments(int recipeId) {
+    return database.getComments(recipeId);
+  }
+
+  public int getRecipeId(String recipeName) {
+    return database.getRecipeId(recipeName);
+  }
+  
 
 }

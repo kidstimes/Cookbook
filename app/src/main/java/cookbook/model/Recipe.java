@@ -13,8 +13,7 @@ public class Recipe {
   private ArrayList<String> tags;
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
-  private String comments;
-  // deal with the comments method later
+  private ArrayList<Comment> comments;
 
   /**
    * Recipe Constructor.
@@ -33,7 +32,8 @@ public class Recipe {
     // Create ingredient objects and add them to the recipe
     this.ingredients = new ArrayList<Ingredient>();
     for (String[] ingredient : ingredients) {
-      this.ingredients.add(new Ingredient(ingredient[0], Float.parseFloat(ingredient[1]), ingredient[2]));
+      this.ingredients.add(new Ingredient(ingredient[0],
+          Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
@@ -43,6 +43,7 @@ public class Recipe {
     }
 
     starred = false;
+    comments = new ArrayList<>();
   }
 
   // Getters and setters
@@ -97,10 +98,6 @@ public class Recipe {
     return copyIngredients;
   }
 
-  public String getComments() {
-    return comments;
-  }
-
   /**
    * Star recipe.
    */
@@ -124,11 +121,46 @@ public class Recipe {
     return starred;
   }
 
+  /**
+   * Get the comments of the recipe.
+   *
+   * @return an arraylist with the comments
+   */
+  public ArrayList<Comment> getComments() {
+    ArrayList<Comment> copyComments = new ArrayList<>();
+    for (Comment comment : comments) {
+      copyComments.add(comment);
+    }
+    return copyComments;
+  }
 
+  /**
+   * Add a new comment to the recipe.
+   *
+   * @param user the user who wrote the comment
+   * @param text the text of the comment
+   */
+  public void addComment(User user, String text, int id, int recipeId) {
+    comments.add(new Comment(id, text, recipeId, user.getId()));
+  }
 
+  /**
+   * Edit the text of the given comment.
+   *
+   * @param comment the comment to edit
+   * @param updatedText the updated text for the comment
+   */
+  public void editComment(Comment comment, String updatedText) {
+    comment.setText(updatedText);
+  }
 
-  public void setComments(String comments) {
-    this.comments = comments;
+  /**
+   * Delete the comment under the recipe.
+   *
+   * @param comment the comment to delete
+   */
+  public void deleteComment(Comment comment) {
+    comments.remove(comment);
   }
 
 }
