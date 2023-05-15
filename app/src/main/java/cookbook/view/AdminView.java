@@ -140,7 +140,7 @@ public class AdminView {
       displayNameLabel.setMinWidth(150);
       displayNameLabel.setAlignment(Pos.CENTER_LEFT);
 
-
+      userLine.getChildren().addAll(userIDLabel, userNameLabel, passwordLabel, displayNameLabel);
 
       if (!user.getUsername().equalsIgnoreCase("admin")) {
         Button editButton = new Button("Edit");
@@ -160,7 +160,7 @@ public class AdminView {
         });
     
     
-        userLine.getChildren().addAll(userIDLabel, userNameLabel, passwordLabel, displayNameLabel, editButton, deleteButton);
+        userLine.getChildren().addAll(editButton, deleteButton);
         
       }
       userListContainer.getChildren().add(userLine);
