@@ -22,12 +22,8 @@ public class User {
    * @param username the unique username of the user
    * @param displayName the display name of the user
    */
-<<<<<<< HEAD
-  public User(String username, String displayName) {
-=======
   public User(int id, String username, String displayName) {
     this.id = id;
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
     this.username = username;
     this.displayName = displayName;
     this.weeklyDinners = new ArrayList<>();

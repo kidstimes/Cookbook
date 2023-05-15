@@ -6,10 +6,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
 /**
  * The Cookbook facade class.
  */
@@ -398,24 +395,13 @@ public class CookbookFacade {
    * @param instructions is the new instructions of the recipe
    * @param ingredients is the new ingredients of the recipe
    */
-<<<<<<< HEAD
-  public void editRecipe(Recipe recipe, String name, String description, String instructions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags) {
-=======
   public void editRecipe(Recipe recipe, String name, String description, String instructions, 
       ArrayList<String[]> ingredients) {
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
     recipe.setName(name);
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
-<<<<<<< HEAD
-    recipe.setTags(tags);
-    database.editRecipeInDatabase(recipe.getId(), name, description, 
-        instructions, ingredients, tags, user.getUsername());
-=======
     database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients);
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
   }
 
   /** Add all ingredients of a recipe to the shopping list of the user.
@@ -428,11 +414,6 @@ public class CookbookFacade {
   }
 
 
-<<<<<<< HEAD
-  public void editIngredientInShoppingList(String ingredientName,
-      float newQuantity, int weekNumber) {
-    database.editIngredientQuantity(user.getUsername(), ingredientName, newQuantity, weekNumber);
-=======
   /**
    * Refresh the shopping list of the user with the most updated weekly dinner list.
    */
@@ -443,7 +424,6 @@ public class CookbookFacade {
         database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), dinner.getWeekNumber());
       }
     }
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
   }
 
 
@@ -521,11 +501,7 @@ public class CookbookFacade {
   public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
     user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
   }
-<<<<<<< HEAD
-  
-=======
 
 
 
->>>>>>> dceebf9 (add refresh shopping list and edit recipe)
 }
