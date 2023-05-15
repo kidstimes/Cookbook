@@ -44,5 +44,11 @@ public interface RecipeViewObserver {
 
   void goToMessages();
 
+  void addComment(Recipe recipe, String comment);
+
+  void updateComment(int commentId, String comment);
+
+  void deleteComment(int commentId);
+
 
 }
