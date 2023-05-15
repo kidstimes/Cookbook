@@ -1,6 +1,8 @@
 package cookbook.view;
 
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -139,6 +141,35 @@ public class LoginView {
       String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
       Image heartImage = new Image(heartImageUrl);
 
+      //Load the bottom right image
+      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
+      Image bottomRightImage = new Image(bottomRightImageUrl);
+
+      // Load the bottom left image
+      String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
+      Image bottomLeftImage = new Image(bottomLeftImageUrl);
+
+      // Create an ImageView and set the bottom left image to it
+      ImageView bottomLeftImageView = new ImageView(bottomLeftImage);
+      bottomLeftImageView.setFitWidth(300); // Set the width of the image
+      bottomLeftImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomLeftImageView.setSmooth(true); // Enable smooth resizing
+
+      //Create a RotateTransition for the bottom left image
+      RotateTransition bottomLeftRotateTransition = new RotateTransition();
+      bottomLeftRotateTransition.setDuration(Duration.millis(2000));
+      bottomLeftRotateTransition.setNode(bottomLeftImageView);
+      bottomLeftRotateTransition.setByAngle(360);
+      bottomLeftRotateTransition.setCycleCount(1);
+      bottomLeftRotateTransition.setInterpolator(Interpolator.LINEAR);
+
+      //Start the RotateTransition
+      bottomLeftRotateTransition.play();
+
+
+      heartPane.getChildren().add(bottomLeftImageView);
+      StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
+
       // Create an ImageView and set the heart image to it
       ImageView heartImageView = new ImageView(heartImage);
       heartImageView.setFitWidth(150); // Set the width of the image
@@ -146,23 +177,42 @@ public class LoginView {
       heartImageView.setSmooth(true); // Enable smooth resizing
       heartPane.getChildren().add(heartImageView);
 
+      // Create an ImageView and set the bottom right image to it
+      ImageView bottomRightImageView = new ImageView(bottomRightImage);
+      bottomRightImageView.setFitWidth(300); // Set the width of the image
+      bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomRightImageView.setSmooth(true); // Enable smooth resizing
+
+      heartPane.getChildren().add(bottomRightImageView);
+      StackPane.setAlignment(bottomRightImageView, Pos.BOTTOM_RIGHT);
+      
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(50); 
+      progressBox.setSpacing(10); 
 
 
       // Create a ProgressBar
       ProgressBar progressBar = new ProgressBar();
-      progressBar.setPrefWidth(400);
+      progressBar.setPrefWidth(500);
       heartPane.getChildren().add(progressBar);
 
       // Create a Label
       Label progressLabel = new Label("Loading...");
       progressLabel.setTextFill(Color.BLACK);
 
+      // Load the bottom image
+      String bottomImageUrl = "https://i.imgur.com/GwBkQQN.png";
+      Image bottomImage = new Image(bottomImageUrl);
+
+      // Create an ImageView and set the bottom image to it
+      ImageView bottomImageView = new ImageView(bottomImage);
+      bottomImageView.setFitWidth(500); // Set the width of the image
+      bottomImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomImageView.setSmooth(true); // Enable smooth resizing
+
       // Add the Label to the VBox
-      progressBox.getChildren().addAll(progressBar, progressLabel);
+      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImageView);
 
       //Set Position
       StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
