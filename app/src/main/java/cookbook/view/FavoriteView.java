@@ -144,9 +144,22 @@ public class FavoriteView {
       HBox recipeHbox = new HBox(20);
       recipeHbox.setAlignment(Pos.CENTER_LEFT);
       HBox.setHgrow(recipeHbox, Priority.ALWAYS);
-      recipeHbox.getChildren().addAll(recipeLink, recipeTags); // Add the recipe tags to the HBox
+    
+      Button deleteButton = new Button("Delete");
+      deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+      deleteButton.setOnAction(e -> {
+        if (observer != null) {
+          observer.removeRecipeFromFavorites(recipe);
+          observer.goToMyFavorite();
+        }
+      });
+      Region spacer2 = new Region();
+      HBox.setHgrow(spacer2, Priority.ALWAYS);
+    
+      recipeHbox.getChildren().addAll(recipeLink, recipeTags, spacer2, deleteButton); 
       recipeHbox.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
       recipeListVbox.getChildren().add(recipeHbox);
+
 
     }
     view.setCenter(scrollPane);

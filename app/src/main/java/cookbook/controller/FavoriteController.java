@@ -35,9 +35,10 @@ public class FavoriteController extends BaseController implements FavoriteViewOb
   }
 
   @Override
-  public void removeFromFavorites(Recipe recipe) {
+  public void removeRecipeFromFavorites(Recipe recipe) {
     model.removeRecipeFromFavorites(recipe);
   }
+
 
   
 }
