@@ -24,8 +24,10 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public RecipeController(CookbookFacade model, MainController mainController,
       Recipe recipe) {
     super(model, mainController);
-    this.recipeView = new RecipeView(model.getUserDisplayName());
+    
+    this.recipeView = new RecipeView(model.getUserDisplayName(), model.getUserId());
     this.recipeView.setRecipe(recipe);
+    this.recipeView.setComments(model.getComments(recipe.getId()));
     this.recipeView.setObserver(this);
     this.mainController = mainController;
   }
@@ -52,7 +54,7 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public void handleSaveTagsClicked(ArrayList<String> updatedTags, Recipe recipe) {
     model.addTagsToRecipe(updatedTags, recipe);
     model.updateTagToDatabase(updatedTags, recipe);
-    mainController.goToBrowser();
+    mainController.goToRecipe(recipe);
   }
 
   @Override
@@ -85,5 +87,21 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public void goToRecipe(Recipe recipe) {
     mainController.goToRecipe(recipe);
   }
+
+  @Override
+  public void addComment(Recipe recipe, String comment) {
+    model.addComment(recipe, comment);
+  }
+
+  @Override
+  public void updateComment(int commentId, String comment) {
+    model.updateComment(commentId, comment);
+  }
+
+  @Override
+  public void deleteComment(int commentId) {
+    model.deleteComment(commentId);
+  }
+
 }
 

@@ -95,8 +95,8 @@ public class User {
     return false;
   }
 
-  /**
-   * Get user id
+  /** Get user id.
+   *
    * @return user id
    */
   public int getId() {

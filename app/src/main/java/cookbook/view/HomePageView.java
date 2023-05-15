@@ -86,7 +86,7 @@ public class HomePageView {
    */
   public void createSidebar() {
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
+    VBox sidebar = new VBox(30);
     sidebar.setMaxWidth(100);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
 

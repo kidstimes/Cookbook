@@ -14,7 +14,7 @@ public class Recipe {
   private ArrayList<String> tags;
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
-  private String comments;
+  private ArrayList<Comment> comments;
   // deal with the comments method later
 
   /**
@@ -145,9 +145,32 @@ public class Recipe {
     return copyIngredients;
   }
 
-  public String getComments() {
-    return comments;
+  /**
+   * Get the comments of the recipe.
+   *
+   * @return an arraylist with the comments
+   */
+  public ArrayList<Comment> getComments() {
+    ArrayList<Comment> copyComments = new ArrayList<>();
+    if (comments == null) {
+      return copyComments;
+    }
+    for (Comment comment : comments) {
+      copyComments.add(comment);
+    }
+    return copyComments;
   }
+
+  /**
+   * Add a new comment to the recipe.
+   *
+   * @param user the user who wrote the comment
+   * @param text the text of the comment
+   */
+  public void addComment(User user, String text, int id, int recipeId, String displayName) {
+    comments.add(new Comment(id, text, recipeId, user.getId(), displayName));
+  }
+
 
   /**
    * Star recipe.
@@ -173,9 +196,28 @@ public class Recipe {
   }
 
 
-  public void setComments(String comments) {
-    this.comments = comments;
+
+  
+  /**
+   * Edit the text of the given comment.
+   *
+   * @param comment the comment to edit
+   * @param updatedText the updated text for the comment
+   */
+  public void editComment(Comment comment, String updatedText) {
+    comment.setText(updatedText);
   }
+
+  /**
+   * Delete the comment under the recipe.
+   *
+   * @param comment the comment to delete
+   */
+  public void deleteComment(Comment comment) {
+    comments.remove(comment);
+  }
+
+
 
   /** Set the ingredients of the recipe.
    *

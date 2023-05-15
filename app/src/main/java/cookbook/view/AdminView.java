@@ -1,9 +1,7 @@
 package cookbook.view;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import cookbook.model.User;
+import java.util.ArrayList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
@@ -48,8 +46,6 @@ public class AdminView {
     Text welcomeTitle = new Text("Admin, welcome!");
     welcomeTitle.setFont(Font.font("Roboto", 28));
     sidebar.getChildren().add(welcomeTitle);
-    
-
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
@@ -68,7 +64,6 @@ public class AdminView {
     titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
     view.setTop(titleLabel);
     BorderPane.setAlignment(titleLabel, Pos.CENTER);
-
     userListContainer = new VBox(5);
     view.setCenter(userListContainer);
 
@@ -76,7 +71,6 @@ public class AdminView {
     Label userListLabel = new Label("Users");
     userListLabel.setStyle("-fx-font: 20px \"Roboto\";");
     userListContainer.getChildren().add(userListLabel);
-
     // Display the list of users
     updateUserList();
   }
@@ -130,7 +124,7 @@ public class AdminView {
       userNameLabel.setMinWidth(150);
       userNameLabel.setAlignment(Pos.CENTER_LEFT);
 
-      Label passwordLabel = new Label("****"); // Password hidden
+      Label passwordLabel = new Label(""); 
       passwordLabel.setStyle("-fx-font: 18px \"Roboto\";");
       passwordLabel.setMinWidth(150);
       passwordLabel.setAlignment(Pos.CENTER_LEFT);
@@ -158,10 +152,7 @@ public class AdminView {
           observer.goToAdmin();
           updateUserList();
         });
-    
-    
         userLine.getChildren().addAll(editButton, deleteButton);
-        
       }
       userListContainer.getChildren().add(userLine);
 
@@ -194,17 +185,13 @@ public class AdminView {
     editUserDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
         observer.editUser(user.getId(), userNameField.getText(), passwordField.getText(), displayNameField.getText());
-        return user;
+        System.out.println(user.getId()+" "+userNameField.getText()+" "+passwordField.getText()+" "+displayNameField.getText());
+        observer.goToAdmin();
+        updateUserList();
       }
       return null;
     });
-    
-    java.util.Optional<User> result = editUserDialog.showAndWait();
-  
-    result.ifPresent(updatedUser -> {
-      observer.goToAdmin();
-      updateUserList();
-    });
+    editUserDialog.showAndWait();
   }
 
   /**
@@ -236,24 +223,17 @@ public class AdminView {
   
     addUserDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
-        User newUser = 
-            new User(userNameField.getText(), displayNameField.getText());
-        return newUser;
+        boolean success = observer.addUser(userNameField.getText(), passwordField.getText(), displayNameField.getText());
+        if (success) {
+            observer.goToAdmin();
+            updateUserList();
+        } else {
+            showError("Could not add user.");
+        }
       }
       return null;
     });
-  
-    Optional<User> result = addUserDialog.showAndWait();
-  
-    result.ifPresent(newUser -> {
-      boolean success = observer.addUser(userNameField.getText(), passwordField.getText(), displayNameField.getText());
-      if (success) {
-        observer.goToAdmin();
-        updateUserList();
-      } else {
-        showError("Could not add user.");
-      }
-    });
+    addUserDialog.showAndWait();
   }
   
 

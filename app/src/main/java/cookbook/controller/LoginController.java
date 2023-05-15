@@ -38,6 +38,10 @@ public class LoginController implements LoginViewObserver {
   // Login logic, check if username and password match in database
   @Override
   public void handleLogin(String username, String password) {
+    if (model.isDeletedUser(username)) {
+      loginView.showError("This user has been deleted");
+      return;
+    }
     if (model.checkIfUserNameExists(username)) {
       if (model.userLogin(username, password)) {
         if (username.equals("admin")) {
