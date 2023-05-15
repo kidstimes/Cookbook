@@ -149,7 +149,7 @@ public class LoginView {
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(-300); 
+      progressBox.setSpacing(50); 
 
 
       // Create a ProgressBar
