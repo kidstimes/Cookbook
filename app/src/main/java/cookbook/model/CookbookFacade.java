@@ -61,13 +61,22 @@ public class CookbookFacade {
     database.deleteUser(userId);
   }
 
+  public boolean isDeletedUser(String userName) {
+    return database.isDeletedUserInDatabase(userName);
+  }
+
   public void setCurrentUser(String userName) {
-    user = new User(userName, database.getUserDisplayName(userName));
+    user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    System.out.println("Userid" + database.getUserId(userName));
   }
 
   public String getUserDisplayName() {
     return user.getDisplayName();
   }
+
+  public int getUserId() {
+    return user.getId();
+  } 
 
   /*
    * editUser to edit the user's username and display name.
@@ -426,7 +435,6 @@ public class CookbookFacade {
     }
   }
 
-
   /**Edit a ingredient in the shopping list of the user.
    * 
    * @param ingredientName the name of the ingredient
@@ -501,6 +509,24 @@ public class CookbookFacade {
   public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
     user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
   }
+
+  public void addComment(Recipe recipe, String commentText) {
+    database.addComment(recipe.getId(), user.getId(), commentText);
+  }
+
+  public void updateComment(int commentId, String commentText) {
+    database.updateComment(commentId, commentText);
+  }
+
+  public void deleteComment(int commentId) {
+    database.deleteComment(commentId);
+  }
+
+  public ArrayList<Comment> getComments(int recipeId) {
+    return database.getComments(recipeId);
+  }
+
+
 
 
 

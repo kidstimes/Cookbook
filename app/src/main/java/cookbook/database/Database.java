@@ -1,5 +1,6 @@
 package cookbook.database;
 
+import cookbook.model.Comment;
 import cookbook.model.Dinner;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
@@ -178,8 +179,8 @@ public class Database {
    * Save a recipe to the database and associate tags with the recipe.
    */
   public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients,
-       ArrayList<String> tags,
-      String userName) {
+    ArrayList<String> tags,
+    String userName) {
     try {
       // Get the user id
       int userId = getUserId(userName);
@@ -1097,8 +1098,8 @@ public class Database {
         PreparedStatement stmt = connection.prepareStatement(
             "UPDATE Users SET username = ?, password_hash = ?, displayname = ? WHERE id = ?")) {
       stmt.setString(1, newUsername);
-      stmt.setString(2, newPassword);
-      stmt.setString(3, hashedPassword);
+      stmt.setString(2, hashedPassword);
+      stmt.setString(3, newDisplayName);
       stmt.setInt(4, userId);
       stmt.executeUpdate();
     } catch (SQLException e) {
@@ -1110,17 +1111,73 @@ public class Database {
    * Delete user from the database.
    */
   public void deleteUser(int userId) {
-    String hashedPassword = hashPassword("12");
+    String hashedPassword = hashPassword("del");
     try (
         PreparedStatement stmt = connection.prepareStatement(
             "UPDATE Users SET displayName = ?, password_hash = ? WHERE id = ?")) {
-      stmt.setString(1, "Deleted user");
+      stmt.setString(1, "Deleted User");
       stmt.setString(2, hashedPassword);
       stmt.setInt(3, userId);
       stmt.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
+    String[] tables = {"WeeklyDinner", "ShoppingList", "PersonalTags", "favorites"};
+    for (String table : tables) {
+      String query = String.format("DELETE FROM %s WHERE user_id = ?", table);
+      try (PreparedStatement stmt2 = connection.prepareStatement(query)) {
+        stmt2.setInt(1, userId);
+        stmt2.executeUpdate();
+      } catch (SQLException e) {
+        System.out.println(e.getMessage());
+      }
+    }
+  }
+
+  /**Check if a user display name is deleted user from the database with userName.
+   * 
+   */
+  public boolean isDeletedUserInDatabase(String userName) {
+    boolean isDeleted = false;
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT displayname FROM Users WHERE username = ?")) {
+      stmt.setString(1, userName);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        String displayName = rs.getString(1);
+        if (displayName.equals("Deleted User")) {
+          isDeleted = true;
+        }
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return isDeleted;
+  }
+
+
+  /**Get display name of a user with userId.
+   *
+   * @param userId is the id of the user
+   * @return display name of the user
+   */
+  private String getDisplayName(int userId) {
+    String displayName = "";
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT displayname FROM Users WHERE id = ?")) {
+      stmt.setInt(1, userId);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        displayName = rs.getString(1);
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return displayName;
   }
 
   /** Change the display name of a user.
@@ -1225,6 +1282,70 @@ public class Database {
     // does not exist
     return false;
   }
+
+  public void addComment(int recipeId, int userId, String text) {
+    
+    String sql = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, text);
+      pstmt.setInt(2, recipeId);
+      pstmt.setInt(3, userId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void updateComment(int commentId, String text) {
+    String sql = "UPDATE comments SET text = ? WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, text);
+      pstmt.setInt(2, commentId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+  
+  public void deleteComment(int commentId) {
+    String sql = "DELETE FROM comments WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setInt(1, commentId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+  public ArrayList<Comment> getComments(int recipeId) {
+    ArrayList<Comment> comments = new ArrayList<>();
+    String sql = "SELECT c.id, c.text, c.recipe_id, c.user_id, u.displayname FROM comments c " +
+                 "INNER JOIN users u ON c.user_id = u.id WHERE c.recipe_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setInt(1, recipeId);
+      ResultSet rs = pstmt.executeQuery();
+      while (rs.next()) {
+        Comment comment = new Comment(
+            rs.getInt("id"),
+            rs.getString("text"),
+            rs.getInt("recipe_id"),
+            rs.getInt("user_id"),
+            rs.getString("displayname")
+            );
+        comments.add(comment);
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return comments;
+  }
+
+
 
 }
 
