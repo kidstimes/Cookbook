@@ -136,12 +136,12 @@ public class LoginView {
       StackPane heartPane = new StackPane();
       heartPane.setAlignment(Pos.CENTER);
       // Load the heart image
-      String heartImageUrl = "https://i.imgur.com/4OVcDDj.png"; // Replace with the URL of your heart image
+      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
       Image heartImage = new Image(heartImageUrl);
 
       // Create an ImageView and set the heart image to it
       ImageView heartImageView = new ImageView(heartImage);
-      heartImageView.setFitWidth(100); // Set the width of the image
+      heartImageView.setFitWidth(150); // Set the width of the image
       heartImageView.setPreserveRatio(true); // Maintain the aspect ratio
       heartImageView.setSmooth(true); // Enable smooth resizing
       heartPane.getChildren().add(heartImageView);
@@ -149,12 +149,12 @@ public class LoginView {
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(5); 
+      progressBox.setSpacing(-300); 
 
 
       // Create a ProgressBar
       ProgressBar progressBar = new ProgressBar();
-      progressBar.setPrefWidth(200);
+      progressBar.setPrefWidth(400);
       heartPane.getChildren().add(progressBar);
 
       // Create a Label
