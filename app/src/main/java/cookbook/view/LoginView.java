@@ -285,7 +285,6 @@ public class LoginView {
       });
     });
 
-
     parallelTransition.play();
   }    
 
@@ -452,7 +451,10 @@ public class LoginView {
       showError("Both fields must be filled in.");
       return false;
     }
-    if  (password.length() < 5) {
+    //if username is admin, then password can be less than 5 characters
+    if (username.equals("admin")) {
+      return true;
+    } else if (password.length() < 5) {
       showError("Password must be at least 5 characters long.");
       return false;
     }

@@ -137,30 +137,20 @@ public class AdminView {
       userLine.getChildren().addAll(userIDLabel, userNameLabel, passwordLabel, displayNameLabel);
 
       if (!user.getUsername().equalsIgnoreCase("admin")) {
-        Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-font: 12px \"Roboto\";");
-        editButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 18px \"Roboto\";");
+        Button editButton = new Button("Edit username and/or display name");
+        editButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editButton.setOnAction(e -> {
-            editUser(user);
+          editUser(user);
 
-        Tooltip tooltip = new Tooltip();
-        tooltip.setText("Edit Username and Display Name");
-        editButton.setTooltip(tooltip);
         });
     
         Button editPasswordButton = new Button("Edit Password");
-        editPasswordButton.setStyle("-fx-font: 12px \"Roboto\";");
-        editPasswordButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 18px \"Roboto\";");
+        editPasswordButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editPasswordButton.setOnAction(e -> {
-          editUserPassword(user);
-        
-        Tooltip tooltip2 = new Tooltip();
-        tooltip2.setText("Edit User Password. Directly change the user password");
-        editPasswordButton.setTooltip(tooltip2);
+          editUserPassword(user);       
         });
     
         Button deleteButton = new Button("Delete");
-        deleteButton.setStyle("-fx-font: 18px \"Roboto\";");
         deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
         deleteButton.setOnAction(e -> {
           observer.deleteUser(user.getId());
@@ -207,6 +197,10 @@ public class AdminView {
     editUserDialog.showAndWait();
   }
 
+  /** Edit the password of a user.
+   *
+   * @param user the user to edit
+   */
   public void editUserPassword(User user) {
     Dialog<User> editUserPasswordDialog = new Dialog<>();
     editUserPasswordDialog.setTitle("Edit User Password");
@@ -225,12 +219,12 @@ public class AdminView {
     editUserPasswordDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
     editUserPasswordDialog.setResultConverter(dialogButton -> {
-        if (dialogButton == saveButtonType) {
-            observer.editUserPassword(user.getId(), passwordField.getText());
-            observer.goToAdmin();
-            updateUserList();
-        }
-        return null;
+      if (dialogButton == saveButtonType) {
+        observer.editUserPassword(user.getId(), passwordField.getText());
+        observer.goToAdmin();
+        updateUserList();
+      }
+      return null;
     });
     editUserPasswordDialog.showAndWait();
 }
