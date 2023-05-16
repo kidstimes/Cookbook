@@ -60,16 +60,20 @@ public class AdminController implements AdminViewObserver {
   }
 
   @Override
-  public void editUser(int userId, String userName,  String password, String displayName) {
+  public void editUser(int userId, String userName,  String displayName) {
     if (model.checkIfUserNameExistsExceptSelf(userName, userId)) {
       adminView.showError("Username already exists");
     } else {
-      model.editUser(userId, userName, password, displayName);
+      model.editUser(userId, userName, displayName);
     }
   }
 
+  @Override
+  public void editUserPassword(int userId, String password) {
+    model.editUserPassword(userId, password);
+  }
 
-  
+
 
     
 }

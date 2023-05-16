@@ -283,7 +283,30 @@ public class ShoppingListView {
           nameTitleLabel.setMinWidth(300);
           titleLine.getChildren().addAll(nameTitleLabel, quantityTitleLabel, unitTitleLabel);
           ingredientListContainer.getChildren().add(titleLine);
+
+
+
           for (Ingredient ingredient : shoppingList.getIngredients()) {
+            HBox ingredientLine = new HBox(10);
+            ingredientLine.setAlignment(Pos.CENTER_LEFT);
+            ingredientLine.setFillHeight(false);
+            Label quantityLabel = new Label(String.valueOf(ingredient.getQuantity()));
+            quantityLabel.setStyle("-fx-font: 20px \"Roboto\";");
+            HBox quantityBox = new HBox();
+            quantityBox.setMinWidth(300);
+            quantityBox.setAlignment(Pos.CENTER_LEFT);
+
+            Label unitLabel = new Label(ingredient.getMeasurementUnit());
+            unitLabel.setStyle("-fx-font: 20px \"Roboto\";");
+            Label nameLabel = new Label(ingredient.getName());
+            nameLabel.setStyle("-fx-font: 20px \"Roboto\";");
+            nameLabel.setMinWidth(300);
+            nameLabel.setAlignment(Pos.CENTER_LEFT);
+            quantityLabel.setMinWidth(100);
+            quantityLabel.setAlignment(Pos.CENTER_LEFT);
+            unitLabel.setMinWidth(120);
+            unitLabel.setAlignment(Pos.CENTER_LEFT);
+
             Button editButton = new Button("Edit quantity");
             editButton.setStyle("-fx-background-color: white; -fx-text-fill: #3D405B; -fx-effect: null;-fx-cursor: hand");
             editButton.setFont(Font.font("Roboto", 12));
@@ -298,39 +321,23 @@ public class ShoppingListView {
                 try {
                   float parsedQuantity = Float.parseFloat(newQuantity);
                   observer.editIngredientInShoppingList(ingredient.getName(), parsedQuantity, weekNumber);
-                  observer.goToShoppingList();
+                  quantityLabel.setText(String.valueOf(parsedQuantity));
                 } catch (NumberFormatException ex) {
                   showInlineStyledAlert(AlertType.ERROR, "Invalid Input", "Please enter a valid number for the ingredient quantity.");
                 }
               });
             });
+
+            quantityBox.getChildren().addAll(quantityLabel, editButton);
             Button deleteButton = new Button("Delete");
             deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
             deleteButton.setFont(Font.font("Roboto", 18));
             deleteButton.setOnAction(e -> {
               observer.deleteIngredientInShoppingList(ingredient.getName(), weekNumber);
-              observer.goToShoppingList();
-              updateWeekLayout(currentWeekStart);
+              ingredientListContainer.getChildren().remove(ingredientLine);
             });
-            HBox ingredientLine = new HBox(10);
-            ingredientLine.setAlignment(Pos.CENTER_LEFT);
-            ingredientLine.setFillHeight(false);
-            Label quantityLabel = new Label(String.valueOf(ingredient.getQuantity()));
-            quantityLabel.setStyle("-fx-font: 20px \"Roboto\";");
-            HBox quantityBox = new HBox();
-            quantityBox.setMinWidth(300);
-            quantityBox.setAlignment(Pos.CENTER_LEFT);
-            quantityBox.getChildren().addAll(quantityLabel, editButton);
-            Label unitLabel = new Label(ingredient.getMeasurementUnit());
-            unitLabel.setStyle("-fx-font: 20px \"Roboto\";");
-            Label nameLabel = new Label(ingredient.getName());
-            nameLabel.setStyle("-fx-font: 20px \"Roboto\";");
-            nameLabel.setMinWidth(300);
-            nameLabel.setAlignment(Pos.CENTER_LEFT);
-            quantityLabel.setMinWidth(100);
-            quantityLabel.setAlignment(Pos.CENTER_LEFT);
-            unitLabel.setMinWidth(120);
-            unitLabel.setAlignment(Pos.CENTER_LEFT);
+
+
   
             // Add a pane to push the buttons to the right side
             Pane spacer = new Pane();

@@ -13,6 +13,8 @@ public interface AdminViewObserver {
 
   void goToAdmin();
 
-  void editUser(int userId, String userName, String password, String displayName);
+  void editUser(int userId, String userName, String displayName);
+
+  void editUserPassword(int userId, String password);
   
 }

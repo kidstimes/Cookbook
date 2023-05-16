@@ -1092,20 +1092,39 @@ public class Database {
   /**
    * Edit user username and display name in the database.
    */
-  public void editUser(int userId, String newUsername, String newPassword, String newDisplayName) {
-    String hashedPassword = hashPassword(newPassword);
+  public void editUser(int userId, String newUsername, String newDisplayName) {
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "UPDATE Users SET username = ?, password_hash = ?, displayname = ? WHERE id = ?")) {
+            "UPDATE Users SET username = ?, displayname = ? WHERE id = ?")) {
       stmt.setString(1, newUsername);
-      stmt.setString(2, hashedPassword);
-      stmt.setString(3, newDisplayName);
-      stmt.setInt(4, userId);
+      stmt.setString(2, newDisplayName);
+      stmt.setInt(3, userId);
       stmt.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
+
+  /** Edit user password in the database.
+   *
+   * @param userId is the id of the user
+   * @param newPassword is the new password
+   */
+  public void editUserPassword(int userId, String newPassword) {
+    String hashedPassword = hashPassword(newPassword);
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "UPDATE Users SET password_hash = ? WHERE id = ?")) {
+      stmt.setString(1, hashedPassword);
+      stmt.setInt(2, userId);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+
 
   /**
    * Delete user from the database.

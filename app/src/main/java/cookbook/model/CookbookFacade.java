@@ -81,8 +81,15 @@ public class CookbookFacade {
   /*
    * editUser to edit the user's username and display name.
    */
-  public void editUser(int userId, String userName, String password, String displayName) {
-    database.editUser(userId, userName, password, displayName);
+  public void editUser(int userId, String userName, String displayName) {
+    database.editUser(userId, userName, displayName);
+  }
+
+  /*
+   * editUserPassword to edit the user's password.
+   */
+  public void editUserPassword(int userId, String password) {
+    database.editUserPassword(userId, password);
   }
 
   /**

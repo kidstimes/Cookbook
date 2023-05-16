@@ -254,8 +254,8 @@ public class LoginView {
       showError("Both fields must be filled in.");
       return false;
     }
-    if  (password.length() < 3) {
-      showError("Password must be at least 3 characters long.");
+    if  (password.length() < 5) {
+      showError("Password must be at least 5 characters long.");
       return false;
     }
     return true;

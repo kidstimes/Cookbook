@@ -124,7 +124,7 @@ public class AdminView {
       userNameLabel.setMinWidth(150);
       userNameLabel.setAlignment(Pos.CENTER_LEFT);
 
-      Label passwordLabel = new Label(""); 
+      Label passwordLabel = new Label("*****"); 
       passwordLabel.setStyle("-fx-font: 18px \"Roboto\";");
       passwordLabel.setMinWidth(150);
       passwordLabel.setAlignment(Pos.CENTER_LEFT);
@@ -138,29 +138,45 @@ public class AdminView {
 
       if (!user.getUsername().equalsIgnoreCase("admin")) {
         Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-font: 18px \"Roboto\";");
+        editButton.setStyle("-fx-font: 12px \"Roboto\";");
+        editButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 18px \"Roboto\";");
         editButton.setOnAction(e -> {
-          // Call the editUser method to open the edit dialog
-          editUser(user);
+            editUser(user);
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.setText("Edit Username and Display Name");
+        editButton.setTooltip(tooltip);
+        });
+    
+        Button editPasswordButton = new Button("Edit Password");
+        editPasswordButton.setStyle("-fx-font: 12px \"Roboto\";");
+        editPasswordButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 18px \"Roboto\";");
+        editPasswordButton.setOnAction(e -> {
+          editUserPassword(user);
+        
+        Tooltip tooltip2 = new Tooltip();
+        tooltip2.setText("Edit User Password. Directly change the user password");
+        editPasswordButton.setTooltip(tooltip2);
         });
     
         Button deleteButton = new Button("Delete");
         deleteButton.setStyle("-fx-font: 18px \"Roboto\";");
-        deleteButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font: 18px \"Roboto\";");
+        deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
         deleteButton.setOnAction(e -> {
           observer.deleteUser(user.getId());
           observer.goToAdmin();
           updateUserList();
         });
-        userLine.getChildren().addAll(editButton, deleteButton);
-      }
+        userLine.getChildren().addAll(editButton, editPasswordButton, deleteButton);
+      } 
       userListContainer.getChildren().add(userLine);
-
     }
+    
+    
   }
 
 
-  private void editUser(User user) {
+  public void editUser(User user) {
     Dialog<User> editUserDialog = new Dialog<>();
     editUserDialog.setTitle("Edit User");
 
@@ -169,23 +185,20 @@ public class AdminView {
     grid.setVgap(10);
 
     TextField userNameField = new TextField(user.getUsername());
-    TextField passwordField = new TextField("****");
     TextField displayNameField = new TextField(user.getDisplayName());
 
     grid.add(new Label("Username:"), 0, 0);
     grid.add(userNameField, 1, 0);
-    grid.add(new Label("Password:"), 0, 1);
-    grid.add(passwordField, 1, 1);
-    grid.add(new Label("Display Name:"), 0, 2);
-    grid.add(displayNameField, 1, 2);
+    grid.add(new Label("Display Name:"), 0, 1);
+    grid.add(displayNameField, 1, 1);
     editUserDialog.getDialogPane().setContent(grid);
+
     ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
     editUserDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
-    
+
     editUserDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
-        observer.editUser(user.getId(), userNameField.getText(), passwordField.getText(), displayNameField.getText());
-        System.out.println(user.getId()+" "+userNameField.getText()+" "+passwordField.getText()+" "+displayNameField.getText());
+        observer.editUser(user.getId(), userNameField.getText(), displayNameField.getText());
         observer.goToAdmin();
         updateUserList();
       }
@@ -193,6 +206,35 @@ public class AdminView {
     });
     editUserDialog.showAndWait();
   }
+
+  public void editUserPassword(User user) {
+    Dialog<User> editUserPasswordDialog = new Dialog<>();
+    editUserPasswordDialog.setTitle("Edit User Password");
+
+    GridPane grid = new GridPane();
+    grid.setHgap(10);
+    grid.setVgap(10);
+
+    PasswordField passwordField = new PasswordField();
+    grid.add(new Label("Password:"), 0, 0);
+    grid.add(passwordField, 1, 0);
+
+    editUserPasswordDialog.getDialogPane().setContent(grid);
+
+    ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+    editUserPasswordDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+    editUserPasswordDialog.setResultConverter(dialogButton -> {
+        if (dialogButton == saveButtonType) {
+            observer.editUserPassword(user.getId(), passwordField.getText());
+            observer.goToAdmin();
+            updateUserList();
+        }
+        return null;
+    });
+    editUserPasswordDialog.showAndWait();
+}
+
 
   /**
    * Add a new user
