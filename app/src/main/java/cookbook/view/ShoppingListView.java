@@ -481,7 +481,7 @@ public class ShoppingListView {
             .setFontColor(ColorConstants.GRAY);
     document.add(title);
 
-    Paragraph subTitle = new Paragraph(weekNumberLabel.getText() + ", " + yearNumberLabel.getText())
+    Paragraph subTitle = new Paragraph(weekNumberLabel.getText() + yearNumberLabel.getText())
             .setTextAlignment(TextAlignment.CENTER)
             .setFontSize(14)
             .setFontColor(ColorConstants.LIGHT_GRAY);
