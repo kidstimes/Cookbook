@@ -495,51 +495,49 @@ public class RecipeView {
      * @param text is the text of the comment
      * @return a pane for displaying comment
      */
-    private HBox createCommentPane(int commentId, int commentUserId, String commentDisplayName, String text) {
-      HBox commentPane = new HBox();
-      commentPane.setSpacing(10);
-      commentPane.setAlignment(Pos.CENTER_LEFT);
+  private HBox createCommentPane(int commentId, int commentUserId, String commentDisplayName, String text) {
+    HBox commentPane = new HBox();
+    commentPane.setSpacing(10);
+    commentPane.setAlignment(Pos.CENTER_LEFT);
   
-      Text userNameText = new Text(commentDisplayName + ": ");
-      userNameText.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
-      commentPane.getChildren().add(userNameText);
+    Text userNameText = new Text(commentDisplayName + ": ");
+    userNameText.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
+    commentPane.getChildren().add(userNameText);
   
-      Text commentText = new Text(text);
-      commentText.setFont(Font.font("Roboto", 16));
-      commentPane.getChildren().add(commentText);
+    Text commentText = new Text(text);
+    commentText.setFont(Font.font("Roboto", 16));
+    commentPane.getChildren().add(commentText);
     
-      if (commentUserId == userId){
-          Button editButton = new Button("Edit");
-          editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
-          editButton.setStyle(
-              " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-              + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
-          editButton.setOnAction(e -> {
-              TextInputDialog editDialog = new TextInputDialog(commentText.getText());
-              editDialog.setTitle("Edit Comment");
-              editDialog.setHeaderText(null);
-              editDialog.setContentText("Edit your comment:");
-              Optional<String> result = editDialog.showAndWait();
-              result.ifPresent(updatedText -> {
-                  commentText.setText(updatedText);
-                  observer.updateComment(commentId, updatedText);
-              });
+    if (commentUserId == userId){
+      Button editButton = new Button("Edit");
+      editButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+      editButton.setStyle(
+            " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+            + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
+      editButton.setOnAction(e -> {
+        TextInputDialog editDialog = new TextInputDialog(commentText.getText());
+        editDialog.setTitle("Edit Comment");
+        editDialog.setHeaderText(null);
+          editDialog.setContentText("Edit your comment:");
+          Optional<String> result = editDialog.showAndWait();
+          result.ifPresent(updatedText -> {
+            commentText.setText(updatedText);
+            observer.updateComment(commentId, updatedText);
           });
-          commentPane.getChildren().add(editButton);
+      });
+      commentPane.getChildren().add(editButton);
     
-          Button deleteButton = new Button("Delete");
-          deleteButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
-          deleteButton.setStyle(
-              " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-              + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
-          deleteButton.setOnAction(e -> {
-              observer.deleteComment(commentId);
-              commentPane.getChildren().clear();
-              commentPane.setVisible(false);
-          });
-          commentPane.getChildren().add(deleteButton);
-      }
-      return commentPane;
+      Button deleteButton = new Button("Delete");
+      deleteButton.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
+      deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+      deleteButton.setOnAction(e -> {
+        observer.deleteComment(commentId);
+        commentPane.getChildren().clear();
+        commentPane.setVisible(false);
+      });
+      commentPane.getChildren().add(deleteButton);
+    }
+    return commentPane;
   }
   
 
@@ -730,6 +728,7 @@ public class RecipeView {
       ingredientName.setFont(Font.font("ROBOTO", 18));
       ingredientName.setPrefWidth(200);
       Button deleteIngredientButton = new Button("Delete");
+      deleteIngredientButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
       deleteIngredientButton.setOnAction(deleteEvent -> {
         recipeIngredientsVBox.getChildren().remove(ingredientHBox);
       });
@@ -803,7 +802,7 @@ public class RecipeView {
     Button modifyDirectionButton = new Button("Modify Direction");
     modifyDirectionButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
     Button deleteDirectionButton = new Button("Delete Direction");
-    deleteDirectionButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+    deleteDirectionButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
     TextField newDirectionField = new TextField();
     addDirectionButton.setOnAction(e -> {
       if (!newDirectionField.getText().isEmpty()) {

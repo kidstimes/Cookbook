@@ -15,8 +15,6 @@ public class Recipe {
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
   private ArrayList<Comment> comments;
-  // deal with the comments method later
-  private ArrayList<Comment> comments;
 
   /**
    * Recipe Constructor.
@@ -196,29 +194,6 @@ public class Recipe {
    */
   public boolean isStarred() {
     return starred;
-  }
-
-  /**
-   * Get the comments of the recipe.
-   *
-   * @return an arraylist with the comments
-   */
-  public ArrayList<Comment> getComments() {
-    ArrayList<Comment> copyComments = new ArrayList<>();
-    for (Comment comment : comments) {
-      copyComments.add(comment);
-    }
-    return copyComments;
-  }
-
-  /**
-   * Add a new comment to the recipe.
-   *
-   * @param user the user who wrote the comment
-   * @param text the text of the comment
-   */
-  public void addComment(User user, String text, int id, int recipeId) {
-    comments.add(new Comment(id, text, recipeId, user.getId()));
   }
 
   
