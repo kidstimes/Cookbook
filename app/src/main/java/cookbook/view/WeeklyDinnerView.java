@@ -96,7 +96,7 @@ public class WeeklyDinnerView {
         createButton("My Favorites", e -> observer.goToMyFavorite()),
         createButton("My Shopping List", e -> observer.goToShoppingList()),
         createButton("Messages", e -> observer.goToMessages()),
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }

@@ -123,7 +123,7 @@ public class AddRecipeView {
         clearAllInput();
         observer.goToMessages();
       })
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }

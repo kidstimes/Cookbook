@@ -151,7 +151,12 @@ public class HomePageView {
         if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
           showError("Please fill all fields."); 
           return;
-        }     
+        }
+        //new password must be longer than or equal to 5 characters
+        if (newPassword.length() < 5) {
+          showError("New password must be at least 5 characters long");
+          return;
+        }    
         if (!newPassword.equals(confirmNewPassword)) {
           showError("New password and confirm password do not match");
         } else {

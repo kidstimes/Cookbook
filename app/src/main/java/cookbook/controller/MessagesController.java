@@ -9,7 +9,7 @@ import javafx.scene.Node;
 /**
  * Controller for the messages view.
  */
-public class MessagesController extends BaseController implements MessagesViewObserver{
+public class MessagesController extends BaseController implements MessagesViewObserver {
   private MessagesView messagesView;
 
   /** Constructor for the messages controller.

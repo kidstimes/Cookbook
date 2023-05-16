@@ -165,7 +165,10 @@ public class AdminView {
     
   }
 
-
+  /** Edit the username and display name of a user.
+   *
+   * @param user the user to edit
+   */
   public void editUser(User user) {
     Dialog<User> editUserDialog = new Dialog<>();
     editUserDialog.setTitle("Edit User");
