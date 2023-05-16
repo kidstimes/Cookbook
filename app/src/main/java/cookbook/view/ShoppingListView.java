@@ -1,7 +1,18 @@
 package cookbook.view;
 
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.property.TextAlignment;
 import cookbook.model.Ingredient;
 import cookbook.model.ShoppingList;
+import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -86,6 +97,10 @@ public class ShoppingListView {
     createCenterView();
   }
 
+  public void setShoppingLists(ArrayList<ShoppingList> shoppingLists) {
+    this.shoppingLists = shoppingLists;
+  }
+
   /**
    * Create side bar menu.
    */
@@ -138,9 +153,12 @@ public class ShoppingListView {
     // Add title above the weekly menu
     Label titleLabel = new Label("Shopping List");
     titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    centerView.getChildren().addAll(titleLabel);
+
+    HBox titleBox  =  new HBox();
+    titleBox.setSpacing(20);
 
     Button refreshButton = new Button("Refresh Shopping List");
-
     refreshButton.setOnAction(event -> {
       observer.refreshShoppingListWithWeeklyDinnerList();
       observer.goToShoppingList();
@@ -148,13 +166,29 @@ public class ShoppingListView {
     //add a hovering text for refresh button
     Tooltip tooltip = new Tooltip("Refresh the shopping list with the updated weekly dinner list");
     Tooltip.install(refreshButton, tooltip);
-
-
     refreshButton.setStyle("-fx-font: 18px \"Roboto\";");
     refreshButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
         + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:"
         + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
-    centerView.getChildren().addAll(titleLabel, refreshButton);
+
+
+    Button generatePdfButton = new Button("Generate PDF");
+    generatePdfButton.setOnAction(event -> {
+      try {
+        generatePdf();
+        showInlineStyledAlert(AlertType.INFORMATION, "Success", "PDF for "+ weekNumberLabel.getText() +" shopping list generated.");
+      } catch (Exception e) {
+        showInlineStyledAlert(AlertType.ERROR,
+            "PDF Generation Failed", e.getMessage());
+      }
+    });
+    generatePdfButton.setStyle("-fx-font: 18px \"Roboto\";");
+    generatePdfButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
+        + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:"
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+    titleBox.getChildren().addAll(refreshButton, generatePdfButton);
+    centerView.getChildren().addAll(titleBox);
+
 
     VBox weekNavigation = createWeekNavigation();
     centerView.getChildren().add(weekNavigation);
@@ -322,6 +356,7 @@ public class ShoppingListView {
                   float parsedQuantity = Float.parseFloat(newQuantity);
                   observer.editIngredientInShoppingList(ingredient.getName(), parsedQuantity, weekNumber);
                   quantityLabel.setText(String.valueOf(parsedQuantity));
+                  observer.updateShoppingList();
                 } catch (NumberFormatException ex) {
                   showInlineStyledAlert(AlertType.ERROR, "Invalid Input", "Please enter a valid number for the ingredient quantity.");
                 }
@@ -335,6 +370,7 @@ public class ShoppingListView {
             deleteButton.setOnAction(e -> {
               observer.deleteIngredientInShoppingList(ingredient.getName(), weekNumber);
               ingredientListContainer.getChildren().remove(ingredientLine);
+              observer.updateShoppingList();
             });
 
 
@@ -433,6 +469,47 @@ public class ShoppingListView {
     button.setOnAction(eventHandler);
     return button;
   }
+
+  public void generatePdf() throws Exception {
+    PdfWriter writer = new PdfWriter(new FileOutputStream("ShoppingList" +weekNumberLabel.getText() + ".pdf"));
+    PdfDocument pdf = new PdfDocument(writer);
+    Document document = new Document(pdf);
+
+    Paragraph title = new Paragraph("Cookbook Shopping List")
+            .setTextAlignment(TextAlignment.CENTER)
+            .setFontSize(20)
+            .setFontColor(ColorConstants.GRAY);
+    document.add(title);
+
+    Paragraph subTitle = new Paragraph(weekNumberLabel.getText() + ", " + yearNumberLabel.getText())
+            .setTextAlignment(TextAlignment.CENTER)
+            .setFontSize(14)
+            .setFontColor(ColorConstants.LIGHT_GRAY);
+    document.add(subTitle);
+
+    document.add(new Paragraph("\n"));
+
+    Table table = new Table(UnitValue.createPercentArray(new float[]{5, 2, 3})).useAllAvailableWidth();
+    table.addCell(new Cell().add(new Paragraph("Ingredient Name").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+    table.addCell(new Cell().add(new Paragraph("Quantity").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+    table.addCell(new Cell().add(new Paragraph("Measurement Unit").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+
+
+    for (ShoppingList shoppingList : shoppingLists) {
+      if (shoppingList.getWeekNumber() == getWeekNumber(currentWeekStart)) {
+        for (Ingredient ingredient : shoppingList.getIngredients()) {
+          table.addCell(new Cell().add(new Paragraph(ingredient.getName())).setBorder(Border.NO_BORDER));
+          table.addCell(new Cell().add(new Paragraph(String.valueOf(ingredient.getQuantity()))).setBorder(Border.NO_BORDER));
+          table.addCell(new Cell().add(new Paragraph(ingredient.getMeasurementUnit())).setBorder(Border.NO_BORDER));
+        }
+      }
+    }
+
+    document.add(table);
+
+    document.close();
+  }
+
 
 
 }
