@@ -41,6 +41,8 @@ public interface BrowserViewObserver {
 
   void removeRecipeFromFavorite(Recipe recipe);
 
+  void goToMessages();
+
 
 
 

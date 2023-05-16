@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
 /**
  * The Cookbook facade class.
  */
@@ -14,6 +15,7 @@ public class CookbookFacade {
   private User user;
   private Database database;
   private ArrayList<Recipe> recipes;
+
 
   /**
    * Cookbook Constructor.
@@ -31,6 +33,10 @@ public class CookbookFacade {
     return database.checkIfUserNameExists(userName);
   }
 
+  public boolean checkIfUserNameExistsExceptSelf(String userName, int userId) {
+    return database.checkIfUserNameExistsExceptSelf(userName, userId);
+  }
+
   public boolean userLogin(String userName, String password) {
     return database.userLogin(userName, password);
   }
@@ -39,29 +45,53 @@ public class CookbookFacade {
     return database.userSignUp(userName, password, displayName);
   }
 
+  public boolean checkPasswordForUser(String password) {
+    return database.checkPasswordForUserInDatabase(user.getUsername(), password);
+  }
+
+  public boolean changePasswordForUser(String newPassword) {
+    return database.changePasswordForUserInDatabase(user.getUsername(), newPassword);
+  }
+
+  public boolean changeDisplayNameForUser(String newDisplayName) {
+    user.modifyDisplayName(newDisplayName);
+    return database.changeDisplayNameForUserInDatabase(user.getUsername(), newDisplayName);
+  }
+
+  public void deleteUser(int userId) {
+    database.deleteUser(userId);
+  }
+
+  public boolean isDeletedUser(String userName) {
+    return database.isDeletedUserInDatabase(userName);
+  }
+
   public void setCurrentUser(String userName) {
-    try {
-      int userId = database.getUserId(userName);
-      String displayName = database.getUserDisplayName(userName);
-      if (userId != -1 && displayName != null) {
-        user = new User(userId, userName, displayName);
-      } else {
-        throw new Exception("User not found in the database");
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    System.out.println("Userid" + database.getUserId(userName));
   }
 
   public String getUserDisplayName() {
-    System.out.println("Current user: " + user.getUsername());
     return user.getDisplayName();
   }
 
-  public User getCurrentUser() {
-    return this.user;
+  public int getUserId() {
+    return user.getId();
+  } 
+
+  /*
+   * editUser to edit the user's username and display name.
+   */
+  public void editUser(int userId, String userName, String displayName) {
+    database.editUser(userId, userName, displayName);
   }
 
+  /*
+   * editUserPassword to edit the user's password.
+   */
+  public void editUserPassword(int userId, String password) {
+    database.editUserPassword(userId, password);
+  }
 
   /**
    * Get the private tags of the user from the database.
@@ -119,7 +149,7 @@ public class CookbookFacade {
    *
    * @param name the name of the recipe to remove.
    */
-  public void removeRecipe(String name) {
+  public void remove(String name) {
     recipes.removeIf(recipe -> Objects.equals(name, recipe.getName()));
   }
 
@@ -140,18 +170,21 @@ public class CookbookFacade {
    * Add tags to a recipe.
    *
    * @param tags the tags in an ArrayList
-   * @param recipeName the name of the recipe
+   * @param recipe the recipe
    */
-  public void addTagsToRecipe(ArrayList<String> tags, String recipeName) {
-    for (Recipe recipe : recipes) {
-      if (recipe.getName() == recipeName) {
-        recipe.setTags(tags);
-      }
+  public void addTagsToRecipe(ArrayList<String> tags, Recipe recipe) {
+    if (recipes.contains(recipe)) {
+      recipe.setTags(tags);
     }
   }
 
-  public void updateTagToDatabase(ArrayList<String> tags, String recipeName) {
-    database.updateTagToDatabase(tags, recipeName, user.getUsername());
+  /** Update the tags of a recipe in the database.
+   *
+   * @param tags the tags
+   * @param recipe the recipe
+   */
+  public void updateTagToDatabase(ArrayList<String> tags, Recipe recipe) {
+    database.updateTagToDatabase(tags, recipe.getId(), user.getUsername());
   }
 
   /**
@@ -264,7 +297,7 @@ public class CookbookFacade {
     for (Dinner dinner : dinnerList) {
       for (Recipe recipe : recipes) {
         for (Recipe dinnerRecipe : dinner.getRecipes()) {
-          if (recipe.getName().equalsIgnoreCase(dinnerRecipe.getName())) {
+          if (recipe.getName().equals(dinnerRecipe.getName())) {
             user.addWeeklyDinner(dinner.getDate(), recipe);
           }
         }
@@ -280,7 +313,7 @@ public class CookbookFacade {
    */
   public boolean checkRecipeName(String recipeName) {
     for (Recipe recipe : recipes) {
-      if (recipe.getName().equalsIgnoreCase(recipeName)) {
+      if (recipe.getName().equals(recipeName)) {
         return true;
       }
     }
@@ -292,15 +325,20 @@ public class CookbookFacade {
     return user.checkWeeklyDinner();
   }
 
+  //check if a user has a weekly dinner for next week
+  public boolean checkNextWeekDinner() {
+    return user.checkNextWeekDinner();
+  }
+
   /** Load the favorite recipes of the user from the database.
   *
   */
   public void loadFavoriteRecipes() {
     ArrayList<Recipe> favoriteRecipes =  database.loadFavoriteRecipes(user.getUsername());
-    //Set attribute isstar to true for all the favorite recipes in the cookbook
+    //Set attribute starred to true for all the favorite recipes in the cookbook
     for (Recipe r : favoriteRecipes) {
       for (Recipe recipe : recipes) {
-        if (r.getName().equalsIgnoreCase(recipe.getName())) {
+        if (r.getName().equals(recipe.getName())) {
           recipe.star();
           user.addToFavorites(recipe);
         }
@@ -319,7 +357,7 @@ public class CookbookFacade {
     //change the recipe attribute starred to true 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
-      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+      if (r.getName().equals(recipe.getName())) {
         r.star();
         System.out.println(r);
       }
@@ -338,7 +376,7 @@ public class CookbookFacade {
     //change the recipe attribute starred to false 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
-      if (r.getName().equalsIgnoreCase(recipe.getName())) {
+      if (r.getName().equals(recipe.getName())) {
         r.unstar();
         System.out.println(r);
       }
@@ -356,30 +394,148 @@ public class CookbookFacade {
     return user.getFavorites();
   }
 
-  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
-    user.removeRecipeFromWeeklyDinner(dayDate, recipeName);
-    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipeName);
+  /**Remove a recipe from the weekly dinner of the user.
+   *
+   * @param dayDate the date of the dinner
+   * @param recipe the recipe to remove
+   */
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe) {
+    user.removeRecipeFromWeeklyDinner(dayDate, recipe);
+    database.removeRecipeFromWeeklyDinnerInDatabase(user.getUsername(), dayDate, recipe.getName());
   }
 
-  public void addComment(Comment comment) {
-    database.addComment(comment);
+  /** Edit a recipe in the cookbook.
+   *
+   * @param recipe the recipe to edit
+   * @param name is the new name of the recipe
+   * @param description is the new description of the recipe
+   * @param instructions is the new instructions of the recipe
+   * @param ingredients is the new ingredients of the recipe
+   */
+  public void editRecipe(Recipe recipe, String name, String description, String instructions, 
+      ArrayList<String[]> ingredients) {
+    recipe.setName(name);
+    recipe.setShortDesc(description);
+    recipe.setDirection(instructions);
+    recipe.setIngredients(ingredients);
+    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients);
   }
 
-  public void updateComment(Comment comment) {
-    database.updateComment(comment);
+  /** Add all ingredients of a recipe to the shopping list of the user.
+   *
+   * @param recipe the recipe to add
+   * @param weekNumber the week number of the dinner
+   */
+  public void addRecipeToShoppingList(Recipe recipe, int weekNumber) {
+    database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), weekNumber);
   }
 
-  public void deleteComment(Comment comment) {
-    database.deleteComment(comment);
+
+  /**
+   * Refresh the shopping list of the user with the most updated weekly dinner list.
+   */
+  public void refreshShoppingListWithWeeklyDinnerList() {
+    database.clearUserShoppingList(user.getUsername());
+    for (Dinner dinner : user.getWeeklyDinners()) {
+      for (Recipe recipe : dinner.getRecipes()) {
+        database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), dinner.getWeekNumber());
+      }
+    }
   }
 
-  public List<Comment> getComments(int recipeId) {
+  /**Edit a ingredient in the shopping list of the user.
+   * 
+   * @param ingredientName the name of the ingredient
+   * @param newQuantity the new quantity of the ingredient
+   * @param weekNumber the week number of the shopping list
+   */
+  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
+    database.editIngredientQuantityInShoppingList(user.getUsername(), ingredientName, newQuantity, weekNumber);
+  }
+
+  /** Delete a ingredient in the shopping list of the user.
+   *
+   * @param ingredientName the name of the ingredient
+   * @param weekNumber the week number of the shopping list
+   */
+  public void deleteIngredientInShoppingList(String ingredientName, int weekNumber) {
+    database.deleteIngredientFromShoppingList(user.getUsername(), ingredientName, weekNumber);
+  }
+
+  //Load the shopping list of the user from the database.
+  public ArrayList<ShoppingList> loadShoppingListsFromDatabase() {
+    user.setShoppingLists(database.loadShoppingListsFromDatabase(user.getUsername()));
+    return user.getShoppingLists();
+  }
+
+  /** Load all users from the database.
+   *
+   * @return an arraylist with all the users
+   */
+  public ArrayList<User> loadAllUsers() {
+    return database.loadAllUsersFromDatabase();
+  }
+
+  /**
+   * Add ingredients to the shopping list of the user with a given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @param ingredients the ingredients to add to the shopping list
+   */
+  public void addIngredientsToUsersShoppingList(int weekNumber, ArrayList<Ingredient> ingredients) {
+    user.addIngredientsToShoppingList(weekNumber, ingredients);
+  }
+
+  /**
+   * Get the shopping list of the user for the given week number.
+   *
+   * @param weekNumber the week number of the shopping list
+   * @return an arraylist with the ingredients of the shopping list
+   */
+  public ArrayList<Ingredient> getUsersShoppingList(int weekNumber) {
+    return user.getShoppingList(weekNumber);
+  }
+
+  /**
+   * Edit the quantity of an ingredient in the user's shopping list of a given week.
+   *
+   * @param weekNumber the number of the week
+   * @param ingredientName the name of the ingredient to edit
+   * @param newQuantity the updated quantity of the ingredient
+   */
+  public void editIngredientQuantityInUsersShoppingList(int weekNumber,
+      String ingredientName, float newQuantity) {
+    user.editIngredientQuantityInShoppingList(weekNumber, ingredientName, newQuantity);
+  }
+
+  /**
+   * Delete an ingredient from the user's shopping list of the given week.
+   *
+   * @param weekNumber the number of the week
+   * @param ingredientName the name of the ingredient to delete
+   */
+  public void deleteIngredientFromUsersShoppingList(int weekNumber, String ingredientName) {
+    user.deleteIngredientFromShoppingList(weekNumber, ingredientName);
+  }
+
+  public void addComment(Recipe recipe, String commentText) {
+    database.addComment(recipe.getId(), user.getId(), commentText);
+  }
+
+  public void updateComment(int commentId, String commentText) {
+    database.updateComment(commentId, commentText);
+  }
+
+  public void deleteComment(int commentId) {
+    database.deleteComment(commentId);
+  }
+
+  public ArrayList<Comment> getComments(int recipeId) {
     return database.getComments(recipeId);
   }
 
-  public int getRecipeId(String recipeName) {
-    return database.getRecipeId(recipeName);
-  }
-  
+
+
+
 
 }

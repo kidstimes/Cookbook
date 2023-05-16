@@ -1,6 +1,7 @@
 package cookbook.model;
 
 import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -62,4 +63,8 @@ public class Dinner {
     dinnerRecipes.remove(recipe);
   }
 
+  public int getWeekNumber() {
+    int weekNumber = date.get(WeekFields.ISO.weekOfWeekBasedYear());
+    return weekNumber;
+  }
 }

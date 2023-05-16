@@ -14,7 +14,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -23,7 +22,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
+/**
+ * View for the favorite recipes.
+ */
 public class FavoriteView {
   private FavoriteViewObserver observer;
   private BorderPane view;
@@ -64,7 +65,8 @@ public class FavoriteView {
       createButton("Add a Recipe", e -> observer.goToAddRecipe()),
       createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
       createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList())
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -142,9 +144,22 @@ public class FavoriteView {
       HBox recipeHbox = new HBox(20);
       recipeHbox.setAlignment(Pos.CENTER_LEFT);
       HBox.setHgrow(recipeHbox, Priority.ALWAYS);
-      recipeHbox.getChildren().addAll(recipeLink, recipeTags); // Add the recipe tags to the HBox
+    
+      Button deleteButton = new Button("Delete");
+      deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+      deleteButton.setOnAction(e -> {
+        if (observer != null) {
+          observer.removeRecipeFromFavorites(recipe);
+          observer.goToMyFavorite();
+        }
+      });
+      Region spacer2 = new Region();
+      HBox.setHgrow(spacer2, Priority.ALWAYS);
+    
+      recipeHbox.getChildren().addAll(recipeLink, recipeTags, spacer2, deleteButton); 
       recipeHbox.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
       recipeListVbox.getChildren().add(recipeHbox);
+
 
     }
     view.setCenter(scrollPane);

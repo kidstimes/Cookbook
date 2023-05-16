@@ -31,4 +31,6 @@ public interface AddRecipeViewObserver {
 
   void goToMyFavorite();
 
+  void goToMessages();
+
 }

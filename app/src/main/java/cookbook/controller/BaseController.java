@@ -27,8 +27,6 @@ public abstract class BaseController {
     mainController.goToBrowser();
   }
 
-
-
   public void goToAddRecipe() {
     mainController.goToAddRecipe();
   }
@@ -37,7 +35,6 @@ public abstract class BaseController {
   public void userLogout() {
     mainController.userLogout();
   }
-
 
   public void goToWeeklyDinner() {
     mainController.goToWeeklyDinner();
@@ -50,4 +47,8 @@ public abstract class BaseController {
   public void goToMyFavorite() {
     mainController.goToMyFavorite();
   } 
+
+  public void goToMessages() {
+    mainController.goToMessages();
+  }
 }

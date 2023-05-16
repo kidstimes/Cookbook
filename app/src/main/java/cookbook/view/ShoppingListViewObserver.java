@@ -19,5 +19,13 @@ public interface ShoppingListViewObserver {
   void goToMyFavorite();
 
   void goToShoppingList();
+
+  void goToMessages();
+
+  void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber);
+
+  void deleteIngredientInShoppingList(String ingredientName, int weekNumber);
+
+  void refreshShoppingListWithWeeklyDinnerList();
   
 }

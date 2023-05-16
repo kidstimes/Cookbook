@@ -182,8 +182,8 @@ public class SignUpView {
    */
   private boolean validateInput(String username, String password, String confirmedPassword, 
       String displayName) {
-    if (username.trim().isEmpty() || password.isEmpty() || confirmedPassword.isEmpty() 
-        || displayName.isEmpty()) {
+    if (username.trim().isEmpty() || password.trim().isEmpty() 
+        || confirmedPassword.trim().isEmpty() || displayName.isEmpty()) {
       showError("All fields must be filled in.");
       return false;
     } 
@@ -191,12 +191,29 @@ public class SignUpView {
       showError("Passwords do not match.");
       return false;
     }
-    if (password.length() < 3) {
-      showError("Password must be at least 3 characters long.");
+    if (password.length() < 5) {
+      showError("Password must be at least 5 characters long.");
       return false;
     }
     if (username.equalsIgnoreCase("admin")) {
       showError("Username cannot be admin.");
+      return false;
+    }
+    if (username.contains(" ")) {
+      showError("Username cannot contain spaces.");
+      return false;
+    }
+    if (username.length() < 3 || username.length() > 15) {
+      showError("Username must be between 3 and 15 characters long.");
+      return false;
+    }
+    if (displayName.length() < 3 || displayName.length() > 15) {
+      showError("Display name must be between 3 and 15 characters long.");
+      return false;
+    }
+    if (displayName.equalsIgnoreCase("DELETED USER") 
+        || displayName.equalsIgnoreCase("deleted_user")) {
+      showError("Display name cannot be deleted user.");
       return false;
     }
     return true;
