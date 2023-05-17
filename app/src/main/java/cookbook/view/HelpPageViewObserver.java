@@ -1,13 +1,9 @@
 package cookbook.view;
 
-import cookbook.model.Recipe;
-import java.time.LocalDate;
-
-
 /**
- * Interface for the WeeklyDinnerView observer.
+ * Interface for the HelpPageView observer.
  */
-public interface WeeklyDinnerViewObserver {
+public interface HelpPageViewObserver {
 
   void goToHomePage();
 
@@ -19,13 +15,9 @@ public interface WeeklyDinnerViewObserver {
 
   void goToWeeklyDinner();
 
-  void goToRecipe(Recipe recipe);
-
   void goToShoppingList();
 
   void goToMyFavorite();
-
-  void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe);
 
   void goToMessages();
 

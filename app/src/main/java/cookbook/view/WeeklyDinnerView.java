@@ -104,11 +104,28 @@ public class WeeklyDinnerView {
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
+    HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 18));
+    logoutButton.setFont(Font.font("Roboto", 14));
     logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> observer.userLogout());
-    sidebar.getChildren().add(logoutButton);
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+
+    Region hspacer = new Region();  // This will take up as much space as possible
+    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    
+    Button helpButton = new Button("Help");
+    helpButton.setFont(Font.font("Roboto", 14));
+    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    helpButton.setOnAction(e -> {
+      observer.goToHelp();
+    });
+    
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
     view.setLeft(sidebar);
   }
 

@@ -28,6 +28,8 @@ public class MainController {
   private ShoppingListController shoppingListController;
   private FavoriteController favoriteController;
   private AdminController adminController;
+  private HelpPageController helpPageController;
+  private MessagesController messagesController;
 
   /**
    * Controller Constructor.
@@ -155,7 +157,8 @@ public class MainController {
    */
 
   public void goToMessages() {
-    //TODO implement my messages view
+    this.messagesController = new MessagesController(model, this);
+    root.setCenter(messagesController.getView());
   }
 
 
@@ -171,7 +174,8 @@ public class MainController {
    * Go to help page.
    */
   public void goToHelp() {
-    //TODO implement help view
+    this.helpPageController = new HelpPageController(model, this);
+    root.setCenter(helpPageController.getView());
   }
 
 

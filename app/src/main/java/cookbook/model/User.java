@@ -8,13 +8,16 @@ import java.util.ArrayList;
  * The User class.
  */
 public class User {
-
+  private int id;
   private String username;
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
   private ArrayList<ShoppingList> shoppingLists;
-  private int id;
+  private ArrayList<Message> receivedMessages;
+  private ArrayList<Message> sentMessages;
+
+  
 
   /**
    * User Constructor.

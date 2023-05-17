@@ -43,6 +43,8 @@ public interface BrowserViewObserver {
 
   void goToMessages();
 
+  void goToHelp();
+
 
 
 

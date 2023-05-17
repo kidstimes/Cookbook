@@ -24,5 +24,7 @@ public interface MessagesViewObserver {
   void goToMessages();
 
   void goToRecipe(Recipe recipe);
+
+  void goToHelp();
   
 }

@@ -30,4 +30,6 @@ public interface HomePageViewObserver {
   void goToHomePage();
 
   void changeDisplayName(String newDisplayName);
+
+  void goToHelp();
 }

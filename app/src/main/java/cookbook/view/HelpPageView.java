@@ -1,5 +1,6 @@
 package cookbook.view;
 
+import cookbook.view.HelpPageViewObserver;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -15,34 +16,34 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 
-public class MessagesView {
+public class HelpPageView {
   private BorderPane view;
-  private MessagesViewObserver observer;
+  private HelpPageViewObserver observer;
   private String displayName;
 
 
   /**
-   * Constructor for the MessagesView.
-   */
-  public MessagesView(String displayName) {
+  * Constructor for the MessagesView.
+  */
+  public HelpPageView(String displayName) {
     this.view = new BorderPane();
     this.displayName = displayName;
     initLayout();
 
   }
-  
+
   /** Set the observer for this view.
   *
   * @param observer the observer
   */
-  public void setObserver(MessagesViewObserver observer) {
+  public void setObserver(HelpPageViewObserver observer) {
     this.observer = observer;
   }
 
   //get the view
   public Node getView() {
     return view;
-  }
+}
 
   /**
    * Initialize the layout.
@@ -107,5 +108,5 @@ public class MessagesView {
   }
 }
 
-  
+
 

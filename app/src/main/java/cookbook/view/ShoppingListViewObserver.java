@@ -29,5 +29,7 @@ public interface ShoppingListViewObserver {
   void refreshShoppingListWithWeeklyDinnerList();
 
   void updateShoppingList();
+
+  void goToHelp();
   
 }

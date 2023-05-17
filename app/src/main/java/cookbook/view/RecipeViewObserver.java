@@ -50,5 +50,7 @@ public interface RecipeViewObserver {
 
   void deleteComment(int commentId);
 
+  void goToHelp();
+
 
 }
