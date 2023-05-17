@@ -1,8 +1,5 @@
 package cookbook.view;
 
-
-import javax.swing.text.AbstractDocument.LeafElement;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -31,7 +28,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -131,7 +127,8 @@ public class LoginView {
     });
 
     // Play all animations simultaneously
-    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, rotateTransition, scaleTransition, pathTransition);
+    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition,
+        rotateTransition, scaleTransition, pathTransition);
 
     parallelTransition.setOnFinished(e -> {
       // Create a StackPane
@@ -222,7 +219,8 @@ public class LoginView {
       Path heartPath = new Path();
       heartPath.getElements().add(new MoveTo(-200, -200));  // Start from the left
       for (int i = 0; i < 5; i++) {  // Jump 5 times
-        heartPath.getElements().add(new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
+        heartPath.getElements().add(
+          new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
       }
       heartPath.getElements().add(new LineTo(500, -200));  // Move to the right
 
@@ -376,7 +374,8 @@ public class LoginView {
     Button loginButton = new Button("Login");
     loginButton.setMaxWidth(Double.MAX_VALUE);
     //set login button style here
-    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; -fx-font-size: 16; -fx-font-weight: bold;");
+    loginButton.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: #ffffff; -fx-font-size: 16; -fx-font-weight: bold;");
     loginButton.setOnAction(event -> {
       String username = usernameField.getText();
       String password = passwordField.getText();
