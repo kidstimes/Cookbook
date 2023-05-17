@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
+
 /**
  * The Cookbook facade class.
  */
@@ -67,11 +68,14 @@ public class CookbookFacade {
 
   public void setCurrentUser(String userName) {
     user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
-    System.out.println("Userid" + database.getUserId(userName));
   }
 
   public String getUserDisplayName() {
     return user.getDisplayName();
+  }
+
+  public String getUserName() {
+    return user.getUsername();
   }
 
   public int getUserId() {
@@ -351,14 +355,12 @@ public class CookbookFacade {
    * @return true if the recipe is added to the favorite recipes, otherwise false
    */
   public boolean addRecipeToFavorites(Recipe recipe) {
-    System.out.println(recipe);
     user.addToFavorites(recipe);
     //change the recipe attribute starred to true 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
       if (r.getName().equals(recipe.getName())) {
         r.star();
-        System.out.println(r);
       }
     }
     return database.addRecipeToFavorites(user.getUsername(), recipe.getName());
@@ -370,14 +372,12 @@ public class CookbookFacade {
    * @return true if the recipe is removed from the favorite recipes, otherwise false
    */
   public boolean removeRecipeFromFavorites(Recipe recipe) {
-    System.out.println(recipe);
     user.removeFromFavorites(recipe);
     //change the recipe attribute starred to false 
     //in the arraylist of recipes in this cookbookfacade class
     for (Recipe r : recipes) {
       if (r.getName().equals(recipe.getName())) {
         r.unstar();
-        System.out.println(r);
       }
     }
     return database.removeRecipeFromFavorites(user.getUsername(), recipe.getName());
@@ -443,7 +443,7 @@ public class CookbookFacade {
   }
 
   /**Edit a ingredient in the shopping list of the user.
-   * 
+   *
    * @param ingredientName the name of the ingredient
    * @param newQuantity the new quantity of the ingredient
    * @param weekNumber the week number of the shopping list
@@ -533,6 +533,30 @@ public class CookbookFacade {
     return database.getComments(recipeId);
   }
 
+
+  public ArrayList<Message> getInboxMessages() {
+    //return database.getInboxMessages(user.getId());
+    ArrayList<Message> messages = new ArrayList<Message>();
+
+    return messages;
+  }
+
+  public ArrayList<Message> getOutboxMessages() {
+    //return database.getOutboxMessages(user.getId());
+    ArrayList<Message> messages = new ArrayList<Message>();
+
+    return messages;
+  }
+
+	public int getNumberUnreadMessages() {
+    int numberUnreadMessages = 0;
+    for (Message message : getInboxMessages()) {
+      if (!message.isRead()) {
+        numberUnreadMessages++;
+      }
+    }
+    return numberUnreadMessages;
+	}
 
 
 

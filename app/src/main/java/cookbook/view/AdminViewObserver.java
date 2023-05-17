@@ -33,6 +33,7 @@ public interface AdminViewObserver {
 
   void goToHelp();
 
+  void goToAccount();
   
   
 }

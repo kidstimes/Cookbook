@@ -55,4 +55,8 @@ public abstract class BaseController {
   public void goToHelp() {
     mainController.goToHelp();
   }
+
+  public void goToAccount() {
+    mainController.goToAccount();
+  }
 }

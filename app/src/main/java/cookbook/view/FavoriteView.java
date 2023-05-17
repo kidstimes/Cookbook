@@ -67,6 +67,7 @@ public class FavoriteView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
+      createButton("My Account", e -> observer.goToAccount())
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -180,18 +181,18 @@ public class FavoriteView {
 
   }
 
-  /** Create a button with a fixed width and a background color.
+  /** Create styled button with the given text and event handler.
    *
-   * @param text the text to be displayed on the button
-   * @param eventHandler the event handler for the button
-   * @return the button
+   * @param text is the text to display on the button
+   * @param eventHandler is the event handler to execute when the button is clicked.
+   * @return the created button
    */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
     button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setMinWidth(180);
+    button.setMaxWidth(200); 
     button.setOnAction(eventHandler);
     return button;
   }

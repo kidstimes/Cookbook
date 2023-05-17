@@ -3,6 +3,7 @@ package cookbook.database;
 import cookbook.model.Comment;
 import cookbook.model.Dinner;
 import cookbook.model.Ingredient;
+import cookbook.model.Message;
 import cookbook.model.Recipe;
 import cookbook.model.ShoppingList;
 import cookbook.model.User;
@@ -1378,8 +1379,51 @@ public class Database {
   }
 
 
+  public void addMessageToDatabase(String senderName, String RecipeName, String text, String receiverName, boolean isRead) {
+    int recipeId = getRecipeId(RecipeName);
+    int senderId = getUserId(senderName);
+    int receiverId = getUserId(receiverName);
+    String sql = "INSERT INTO messages (text, sender_id, recipient_id, recipe_id, is_read) VALUES (?, ?, ?, ?, ?)";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, text);
+      pstmt.setInt(2, senderId);
+      pstmt.setInt(3, receiverId);
+      pstmt.setInt(4, recipeId);
+      pstmt.setBoolean(5, isRead);
 
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+  public void loadInboxMessageFromDatabase(int userId) {
+
+
+    }
+  
+
+
+  public void loadSentMessageFromDatabase(int userId) {
+
+  }
+
+  public void markMessageAsRead(int messageId) {
+    String sql = "UPDATE messages SET is_read = ? WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setBoolean(1, true);
+      pstmt.setInt(2, messageId);
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }
+
+
+
 
 
 

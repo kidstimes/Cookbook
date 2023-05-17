@@ -28,5 +28,7 @@ public interface FavoriteViewObserver {
   void removeRecipeFromFavorites(Recipe recipe);
 
   void goToHelp();
+
+  void goToAccount();
   
 }
