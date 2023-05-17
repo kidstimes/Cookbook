@@ -1,7 +1,6 @@
 package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
-import cookbook.model.ShoppingList;
 import cookbook.view.ShoppingListView;
 import cookbook.view.ShoppingListViewObserver;
 import javafx.scene.Node;

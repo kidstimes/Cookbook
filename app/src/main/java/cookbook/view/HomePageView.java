@@ -28,10 +28,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
-
-
-
-
 /**
  * The view for the home page.
  */
@@ -119,7 +115,7 @@ public class HomePageView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
@@ -140,7 +136,7 @@ public class HomePageView {
       passwordStage.setTitle("Change Password");    
       GridPane grid = new GridPane();
       grid.setAlignment(Pos.CENTER);
-      grid.setPadding(new Insets(5,5,5,5));       
+      grid.setPadding(new Insets(5, 5, 5, 5));       
       Label oldPasswordLabel = new Label("Old password:");
       grid.add(oldPasswordLabel, 0, 1);       
       PasswordField oldPasswordField = new PasswordField();

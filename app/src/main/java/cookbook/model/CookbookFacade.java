@@ -437,19 +437,23 @@ public class CookbookFacade {
     database.clearUserShoppingList(user.getUsername());
     for (Dinner dinner : user.getWeeklyDinners()) {
       for (Recipe recipe : dinner.getRecipes()) {
-        database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), dinner.getWeekNumber());
+        database.addRecipeToShoppingList(user.getUsername(),
+            recipe.getId(), dinner.getWeekNumber());
       }
     }
   }
 
-  /**Edit a ingredient in the shopping list of the user.
-   * 
+  /**
+   * Edit a ingredient in the shopping list of the user.
+   *
    * @param ingredientName the name of the ingredient
    * @param newQuantity the new quantity of the ingredient
    * @param weekNumber the week number of the shopping list
    */
-  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
-    database.editIngredientQuantityInShoppingList(user.getUsername(), ingredientName, newQuantity, weekNumber);
+  public void editIngredientInShoppingList(String ingredientName,
+        float newQuantity, int weekNumber) {
+    database.editIngredientQuantityInShoppingList(user.getUsername(),
+        ingredientName, newQuantity, weekNumber);
   }
 
   /** Delete a ingredient in the shopping list of the user.
@@ -533,8 +537,35 @@ public class CookbookFacade {
     return database.getComments(recipeId);
   }
 
+  public ArrayList<Message> getReceivedMessagesOfUser() {
+    return user.getReceivedMessages();
+  }
 
+  public ArrayList<Message> getSentMessagesOfUser() {
+    return user.getSentMessages();
+  }
 
+  /**
+   * Add a message to the received messages of the user.
+   *
+   * @param recipe the recipe of the received message
+   * @param text the text of the received message
+   * @param senderId the id of the user that sent the message
+   */
+  public void receiveMessageByUser(Recipe recipe, String text, int senderId) {
+    user.receiveMessage(recipe, text, senderId);
+  }
+
+  /**
+   * Add a message to the sent messages of the user.
+   *
+   * @param recipe the recipe being sent with the message
+   * @param text the text being sent with the message
+   * @param receiverId the id of the user that will receive the message
+   */
+  public void sendMessageToUser(Recipe recipe, String text, int receiverId) {
+    user.sendMessage(recipe, text, receiverId);
+  }
 
 
 }

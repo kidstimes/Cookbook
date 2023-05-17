@@ -33,9 +33,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
-
-
-
 /**
  * The view for the recipe browser.
  */
@@ -110,7 +107,7 @@ public class BrowserView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }

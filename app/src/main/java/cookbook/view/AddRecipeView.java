@@ -202,7 +202,8 @@ public class AddRecipeView {
     // Button to add a new direction line
     Button addDirectionLineButton = new Button("Add Direction");
     addDirectionLineButton.setStyle(
-        "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
+          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addDirectionLineButton.setFont(Font.font("Roboto", 14));
 
     // ListView for displaying added direction lines and delete the selected
@@ -404,7 +405,8 @@ public class AddRecipeView {
 
     Button addTagButton = new Button("Add Tag");
     addTagButton.setStyle(
-        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
+          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addTagButton.setFont(Font.font("Roboto", 14));
 
     // Define tagslist
@@ -543,11 +545,13 @@ public class AddRecipeView {
     alert.setContentText(message);
     // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
+        + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B;"
+          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
     });
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
