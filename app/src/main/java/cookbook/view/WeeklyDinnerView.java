@@ -81,7 +81,7 @@ public class WeeklyDinnerView {
 
   // Create the side bar menu
   private void createSidebar() {
-    VBox sidebar = new VBox(30);
+    VBox sidebar = new VBox(20);
     sidebar.setMaxWidth(100);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
     Text title = new Text(displayName + ", welcome!");
