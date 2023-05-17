@@ -45,6 +45,7 @@ public class MainController {
     // Initialize login and sign up controllers
     this.loginController = new LoginController(model, this);
     this.signUpController = new SignUpController(model, this);
+
   }
 
 
@@ -53,14 +54,7 @@ public class MainController {
    */
   public void runCookbook() {
     initMainLayout();
-    // Load data from the database
-
-    // Animation & login
     goToLogin();
-    
-
-    // Quit
-    // quitCookbook();
   }
 
 
@@ -154,7 +148,6 @@ public class MainController {
   /**
    * Go to my messsages.
    */
-
   public void goToMessages() {
     this.messagesController = new MessagesController(model, this);
     root.setCenter(messagesController.getView());
