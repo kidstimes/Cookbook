@@ -1,8 +1,8 @@
 package cookbook.controller;
 
-
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
+import cookbook.model.User;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
 import java.time.LocalDate;
@@ -24,8 +24,10 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public RecipeController(CookbookFacade model, MainController mainController,
       Recipe recipe) {
     super(model, mainController);
-    this.recipeView = new RecipeView(model.getUserDisplayName());
+    
+    this.recipeView = new RecipeView(model.getUserDisplayName(), model.getUserId());
     this.recipeView.setRecipe(recipe);
+    this.recipeView.setComments(model.getComments(recipe.getId()));
     this.recipeView.setObserver(this);
     this.mainController = mainController;
   }
@@ -49,15 +51,16 @@ public class RecipeController extends BaseController implements RecipeViewObserv
    * Handle the save tags event.
    */
   @Override
-  public void handleSaveTagsClicked(ArrayList<String> updatedTags, String recipeName) {
-    model.addTagsToRecipe(updatedTags, recipeName);
-    model.updateTagToDatabase(updatedTags, recipeName);
-    mainController.goToBrowser();
+  public void handleSaveTagsClicked(ArrayList<String> updatedTags, Recipe recipe) {
+    model.addTagsToRecipe(updatedTags, recipe);
+    model.updateTagToDatabase(updatedTags, recipe);
+    mainController.goToRecipe(recipe);
   }
 
   @Override
-  public boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe) {
+  public boolean addRecipeToWeeklyDinner(LocalDate date, Recipe recipe, int weekNumber) {
     if (model.addRecipeToDinnerList(date, recipe) && model.saveWeeklyDinnerToDatabase()) {
+      model.addRecipeToShoppingList(recipe, weekNumber);
       return true;
     } else {
       return false;
@@ -74,4 +77,31 @@ public class RecipeController extends BaseController implements RecipeViewObserv
     model.removeRecipeFromFavorites(recipe);
   }
 
+  @Override
+  public void editRecipe(Recipe recipe, String newName, String newDescription,
+      String newInstructions, ArrayList<String[]> newIngredients) {
+    model.editRecipe(recipe, newName, newDescription, newInstructions, newIngredients);
+  }
+
+  @Override
+  public void goToRecipe(Recipe recipe) {
+    mainController.goToRecipe(recipe);
+  }
+
+  @Override
+  public void addComment(Recipe recipe, String comment) {
+    model.addComment(recipe, comment);
+  }
+
+  @Override
+  public void updateComment(int commentId, String comment) {
+    model.updateComment(commentId, comment);
+  }
+
+  @Override
+  public void deleteComment(int commentId) {
+    model.deleteComment(commentId);
+  }
+
 }
+

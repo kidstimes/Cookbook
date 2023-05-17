@@ -1,10 +1,16 @@
 package cookbook.view;
 
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,6 +30,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.QuadCurveTo;
 import javafx.util.Duration;
 
 
@@ -56,7 +69,7 @@ public class LoginView {
 
     // Create an ImageView and set the animated image to it
     ImageView animatedImageView = new ImageView(animatedImage);
-    animatedImageView.setFitWidth(600); // Set the width of the image
+    animatedImageView.setFitWidth(350); // Set the width of the image
     animatedImageView.setPreserveRatio(true); // Maintain the aspect ratio
     animatedImageView.setSmooth(true); // Enable smooth resizing
     introPane.getChildren().add(animatedImageView);
@@ -78,6 +91,36 @@ public class LoginView {
     rotateTransition.setCycleCount(1);
     rotateTransition.setInterpolator(Interpolator.LINEAR);
 
+    // Create a TranslateTransition
+    TranslateTransition translateTransition = new TranslateTransition();
+    translateTransition.setDuration(Duration.millis(2000));
+    translateTransition.setNode(animatedImageView);
+    translateTransition.setByX(100); // Move the image view 100 pixels to the right
+    translateTransition.setCycleCount(1);
+    translateTransition.setAutoReverse(false);
+
+    // Create a ScaleTransition
+    ScaleTransition scaleTransition = new ScaleTransition();
+    scaleTransition.setDuration(Duration.millis(2000));
+    scaleTransition.setNode(animatedImageView);
+    scaleTransition.setByX(0.5); // Increase the width of the image view by 50%
+    scaleTransition.setByY(0.5); // Increase the height of the image view by 50%
+    scaleTransition.setCycleCount(1);
+    scaleTransition.setAutoReverse(false);
+
+    // Create a Path for the path
+    Path path = new Path();
+    path.getElements().add(new MoveTo(0, 0));
+    path.getElements().add(new QuadCurveTo(100, 200, 400, 100));
+
+    // Create a PathTransition
+    PathTransition pathTransition = new PathTransition();
+    pathTransition.setDuration(Duration.millis(2000));
+    pathTransition.setNode(animatedImageView);    
+    pathTransition.setPath(path);
+    pathTransition.setCycleCount(1);
+    pathTransition.setAutoReverse(false);
+
 
     // Set the view's center to the introPane
     view.setCenter(introPane);
@@ -87,11 +130,165 @@ public class LoginView {
       initLayout();
     });
 
-    // Play both animations simultaneously
-    ParallelTransition parallelTransition 
-        = new ParallelTransition(fadeTransition, rotateTransition);
+    // Play all animations simultaneously
+    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, rotateTransition, scaleTransition, pathTransition);
+
+    parallelTransition.setOnFinished(e -> {
+      // Create a StackPane
+      StackPane heartPane = new StackPane();
+      heartPane.setAlignment(Pos.CENTER);
+      // Load the heart image
+      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
+      Image heartImage = new Image(heartImageUrl);
+
+      //Load the bottom right image
+      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
+      Image bottomRightImage = new Image(bottomRightImageUrl);
+
+      // Load the bottom left image
+      String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
+      Image bottomLeftImage = new Image(bottomLeftImageUrl);
+
+      // Create an ImageView and set the bottom left image to it
+      ImageView bottomLeftImageView = new ImageView(bottomLeftImage);
+      bottomLeftImageView.setFitWidth(300); // Set the width of the image
+      bottomLeftImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomLeftImageView.setSmooth(true); // Enable smooth resizing
+
+      //Create a RotateTransition for the bottom left image
+      RotateTransition bottomLeftRotateTransition = new RotateTransition();
+      bottomLeftRotateTransition.setDuration(Duration.millis(2000));
+      bottomLeftRotateTransition.setNode(bottomLeftImageView);
+      bottomLeftRotateTransition.setByAngle(360);
+      bottomLeftRotateTransition.setCycleCount(1);
+      bottomLeftRotateTransition.setInterpolator(Interpolator.LINEAR);
+
+      //Start the RotateTransition
+      bottomLeftRotateTransition.play();
+
+
+      heartPane.getChildren().add(bottomLeftImageView);
+      StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
+
+      // Create an ImageView and set the heart image to it
+      ImageView heartImageView = new ImageView(heartImage);
+      heartImageView.setFitWidth(150); // Set the width of the image
+      heartImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      heartImageView.setSmooth(true); // Enable smooth resizing
+      heartPane.getChildren().add(heartImageView);
+
+      // Create an ImageView and set the bottom right image to it
+      ImageView bottomRightImageView = new ImageView(bottomRightImage);
+      bottomRightImageView.setFitWidth(300); // Set the width of the image
+      bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomRightImageView.setSmooth(true); // Enable smooth resizing
+
+      heartPane.getChildren().add(bottomRightImageView);
+      StackPane.setAlignment(bottomRightImageView, Pos.BOTTOM_RIGHT);
+      
+      //Add a VBox
+      VBox progressBox = new VBox();
+      progressBox.setAlignment(Pos.CENTER);
+      progressBox.setSpacing(10); 
+
+
+      // Create a ProgressBar
+      ProgressBar progressBar = new ProgressBar();
+      progressBar.setPrefWidth(500);
+      heartPane.getChildren().add(progressBar);
+
+      // Create a Label
+      Label progressLabel = new Label("Loading...");
+      progressLabel.setTextFill(Color.BLACK);
+
+      // Load the bottom image
+      String bottomImageUrl = "https://i.imgur.com/GwBkQQN.png";
+      Image bottomImage = new Image(bottomImageUrl);
+
+      // Create an ImageView and set the bottom image to it
+      ImageView bottomImageView = new ImageView(bottomImage);
+      bottomImageView.setFitWidth(500); // Set the width of the image
+      bottomImageView.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomImageView.setSmooth(true); // Enable smooth resizing
+
+      // Add the Label to the VBox
+      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImageView);
+
+      //Set Position
+      StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
+      heartPane.getChildren().add(progressBox);
+
+      // Create a Path for the heart
+      Path heartPath = new Path();
+      heartPath.getElements().add(new MoveTo(-200, -200));  // Start from the left
+      for (int i = 0; i < 5; i++) {  // Jump 5 times
+        heartPath.getElements().add(new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
+      }
+      heartPath.getElements().add(new LineTo(500, -200));  // Move to the right
+
+
+      // Create a PathTransition for the heart
+      PathTransition heartPathTransition = new PathTransition();
+      heartPathTransition.setDuration(Duration.millis(2000));
+      heartPathTransition.setNode(heartImageView);
+      heartPathTransition.setPath(heartPath);
+      heartPathTransition.setCycleCount(1);
+      heartPathTransition.setAutoReverse(false);
+
+      // Update the progress bar as the heart moves
+      heartPathTransition.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+        double progress = newValue.toMillis() / 2000;
+        progressBar.setProgress(progress);
+      });    
+
+      // Create a RotateTransition for the heart
+      RotateTransition rotateHeartTransition = new RotateTransition();
+      rotateHeartTransition.setDuration(Duration.millis(2000));
+      rotateHeartTransition.setNode(heartImageView);
+      rotateHeartTransition.setByAngle(360);
+      rotateHeartTransition.setCycleCount(1);
+      rotateHeartTransition.setInterpolator(Interpolator.LINEAR);      
+
+      // Set the view's center to the heartPane
+      view.setCenter(heartPane);
+
+      // Create a Timeline
+      Timeline timeline = new Timeline();
+
+      // Add key frames to the Timeline
+      for (int i = 0; i < 5; i++) {
+        double progress = (i + 1) / 5.0;
+        timeline.getKeyFrames().add(
+          new KeyFrame(Duration.seconds((i + 1) * 2),
+              evt -> {
+                // Update the progress of the ProgressBar and the text of the Label
+                progressBar.setProgress(progress);
+                progressLabel.setText("Loading... " + (int) (progress * 100) + "%");
+              }
+          )
+        );
+      }
+
+      // Set the cycle count of the Timeline
+      timeline.setCycleCount(1);
+
+      // Start the Timeline
+      timeline.play();
+
+
+      // Play all animations simultaneously
+      new ParallelTransition(heartPathTransition, rotateHeartTransition).play();
+
+      heartPathTransition.setOnFinished(e2 -> {
+        view.getChildren().remove(heartPane);
+        initLayout();
+      });
+    });
+
     parallelTransition.play();
-  }
+  }    
+
+  
 
   // Set an observer of the login view
   public void setObserver(LoginViewObserver observer) {
@@ -252,6 +449,13 @@ public class LoginView {
   private boolean validateInput(String username, String password) {
     if (username.isEmpty() || password.isEmpty()) {
       showError("Both fields must be filled in.");
+      return false;
+    }
+    //if username is admin, then password can be less than 5 characters
+    if (username.equals("admin")) {
+      return true;
+    } else if (password.length() < 5) {
+      showError("Password must be at least 5 characters long.");
       return false;
     }
     return true;

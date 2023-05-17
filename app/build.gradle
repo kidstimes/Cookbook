@@ -31,6 +31,14 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+    
+    // iText 7 Core
+    implementation 'com.itextpdf:itext7-core:7.1.16'
+
+    // iText 7 pdfHTML
+    implementation 'com.itextpdf:html2pdf:3.0.2'
+
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
 }
 
 application {
@@ -42,4 +50,5 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
 

@@ -94,8 +94,9 @@ public class WeeklyDinnerView {
         createButton("Add a Recipe", e -> observer.goToAddRecipe()),
         createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
         createButton("My Favorites", e -> observer.goToMyFavorite()),
-        createButton("My Shopping List", e -> observer.goToShoppingList())
-      };
+        createButton("My Shopping List", e -> observer.goToShoppingList()),
+        createButton("Messages", e -> observer.goToMessages()),
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
@@ -219,7 +220,7 @@ public class WeeklyDinnerView {
     }
   }
 
-  /** Get the current week number of the year.
+  /** Get the total week number of the year.
    *
    * @param year the year to get the week number of
    * @return the week number of the year
@@ -342,22 +343,20 @@ public class WeeklyDinnerView {
           tooltip.setStyle("-fx-background-color: #F9F8F3; -fx-text-fill: #3D405B;");
           Tooltip.install(recipeLink, tooltip);
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
-
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: #E07A5F; -fx-text-fill: white; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
           deleteButton.setMaxHeight(20);
           deleteButton.setOnAction(event -> {
             // Call the deleteRecipe method of your DinnerList class
-            observer.removeRecipeFromWeeklyDinner(dayDate, recipe.getName());
+            observer.removeRecipeFromWeeklyDinner(dayDate, recipe);
             // Remove all children except dayLabel and dateLabel and update list to reflect change
             dayBox.getChildren().removeIf(node -> dayBox.getChildren().indexOf(node) > 1);
             updateRecipeList(dayBox, dayDate);
           });
-
           VBox recipeBox = new VBox(recipeLink, deleteButton);
           recipeBox.setAlignment(Pos.CENTER_LEFT);
           dayBox.getChildren().add(recipeBox);          

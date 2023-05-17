@@ -23,4 +23,11 @@ public interface HomePageViewObserver {
 
   void goToMyFavorite();
 
+  void goToMessages();
+
+  void handlePasswordChange(String oldPassword, String newPassword);
+
+  void goToHomePage();
+
+  void changeDisplayName(String newDisplayName);
 }

@@ -27,6 +27,7 @@ public class MainController {
   private WeeklyDinnerController weeklyDinnerController;
   private ShoppingListController shoppingListController;
   private FavoriteController favoriteController;
+  private AdminController adminController;
 
   /**
    * Controller Constructor.
@@ -45,15 +46,6 @@ public class MainController {
 
   }
 
-
-  /**
-   * Initialize controllers after successful login of a user.
-   */
-  public void initializeControllersAfterLogin() {
-    String userDisplayName = model.getUserDisplayName();
-    this.addRecipeController = new AddRecipeController(model, this, userDisplayName);   
-    
-  }
 
   /**
    * Run the cookbook.
@@ -128,6 +120,7 @@ public class MainController {
    * Go to add recipe.
    */
   public void goToAddRecipe() {
+    this.addRecipeController = new AddRecipeController(model, this); 
     root.setCenter(addRecipeController.getView());
   }
 
@@ -152,8 +145,7 @@ public class MainController {
    * Go to shopping list.
    */
   public void goToShoppingList() {
-    this.shoppingListController =
-         new ShoppingListController(model, this);
+    this.shoppingListController = new ShoppingListController(model, this);
     root.setCenter(shoppingListController.getView());
   }
 
@@ -171,7 +163,8 @@ public class MainController {
    * Go to admin.
    */
   public void goToAdmin() {
-    //TODO implement admin view
+    this.adminController = new AdminController(model, this);
+    root.setCenter(adminController.getView());
   }
 
   /**

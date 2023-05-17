@@ -1,13 +1,10 @@
 package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
-import cookbook.model.Dinner;
 import cookbook.model.Recipe;
 import cookbook.view.WeeklyDinnerView;
 import cookbook.view.WeeklyDinnerViewObserver;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import javafx.scene.Node;
 
 
@@ -38,8 +35,9 @@ public class WeeklyDinnerController extends BaseController implements WeeklyDinn
   }
   
   @Override
-  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, String recipeName) {
-    model.removeRecipeFromWeeklyDinner(dayDate, recipeName);
+  public void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe) {
+    model.removeRecipeFromWeeklyDinner(dayDate, recipe);
   }
+
 }
 

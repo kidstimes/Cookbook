@@ -68,7 +68,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\app.jar;%APP_HOME%\lib\javafx-fxml-20.0.1.jar;%APP_HOME%\lib\javafx-controls-20.0.1-mac.jar;%APP_HOME%\lib\javafx-controls-20.0.1.jar;%APP_HOME%\lib\javafx-graphics-20.0.1-mac.jar;%APP_HOME%\lib\javafx-graphics-20.0.1.jar;%APP_HOME%\lib\javafx-base-20.0.1-mac.jar;%APP_HOME%\lib\javafx-base-20.0.1.jar;%APP_HOME%\lib\guava-30.1.1-jre.jar;%APP_HOME%\lib\mysql-connector-java-8.0.28.jar;%APP_HOME%\lib\failureaccess-1.0.1.jar;%APP_HOME%\lib\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;%APP_HOME%\lib\jsr305-3.0.2.jar;%APP_HOME%\lib\checker-qual-3.8.0.jar;%APP_HOME%\lib\error_prone_annotations-2.5.1.jar;%APP_HOME%\lib\j2objc-annotations-1.3.jar;%APP_HOME%\lib\protobuf-java-3.11.4.jar
+set CLASSPATH=%APP_HOME%\lib\app.jar;%APP_HOME%\lib\javafx-controls-17.0.1-mac.jar;%APP_HOME%\lib\javafx-graphics-17.0.1-mac.jar;%APP_HOME%\lib\javafx-graphics-17.0.1.jar;%APP_HOME%\lib\javafx-base-17.0.1-mac.jar;%APP_HOME%\lib\javafx-base-17.0.1.jar;%APP_HOME%\lib\guava-30.1.1-jre.jar;%APP_HOME%\lib\mysql-connector-java-8.0.28.jar;%APP_HOME%\lib\failureaccess-1.0.1.jar;%APP_HOME%\lib\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;%APP_HOME%\lib\jsr305-3.0.2.jar;%APP_HOME%\lib\checker-qual-3.8.0.jar;%APP_HOME%\lib\error_prone_annotations-2.5.1.jar;%APP_HOME%\lib\j2objc-annotations-1.3.jar;%APP_HOME%\lib\protobuf-java-3.11.4.jar
 
 
 @rem Execute app
