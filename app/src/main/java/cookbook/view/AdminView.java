@@ -2,6 +2,9 @@ package cookbook.view;
 
 import cookbook.model.User;
 import java.util.ArrayList;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
@@ -18,14 +21,16 @@ public class AdminView {
   private AdminViewObserver observer;
   private ArrayList<User> users;
   private VBox userListContainer;
+  private String displayName;
 
   /** Constructor for the admin view.
    *
    * @param users the list of users
    */
-  public AdminView(ArrayList<User> users) {
+  public AdminView(ArrayList<User> users, String displayName) {
     view = new BorderPane();
     this.users = users;
+    this.displayName = displayName;
     initLayout();
   }
 
@@ -40,23 +45,50 @@ public class AdminView {
   private void initLayout() {
     view.setStyle("-fx-background-color: #F9F8F3;");
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
+    VBox sidebar = new VBox(20);
     sidebar.setMaxWidth(100);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text("Admin, welcome!");
+    Text welcomeTitle = new Text(displayName + ", welcome!");
     welcomeTitle.setFont(Font.font("Roboto", 28));
     sidebar.getChildren().add(welcomeTitle);
+    
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+      };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
+    HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 18));
-    logoutButton.setStyle(
-        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setFont(Font.font("Roboto", 14));
+    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
     logoutButton.setOnAction(e -> {
       observer.userLogout();
     });
-    sidebar.getChildren().add(logoutButton);
+
+    Region hspacer = new Region();  // This will take up as much space as possible
+    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    
+    Button helpButton = new Button("Help");
+    helpButton.setFont(Font.font("Roboto", 14));
+    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    helpButton.setOnAction(e -> {
+      observer.goToHelp();
+    });
+    
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
     view.setLeft(sidebar);
 
     // Add a title to the admin page
@@ -290,7 +322,16 @@ public class AdminView {
     dialogPane.getStyleClass().add("myAlert");
     alert.showAndWait();
   }
-
+  
+  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
+    Button button = new Button(text);
+    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setFont(Font.font("Roboto", 18));
+    button.setMinWidth(100); // Set the fixed width for each button
+    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setOnAction(eventHandler);
+    return button;
+  }
 
 
 }

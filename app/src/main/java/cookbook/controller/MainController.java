@@ -45,7 +45,6 @@ public class MainController {
     // Initialize login and sign up controllers
     this.loginController = new LoginController(model, this);
     this.signUpController = new SignUpController(model, this);
-
   }
 
 
