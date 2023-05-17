@@ -22,6 +22,10 @@ public class HomePageController extends BaseController implements HomePageViewOb
     this.homePageView = new HomePageView(model.getUserDisplayName(),
        model.checkWeeklyDinner(), model.checkNextWeekDinner());
     this.homePageView.setObserver(this);
+    System.out.println(model.getUserId());
+    if (model.getUserId() == 1) {
+      this.homePageView.setAdmin();
+    }
     
   }
 
@@ -53,5 +57,10 @@ public class HomePageController extends BaseController implements HomePageViewOb
     } else {
       homePageView.showError("Display name change failed");
     }
+  }
+
+  @Override
+  public void goToAdmin() {
+    mainController.goToAdmin();
   }
 }

@@ -87,7 +87,7 @@ public class AddRecipeView {
   private void initLayout() {
 
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
+    VBox sidebar = new VBox(20);
     sidebar.setMaxWidth(120);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
     Text title = new Text(displayName + ", welcome!");

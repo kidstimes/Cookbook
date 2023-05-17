@@ -106,7 +106,7 @@ public class ShoppingListView {
    */
   public void createSideBar() {
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
+    VBox sidebar = new VBox(20);
     sidebar.setMaxWidth(100);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
     Text welcomeTitle = new Text(displayName + ", welcome!");

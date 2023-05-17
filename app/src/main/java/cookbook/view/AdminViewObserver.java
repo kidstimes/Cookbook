@@ -16,5 +16,23 @@ public interface AdminViewObserver {
   void editUser(int userId, String userName, String displayName);
 
   void editUserPassword(int userId, String password);
+
+  void goToHomePage();
+
+  void goToBrowser();
+
+  void goToAddRecipe();
+
+  void goToWeeklyDinner();
+
+  void goToShoppingList();
+
+  void goToMyFavorite();
+
+  void goToMessages();
+
+  void goToHelp();
+
+  
   
 }

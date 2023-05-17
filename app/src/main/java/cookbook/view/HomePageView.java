@@ -42,6 +42,7 @@ public class HomePageView {
   private String displayName;
   boolean hasWeeklyDinner;
   boolean hasNextWeekShoppingList;
+  private VBox sidebar;
   
   /**
    * Home Page View Constructor.
@@ -53,7 +54,6 @@ public class HomePageView {
     this.displayName = displayName;
     this.hasWeeklyDinner = hasWeeklyDinner;
     this.hasNextWeekShoppingList = hasNextWeekShoppingList;
-    System.out.println(hasWeeklyDinner);
     initLayout();
     
   }
@@ -83,11 +83,25 @@ public class HomePageView {
   }
 
   /**
+   * set this view as a admin view by adding admin button.
+   */
+  public void setAdmin() {
+    System.out.println("set admin");
+    int messageButtonIndex = 7;
+    Button adminButton = 
+        createButton("Admin", e -> observer.goToAdmin());
+    if (sidebar != null) {
+      sidebar.getChildren().add(messageButtonIndex + 1, adminButton);
+    }
+  }
+
+
+  /**
    * Create a sidemenu for the home page.
    */
   public void createSidebar() {
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
+    this.sidebar = new VBox(20);
     sidebar.setMaxWidth(100);
     sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
 
@@ -126,9 +140,7 @@ public class HomePageView {
       passwordStage.setTitle("Change Password");    
       GridPane grid = new GridPane();
       grid.setAlignment(Pos.CENTER);
-      grid.setVgap(10);
-      grid.setHgap(10);
-      grid.setPadding(new Insets(25, 25, 25, 25));       
+      grid.setPadding(new Insets(5,5,5,5));       
       Label oldPasswordLabel = new Label("Old password:");
       grid.add(oldPasswordLabel, 0, 1);       
       PasswordField oldPasswordField = new PasswordField();
@@ -184,8 +196,6 @@ public class HomePageView {
       displayNameStage.setTitle("Change Display Name");
       GridPane grid = new GridPane();
       grid.setAlignment(Pos.CENTER);
-      grid.setVgap(10);
-      grid.setHgap(10);
       grid.setPadding(new Insets(25, 25, 25, 25));
       Label newDisplayNameLabel = new Label("New display name:");
       grid.add(newDisplayNameLabel, 0, 1);
