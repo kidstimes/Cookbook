@@ -118,14 +118,15 @@ public class RecipeView {
     sidebar.getChildren().add(welcomeText);
 
     Button[] sidebarButtons = {
-        createButton("Home Page", e -> observer.goToHomePage()),
-        createButton("Browse Recipes", e -> observer.goToBrowser()),
-        createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-        createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-        createButton("My Favorites", e -> observer.goToMyFavorite()),
-        createButton("My Shopping List", e -> observer.goToShoppingList()),
-        createButton("Messages", e -> observer.goToMessages()),
-    };
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+      createButton("My Account", e -> observer.goToAccount())
+      };
 
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -655,10 +656,10 @@ public class RecipeView {
    */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
     button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setMinWidth(180);
+    button.setMaxWidth(200); 
     button.setOnAction(eventHandler);
     return button;
   }

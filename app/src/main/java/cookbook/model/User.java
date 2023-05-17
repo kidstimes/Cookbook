@@ -14,8 +14,8 @@ public class User {
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
   private ArrayList<ShoppingList> shoppingLists;
-  private ArrayList<Message> receivedMessages;
-  private ArrayList<Message> sentMessages;
+  private ArrayList<Message> inbox;
+  private ArrayList<Message> outbox;
 
   
 

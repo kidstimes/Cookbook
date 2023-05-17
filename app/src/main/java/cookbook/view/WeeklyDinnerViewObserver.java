@@ -30,6 +30,8 @@ public interface WeeklyDinnerViewObserver {
   void goToMessages();
 
   void goToHelp();
+
+  void goToAccount();
   
   
 }

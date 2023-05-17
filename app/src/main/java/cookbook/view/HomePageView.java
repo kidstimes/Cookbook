@@ -38,18 +38,20 @@ public class HomePageView {
   private String displayName;
   boolean hasWeeklyDinner;
   boolean hasNextWeekShoppingList;
+  private int numberUnreadMessages;
   private VBox sidebar;
   
   /**
    * Home Page View Constructor.
    */
   public HomePageView(String displayName,
-         boolean hasWeeklyDinner, boolean hasNextWeekShoppingList) {
+         boolean hasWeeklyDinner, boolean hasNextWeekShoppingList, int numberUnreadMessages) {
     this.view = new BorderPane();
     view.setStyle("-fx-background-color: #F9F8F3;");
     this.displayName = displayName;
     this.hasWeeklyDinner = hasWeeklyDinner;
     this.hasNextWeekShoppingList = hasNextWeekShoppingList;
+    this.numberUnreadMessages = numberUnreadMessages;
     initLayout();
     
   }
@@ -78,18 +80,6 @@ public class HomePageView {
   
   }
 
-  /**
-   * set this view as a admin view by adding admin button.
-   */
-  public void setAdmin() {
-    System.out.println("set admin");
-    int messageButtonIndex = 7;
-    Button adminButton = 
-        createButton("Admin", e -> observer.goToAdmin());
-    if (sidebar != null) {
-      sidebar.getChildren().add(messageButtonIndex + 1, adminButton);
-    }
-  }
 
 
   /**
@@ -115,7 +105,8 @@ public class HomePageView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
-    };
+      createButton("My Account", e -> observer.goToAccount())
+      };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
@@ -124,95 +115,6 @@ public class HomePageView {
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
 
-    //Add a Hyperlink to change the password
-    Hyperlink changePasswordButton = new Hyperlink("Change Password");
-    sidebar.getChildren().add(changePasswordButton);
-    changePasswordButton.setFont(Font.font("Roboto", 14));
-    changePasswordButton.setStyle(
-        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    changePasswordButton.setOnAction(e -> {
-      Stage passwordStage = new Stage();
-      passwordStage.initModality(Modality.APPLICATION_MODAL);
-      passwordStage.setTitle("Change Password");    
-      GridPane grid = new GridPane();
-      grid.setAlignment(Pos.CENTER);
-      grid.setPadding(new Insets(5, 5, 5, 5));       
-      Label oldPasswordLabel = new Label("Old password:");
-      grid.add(oldPasswordLabel, 0, 1);       
-      PasswordField oldPasswordField = new PasswordField();
-      grid.add(oldPasswordField, 1, 1);       
-      Label newPasswordLabel = new Label("New password:");
-      grid.add(newPasswordLabel, 0, 2);    
-      PasswordField newPasswordField = new PasswordField();
-      grid.add(newPasswordField, 1, 2);       
-      Label confirmNewPasswordLabel = new Label("Confirm new password:");
-      grid.add(confirmNewPasswordLabel, 0, 3);        
-      PasswordField confirmNewPasswordField = new PasswordField();
-      grid.add(confirmNewPasswordField, 1, 3);      
-      Button btnSave = new Button("Save");
-      grid.add(btnSave, 1, 4);        
-      btnSave.setOnAction(ev -> {
-        String oldPassword = oldPasswordField.getText();
-        String newPassword = newPasswordField.getText();
-        String confirmNewPassword = confirmNewPasswordField.getText();
-      
-        // Check if all fields are filled
-        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
-          showError("Please fill all fields."); 
-          return;
-        }
-        //new password must be longer than or equal to 5 characters
-        if (newPassword.length() < 5) {
-          showError("New password must be at least 5 characters long");
-          return;
-        }    
-        if (!newPassword.equals(confirmNewPassword)) {
-          showError("New password and confirm password do not match");
-        } else {
-          observer.handlePasswordChange(oldPassword, newPassword);
-          passwordStage.close();
-          observer.goToHomePage();
-        }
-      });
-      
-      Scene scene = new Scene(grid, 400, 200);
-      passwordStage.setScene(scene);
-      passwordStage.show();
-    });
-
-    //Add a Hyperlink to change display name, just similar with change password
-    Hyperlink changeDisplayNameButton = new Hyperlink("Change Display Name");
-    sidebar.getChildren().add(changeDisplayNameButton);
-    changeDisplayNameButton.setFont(Font.font("Roboto", 14));
-    changeDisplayNameButton.setStyle(
-        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    changeDisplayNameButton.setOnAction(e -> {
-      Stage displayNameStage = new Stage();
-      displayNameStage.initModality(Modality.APPLICATION_MODAL);
-      displayNameStage.setTitle("Change Display Name");
-      GridPane grid = new GridPane();
-      grid.setAlignment(Pos.CENTER);
-      grid.setPadding(new Insets(25, 25, 25, 25));
-      Label newDisplayNameLabel = new Label("New display name:");
-      grid.add(newDisplayNameLabel, 0, 1);
-      TextField newDisplayNameField = new TextField();
-      grid.add(newDisplayNameField, 1, 1);
-      Button btnSave = new Button("Save");
-      grid.add(btnSave, 1, 2);
-      btnSave.setOnAction(ev -> {
-        String newDisplayName = newDisplayNameField.getText();
-        if (newDisplayName.isEmpty()) {
-          showError("Please fill the new display name.");
-        } else {
-          observer.changeDisplayName(newDisplayName);
-          displayNameStage.close();
-          observer.goToHomePage();
-        }
-      });
-      Scene scene = new Scene(grid, 400, 100);
-      displayNameStage.setScene(scene); 
-      displayNameStage.show(); 
-    });
 
     HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
@@ -222,7 +124,7 @@ public class HomePageView {
       observer.userLogout();
     });
 
-    Region hspacer = new Region();  // This will take up as much space as possible
+    Region hspacer = new Region();
     HBox.setHgrow(hspacer, Priority.ALWAYS); 
     
     Button helpButton = new Button("Help");
@@ -240,6 +142,7 @@ public class HomePageView {
   }
 
   private void createCenterView() {
+
     VBox centerView = new VBox(50);
     centerView.setStyle("-fx-padding: 50px 20px 20px 20px;");
     centerView.setAlignment(Pos.TOP_LEFT);
@@ -269,19 +172,31 @@ public class HomePageView {
           new Label("You do not have a shopping list for next week.");
     }
     shoppingListLabel.setFont(Font.font("Roboto", 22));
+
+    Label messagesLabel = new Label("You have " + numberUnreadMessages + " unread messages.");
+    messagesLabel.setFont(Font.font("Roboto", 22));
+
     centerView.getChildren().addAll(welcomLabel,
-           dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel);
+           dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel, messagesLabel);
 
 
     view.setCenter(centerView);
+
+
   }
 
+  /** Create styled button with the given text and event handler.
+   *
+   * @param text is the text to display on the button
+   * @param eventHandler is the event handler to execute when the button is clicked.
+   * @return the created button
+   */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
     button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
+    button.setMinWidth(180);
+    button.setMaxWidth(200); 
     button.setOnAction(eventHandler);
     return button;
   }

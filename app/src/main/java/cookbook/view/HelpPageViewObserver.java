@@ -22,6 +22,8 @@ public interface HelpPageViewObserver {
   void goToMessages();
 
   void goToHelp();
+
+  void goToAccount();
   
   
 }

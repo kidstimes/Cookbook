@@ -12,6 +12,8 @@ import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.property.TextAlignment;
 import cookbook.model.Ingredient;
 import cookbook.model.ShoppingList;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -44,6 +46,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 
 
 /**
@@ -120,6 +123,7 @@ public class ShoppingListView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
+      createButton("My Account", e -> observer.goToAccount())
       };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
@@ -190,7 +194,7 @@ public class ShoppingListView {
     generatePdfButton.setOnAction(event -> {
       try {
         generatePdf();
-        showInlineStyledAlert(AlertType.INFORMATION, "Success", "PDF for "+ weekNumberLabel.getText() +" shopping list generated.");
+        showInlineStyledAlert(AlertType.INFORMATION, "Success", "PDF for "+ weekNumberLabel.getText() +" shopping list saved.");
       } catch (Exception e) {
         showInlineStyledAlert(AlertType.ERROR,
             "PDF Generation Failed", e.getMessage());
@@ -469,23 +473,35 @@ public class ShoppingListView {
     alert.showAndWait();
   }
 
-  /** Create a button with the given text and event handler.
+  /** Create styled button with the given text and event handler.
    *
-   * @param text the text to display on the button
-   * @param eventHandler the event handler to handle the button click
+   * @param text is the text to display on the button
+   * @param eventHandler is the event handler to execute when the button is clicked.
    * @return the created button
    */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
-    button.setMaxWidth(Double.MAX_VALUE);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
     button.setFont(Font.font("Roboto", 18));
+    button.setMinWidth(180);
+    button.setMaxWidth(200); 
     button.setOnAction(eventHandler);
     return button;
   }
 
   public void generatePdf() throws Exception {
-    PdfWriter writer = new PdfWriter(new FileOutputStream("ShoppingList" +weekNumberLabel.getText() + ".pdf"));
+
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setInitialFileName("ShoppingList" + weekNumberLabel.getText() + ".pdf");
+    fileChooser.getExtensionFilters().addAll(
+        new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+    );
+    File selectedFile = fileChooser.showSaveDialog(view.getScene().getWindow());
+    if (selectedFile == null) {
+        // User cancelled the file dialog
+        return;
+    }
+    PdfWriter writer = new PdfWriter(new FileOutputStream(selectedFile));
     PdfDocument pdf = new PdfDocument(writer);
     Document document = new Document(pdf);
 

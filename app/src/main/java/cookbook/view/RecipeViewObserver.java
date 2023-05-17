@@ -52,5 +52,7 @@ public interface RecipeViewObserver {
 
   void goToHelp();
 
+  void goToAccount();
+
 
 }
