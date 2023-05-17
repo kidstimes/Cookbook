@@ -1,7 +1,6 @@
 package cookbook.database;
 
 import cookbook.model.Comment;
-import cookbook.model.Comment;
 import cookbook.model.Dinner;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
@@ -180,8 +179,8 @@ public class Database {
    * Save a recipe to the database and associate tags with the recipe.
    */
   public boolean saveRecipeToDatabase(String[] recipe, ArrayList<String[]> ingredients,
-    ArrayList<String> tags,
-    String userName) {
+      ArrayList<String> tags,
+      String userName) {
     try {
       // Get the user id
       int userId = getUserId(userName);
@@ -985,7 +984,7 @@ public class Database {
   }
 
   /*
-   * Delete all the records in the shopping list for the given user
+   * Delete all the records in the shopping list for the given user.
    */
   public void clearUserShoppingList(String username) {
     try {
@@ -1317,6 +1316,11 @@ public class Database {
     }
   }
 
+  /**
+   * Update a comment.
+   * @param commentId the id of the comment.
+   * @param text the new text of the comment.
+   */
   public void updateComment(int commentId, String text) {
     String sql = "UPDATE comments SET text = ? WHERE id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -1329,6 +1333,10 @@ public class Database {
     }
   }
   
+  /**
+   * Delete a comment.
+   * @param commentId the id of the comment
+   */
   public void deleteComment(int commentId) {
     String sql = "DELETE FROM comments WHERE id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -1340,7 +1348,11 @@ public class Database {
     }
   }
 
-
+  /**
+   * Get all comments for a recipe.
+   * @param recipeId the id of the recipe
+   * @return the list of comments
+   */
   public ArrayList<Comment> getComments(int recipeId) {
     ArrayList<Comment> comments = new ArrayList<>();
     String sql = "SELECT c.id, c.text, c.recipe_id, c.user_id, u.displayname FROM comments c " +

@@ -234,7 +234,7 @@ public class AdminView {
 
 
   /**
-   * Add a new user
+   * Add a new user.
    */
   private void addUser() {
     Dialog<User> addUserDialog = new Dialog<>();
@@ -264,10 +264,10 @@ public class AdminView {
       if (dialogButton == saveButtonType) {
         boolean success = observer.addUser(userNameField.getText(), passwordField.getText(), displayNameField.getText());
         if (success) {
-            observer.goToAdmin();
-            updateUserList();
+          observer.goToAdmin();
+          updateUserList();
         } else {
-            showError("Could not add user.");
+          showError("Could not add user.");
         }
       }
       return null;

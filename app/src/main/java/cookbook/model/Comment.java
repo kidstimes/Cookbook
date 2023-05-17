@@ -7,6 +7,9 @@ public class Comment {
   private int userId;
   private String displayName;
 
+  /**
+   * Comment Constructor.
+   */
   public Comment(int id, String text, int recipeId, int userId, String displayName) {
     this.id = id;
     this.text = text;
