@@ -341,23 +341,25 @@ public class User {
   /**
    * Add a message to the received messages of the user.
    *
+   * @param messageId the unique id of the message
    * @param recipe the recipe of the received message
    * @param text the text of the received message
-   * @param senderId the id of the user that sent the message
+   * @param sender the user that sent the message
    */
-  public void receiveMessage(Recipe recipe, String text, int senderId) {
-    this.receivedMessages.add(new Message(recipe, text, senderId, this.id));
+  public void receiveMessage(int messageId, Recipe recipe, String text, User sender) {
+    this.receivedMessages.add(new Message(messageId, recipe, text, sender, this));
   }
 
   /**
    * Add a message to the sent messages of the user.
    *
+   * @param messageId the unique id of the message
    * @param recipe the recipe being sent with the message
    * @param text the text being sent with the message
-   * @param receiverId the id of the user that will receive the message
+   * @param receiver the user that received the message
    */
-  public void sendMessage(Recipe recipe, String text, int receiverId) {
-    this.sentMessages.add(new Message(recipe, text, this.id, receiverId));
+  public void sendMessage(int messageId, Recipe recipe, String text, User receiver) {
+    this.sentMessages.add(new Message(messageId, recipe, text, this, receiver));
   }
-  
+
 }
