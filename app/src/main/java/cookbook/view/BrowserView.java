@@ -33,9 +33,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 
-
-
-
 /**
  * The view for the recipe browser.
  */

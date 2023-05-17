@@ -1,105 +1,51 @@
 package cookbook.model;
 
+/**
+ * The Message class.
+ */
 public class Message {
+
+  private int id;
   private Recipe recipe;
   private String text;
-  private int senderId;
-  private int receiverId;
-  private boolean isRead;
-  private String senderUserName;
-  private String senderDisplayName;
-  private String receiverUserName;
-  private String receiverDisplayName;
-
+  private User sender;
+  private User receiver;
 
   /**
    * Message Constructor.
    *
-   * @param recipe the recipe that the message is about
+   * @param id the unique id of the message
+   * @param recipe the recipe of the message
    * @param text the text of the message
-   * @param senderId the id of the sender
-   * @param receiverId the id of the receiver
-   * @param isRead whether the message is read or not
+   * @param sender the user sending the message
+   * @param receiver the user receiving the message
    */
-  public Message(Recipe recipe, String text, int senderId, int receiverId, boolean isRead) {
+  public Message(int id, Recipe recipe, String text, User sender, User receiver) {
+    this.id = id;
     this.recipe = recipe;
     this.text = text;
-    this.senderId = senderId;
-    this.receiverId = receiverId;
-    this.isRead = isRead;
+    this.sender = sender;
+    this.receiver = receiver;
   }
 
-  /**
-   * Get the recipe that the message is about.
-   *
-   * @return the recipe
-   */
+  public int getId() {
+    return id;
+  }
+
   public Recipe getRecipe() {
     return recipe;
   }
 
-  /**
-   * Get the text of the message.
-   *
-   * @return the text
-   */
   public String getText() {
     return text;
   }
 
-  /**
-   * Get the id of the sender.
-   *
-   * @return the sender id
-   */
-  public int getSenderId() {
-    return senderId;
+  public User getSender() {
+    return sender;
   }
 
-  /**
-   * Get the id of the receiver.
-   *
-   * @return the receiver id
-   */
-  public int getReceiverId() {
-    return receiverId;
+  public User getReceiver() {
+    return receiver;
   }
-
-  /**
-   * Get whether the message is read or not.
-   *
-   * @return true if the message is read, false otherwise
-   */
-  public boolean isRead() {
-    return isRead;
-  }
-
-
-  public void read() {
-    isRead = true;
-  }
-
-  public void unread() {
-    isRead = false;
-  }
-
-  public String getSenderUserName() {
-    return senderUserName;
-  }
-
-
-  public String getSenderDisplayName() {
-    return senderDisplayName;
-  }
-
-
-  public String getReceiverUserName() {
-    return receiverUserName;
-  }
-
-  public String getReceiverDisplayName() {
-    return receiverDisplayName;
-  }
-
   
 }

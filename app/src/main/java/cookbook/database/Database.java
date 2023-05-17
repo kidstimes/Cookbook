@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.checkerframework.checker.units.qual.s;
 
 /**
@@ -240,7 +239,8 @@ public class Database {
   private void insertIngredient(int recipeId, String name, String quantity,
          String measurementUnit) {
     try {
-      String query = "INSERT INTO ingredients (recipe_id, name, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
+      String query = "INSERT INTO ingredients (recipe_id, name, "
+          + "quantity, measurementUnit) VALUES (?, ?, ?, ?)";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, recipeId); // recipe_id
         statement.setString(2, name); // name
@@ -250,6 +250,39 @@ public class Database {
       }
     } catch (SQLException e) {
       System.out.println("Error while inserting ingredient into the database: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Inserts a new ingredient into the database when editing a.
+   *
+   * @param recipeId the id of the recipe
+   * @param name the name of the ingredient
+   * @param quantity the quantity of the ingredient
+   * @param measurementUnit the measurement unit of the ingredient
+   * @return the id of the inserted ingredient, or -1 if the ingredient could not be inserted
+   */
+  private int insertIngredient(int recipeId, String name,
+      float quantity, String measurementUnit) {
+    String query = "INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit) "
+        + "VALUES (?, ?, ?, ?)";
+    try (PreparedStatement statement = connection.prepareStatement(query,
+        Statement.RETURN_GENERATED_KEYS)) {
+      statement.setString(1, name);
+      statement.setInt(2, recipeId);
+      statement.setFloat(3, quantity);
+      statement.setString(4, measurementUnit);
+      statement.executeUpdate();
+      try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+        if (generatedKeys.next()) {
+          return generatedKeys.getInt(1);
+        } else {
+          return -1;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println("Error while inserting ingredient: " + e.getMessage());
+      return -1;
     }
   }
 
@@ -322,7 +355,8 @@ public class Database {
     try {
       int userId = getUserId(username);
       // Fetch tags from recipe_tags table
-      String query = "SELECT name FROM tags INNER JOIN recipe_tags ON tags.id = recipe_tags.tag_id WHERE recipe_tags.recipe_id = ?";
+      String query = "SELECT name FROM tags INNER JOIN recipe_tags ON "
+          + "tags.id = recipe_tags.tag_id WHERE recipe_tags.recipe_id = ?";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, recipeId);
         ResultSet resultSet = statement.executeQuery();
@@ -331,7 +365,8 @@ public class Database {
         }
       }
       // Fetch personal tags for the given username from PersonalTags table
-      query = "SELECT name FROM tags INNER JOIN PersonalTags ON tags.id = PersonalTags.tag_id WHERE PersonalTags.recipe_id = ? AND PersonalTags.user_id = ?";
+      query = "SELECT name FROM tags INNER JOIN PersonalTags ON tags.id = PersonalTags.tag_id"
+          + " WHERE PersonalTags.recipe_id = ? AND PersonalTags.user_id = ?";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, recipeId);
         statement.setInt(2, userId);
@@ -358,8 +393,10 @@ public class Database {
       int userId = getUserId(userName);
       ArrayList<String> oldTags = loadTagsForRecipe(recipeId, userName);
       // Determine which tags have been removed and which have been added
-      List<String> removedTags = oldTags.stream().filter(tag -> !newTags.contains(tag)).collect(Collectors.toList());
-      List<String> addedTags = newTags.stream().filter(tag -> !oldTags.contains(tag)).collect(Collectors.toList());
+      List<String> removedTags = oldTags.stream().filter(tag
+          -> !newTags.contains(tag)).collect(Collectors.toList());
+      List<String> addedTags = newTags.stream().filter(tag
+          -> !oldTags.contains(tag)).collect(Collectors.toList());
       List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
           "gluten free", "starter", "main course", "dessert and sweets");
       // Delete removed tags from the database
@@ -445,7 +482,8 @@ public class Database {
    */
   private int insertTag(String tagName) throws SQLException {
     String query = "INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE name = name";
-    try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement statement = connection
+        .prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       statement.setString(1, tagName);
       statement.executeUpdate();
       ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -479,7 +517,9 @@ public class Database {
    * @param tagId id of the tag
    */
   private void insertPersonalTag(int userId, int recipeId, int tagId) {
-    String query = "INSERT INTO PersonalTags (user_id, recipe_id, tag_id) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE user_id = user_id, recipe_id = recipe_id, tag_id = tag_id";
+    String query = "INSERT INTO PersonalTags (user_id, recipe_id, tag_id) "
+        + "VALUES (?, ?, ?) ON DUPLICATE KEY "
+        + "UPDATE user_id = user_id, recipe_id = recipe_id, tag_id = tag_id";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setInt(1, userId);
       statement.setInt(2, recipeId);
@@ -513,7 +553,8 @@ public class Database {
     ArrayList<String> privateTags = new ArrayList<>();
     int userId = getUserId(username);
     try {
-      String query = "SELECT DISTINCT tags.name FROM tags INNER JOIN PersonalTags ON tags.id = PersonalTags.tag_id WHERE PersonalTags.user_id = ?";
+      String query = "SELECT DISTINCT tags.name FROM tags INNER JOIN PersonalTags "
+          + "ON tags.id = PersonalTags.tag_id WHERE PersonalTags.user_id = ?";
       try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, userId);
         ResultSet resultSet = statement.executeQuery();
@@ -566,7 +607,8 @@ public class Database {
        String username) {
     boolean saveSuccessful = false;
     try {
-      String sql = "INSERT INTO WeeklyDinner (user_id, recipe_id, dinner_date) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE dinner_date = VALUES(dinner_date)";
+      String sql = "INSERT INTO WeeklyDinner (user_id, recipe_id, dinner_date) "
+          + "VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE dinner_date = VALUES(dinner_date)";
       PreparedStatement statement = connection.prepareStatement(sql);
       int userId = getUserId(username);
       for (Dinner dinner : weeklyDinnerList) {
@@ -632,7 +674,8 @@ public class Database {
    * @param recipeName is the name of the recipe to remove
    * @return true if the remove was successful, false otherwise
    */
-  public boolean removeRecipeFromWeeklyDinnerInDatabase(String username, LocalDate dayDate, String recipeName) {
+  public boolean removeRecipeFromWeeklyDinnerInDatabase(String username,
+      LocalDate dayDate, String recipeName) {
     boolean deleteSuccessful = false;
     try {
       // Get the user ID from the username
@@ -727,7 +770,7 @@ public class Database {
    * @param recipeName the name of recipe to remove
    * @return true if the recipe was removed successfully, false otherwise
    */
-  public boolean removeRecipeFromFavorites(String userName, String recipeName){
+  public boolean removeRecipeFromFavorites(String userName, String recipeName) {
     int userId = getUserId(userName);
     int recipeId = getRecipeId(recipeName);
     if (userId == -1 || recipeId == -1) {
@@ -758,7 +801,8 @@ public class Database {
    */
   private void updateIngredient(int ingredientId,
         String name, float quantity, String measurementUnit) {
-    String query = "UPDATE ingredients SET name = ?, quantity = ?, measurementUnit = ? WHERE id = ?";
+    String query = "UPDATE ingredients SET name = ?, quantity = ?,"
+        + " measurementUnit = ? WHERE id = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, name);
       statement.setFloat(2, quantity);
@@ -787,46 +831,18 @@ public class Database {
   private void deleteTag(int recipeId, String tagName, boolean isPublic) {
     int tagId = -1;
     try {
-      tagId= getTagId(tagName);
+      tagId = getTagId(tagName);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    String query = isPublic ? "DELETE FROM recipe_tags WHERE recipe_id = ? AND tag_id = ?" : "DELETE FROM PersonalTags WHERE recipe_id = ? AND tag_id = ?";
+    String query = isPublic ? "DELETE FROM recipe_tags WHERE recipe_id = ? AND tag_id = ?"
+        : "DELETE FROM PersonalTags WHERE recipe_id = ? AND tag_id = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setInt(1, recipeId);
       statement.setInt(2, tagId);
       statement.executeUpdate();
     } catch (SQLException e) {
       System.out.println("Error while deleting tag: " + e.getMessage());
-    }
-  }
-
-  /**
-   * Inserts a new ingredient into the database when editing a.
-   * @param recipeId the id of the recipe
-   * @param name the name of the ingredient
-   * @param quantity the quantity of the ingredient
-   * @param measurementUnit the measurement unit of the ingredient
-   * @return the id of the inserted ingredient, or -1 if the ingredient could not be inserted
-   */
-  private int insertIngredient(int recipeId, String name, float quantity, String measurementUnit) {
-    String query = "INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit) VALUES (?, ?, ?, ?)";
-    try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-      statement.setString(1, name);
-      statement.setInt(2, recipeId);
-      statement.setFloat(3, quantity);
-      statement.setString(4, measurementUnit);
-      statement.executeUpdate();
-      try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-        if (generatedKeys.next()) {
-          return generatedKeys.getInt(1);
-        } else {
-          return -1;
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println("Error while inserting ingredient: " + e.getMessage());
-      return -1;
     }
   }
 
@@ -870,7 +886,8 @@ public class Database {
       String newDescription, String newInstructions, ArrayList<String[]> newIngredients) {
     try {
       // Update recipe name, description and instructions
-      String updateRecipeQuery = "UPDATE recipes SET name = ?, description = ?, instructions = ? WHERE id = ?";
+      String updateRecipeQuery = "UPDATE recipes "
+          + "SET name = ?, description = ?, instructions = ? WHERE id = ?";
       try (PreparedStatement updateRecipeStmt = connection.prepareStatement(updateRecipeQuery)) {
         updateRecipeStmt.setString(1, newRecipeName);
         updateRecipeStmt.setString(2, newDescription);
@@ -888,9 +905,11 @@ public class Database {
           if (currentIngredient[0].equals(newIngredient[0])) {
             found = true;
             // Update ingredient if quantity or measurementUnit has changed
-            if (!currentIngredient[1].equals(newIngredient[1]) || !currentIngredient[2].equals(newIngredient[2])) {
+            if (!currentIngredient[1].equals(newIngredient[1])
+                || !currentIngredient[2].equals(newIngredient[2])) {
               int ingredientId = Integer.parseInt(currentIngredient[3]);
-              updateIngredient(ingredientId, newIngredient[0], Float.parseFloat(newIngredient[1]), newIngredient[2]);
+              updateIngredient(ingredientId, newIngredient[0],
+                  Float.parseFloat(newIngredient[1]), newIngredient[2]);
             }
             break;
           }
@@ -912,7 +931,8 @@ public class Database {
         }
         // Insert ingredient if not found in currentIngredients
         if (!found) {
-          insertIngredient(recipeId, newIngredient[0], Float.parseFloat(newIngredient[1]), newIngredient[2]);
+          insertIngredient(recipeId, newIngredient[0],
+              Float.parseFloat(newIngredient[1]), newIngredient[2]);
         }
       }
     } catch (SQLException e) {
@@ -920,12 +940,19 @@ public class Database {
     }
   }
 
+  /**
+   * Load the shopping lists of a user with the given username from the database.
+   *
+   * @param username the given username
+   * @return the shopping lists of the user
+   */
   public ArrayList<ShoppingList> loadShoppingListsFromDatabase(String username) {
     ArrayList<ShoppingList> shoppingLists = new ArrayList<>();
     int userId = getUserId(username);
     try (
         PreparedStatement stmt = connection.prepareStatement(
-              "SELECT shoppinglist_id, ingredient_name, list_quantity, measurementUnit, week_number "
+              "SELECT shoppinglist_id, ingredient_name, list_quantity,"
+                + " measurementUnit, week_number "
                 + "FROM ShoppingList "
                 + "WHERE user_id = ? "
                 + "ORDER BY week_number, shoppinglist_id")) {
@@ -955,11 +982,21 @@ public class Database {
     return shoppingLists;
   }
 
-  public void editIngredientQuantityInShoppingList(String username, String ingredientName, float newQuantity, int weekNumber) {
+  /**
+   * Edit the quantity of an ingredient in a user's shopping list.
+   *
+   * @param username the username of the user
+   * @param ingredientName the name of the ingredient in the shopping list
+   * @param newQuantity the updated quantity for the ingredient
+   * @param weekNumber the week number of the shopping list
+   */
+  public void editIngredientQuantityInShoppingList(String username,
+      String ingredientName, float newQuantity, int weekNumber) {
     int userId = getUserId(username);
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "UPDATE ShoppingList SET list_quantity = ? WHERE user_id = ? AND ingredient_name = ? AND week_number = ?")) {
+            "UPDATE ShoppingList SET list_quantity = ? "
+            + "WHERE user_id = ? AND ingredient_name = ? AND week_number = ?")) {
       stmt.setFloat(1, newQuantity);
       stmt.setInt(2, userId);
       stmt.setString(3, ingredientName);
@@ -970,11 +1007,20 @@ public class Database {
     }
   }
 
-  public void deleteIngredientFromShoppingList(String username, String ingredientName, int weekNumber) {
+  /**
+   * Delete an ingredient from the user's shopping list.
+   *
+   * @param username the username of the user
+   * @param ingredientName the name of the ingredient to delete
+   * @param weekNumber the week number of shopping list
+   */
+  public void deleteIngredientFromShoppingList(String username,
+      String ingredientName, int weekNumber) {
     int userId = getUserId(username);
     try (
         PreparedStatement stmt = connection.prepareStatement(
-            "DELETE FROM ShoppingList WHERE user_id = ? AND ingredient_name = ? AND week_number = ?")) {
+            "DELETE FROM ShoppingList WHERE user_id = ? "
+            + "AND ingredient_name = ? AND week_number = ?")) {
       stmt.setInt(1, userId);
       stmt.setString(2, ingredientName);
       stmt.setInt(3, weekNumber);
@@ -984,19 +1030,23 @@ public class Database {
     }
   }
 
-  /*
+  /**
    * Delete all the records in the shopping list for the given user.
+   *
+   * @param username the username of the user who owns the shopping list
    */
   public void clearUserShoppingList(String username) {
     try {
       // Get the userId from the username
       int userId = getUserId(username);
       // Now delete all the records in the shopping list associated with that user
-      PreparedStatement deleteStmt = connection.prepareStatement("DELETE FROM ShoppingList WHERE user_id = ?");
+      PreparedStatement deleteStmt = connection
+          .prepareStatement("DELETE FROM ShoppingList WHERE user_id = ?");
       deleteStmt.setInt(1, userId);
       int rowsDeleted = deleteStmt.executeUpdate();
       if (rowsDeleted > 0) {
-        System.out.println("All records in the shopping list for user " + username + " have been deleted.");
+        System.out.println("All records in the shopping list for user "
+            + username + " have been deleted.");
       } else {
         System.out.println("No records found in the shopping list for user " + username);
       }
@@ -1021,11 +1071,14 @@ public class Database {
       getIngredientsStmt.setInt(1, recipeId);
       ResultSet rs = getIngredientsStmt.executeQuery();
       PreparedStatement checkStmt = connection.prepareStatement(
-          "SELECT list_quantity FROM ShoppingList WHERE user_id = ? AND ingredient_name = ? AND week_number = ?");
+          "SELECT list_quantity FROM ShoppingList "
+          + "WHERE user_id = ? AND ingredient_name = ? AND week_number = ?");
       PreparedStatement updateStmt = connection.prepareStatement(
-          "UPDATE ShoppingList SET list_quantity = list_quantity + ? WHERE user_id = ? AND ingredient_name = ? AND week_number = ?");
+          "UPDATE ShoppingList SET list_quantity = list_quantity + ? "
+          + "WHERE user_id = ? AND ingredient_name = ? AND week_number = ?");
       PreparedStatement insertStmt = connection.prepareStatement(
-          "INSERT INTO ShoppingList (user_id, ingredient_name, list_quantity, measurementUnit, week_number) VALUES (?, ?, ?, ?, ?)");
+          "INSERT INTO ShoppingList (user_id, ingredient_name, list_quantity,"
+          + " measurementUnit, week_number) VALUES (?, ?, ?, ?, ?)");
       while (rs.next()) {
         String ingredientName = rs.getString(1);
         float quantity = rs.getFloat(2);
@@ -1087,7 +1140,35 @@ public class Database {
       System.out.println(e.getMessage());
     }
     return users;
-}
+  }
+
+  /**
+   * Get a list of the users that are not currently logged in.
+   *
+   * @param loggedInUser the user that is logged in
+   * @return an arraylist with the logged out users
+   */
+  public ArrayList<User> loadLoggedOutUsers(User loggedInUser) {
+    ArrayList<User> users = new ArrayList<>();
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT id, username, displayname FROM Users WHERE username = ?")) {
+      stmt.setString(1, loggedInUser.getUsername());
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt(1);
+        String username = rs.getString(2);
+        String displayName = rs.getString(3);
+        User user = new User(id, username, displayName);
+        users.add(user);
+        System.out.println(id + "User " + username + " loaded from database.");
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return users;
+  }
 
 
   /**
@@ -1303,8 +1384,14 @@ public class Database {
     return false;
   }
 
+  /**
+   * Add a comment to a recipe by a user to the database.
+   *
+   * @param recipeId the unique id of the recipe
+   * @param userId the unique id of the user
+   * @param text the text of the comment
+   */
   public void addComment(int recipeId, int userId, String text) {
-    
     String sql = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setString(1, text);
@@ -1319,8 +1406,9 @@ public class Database {
 
   /**
    * Update a comment.
-   * @param commentId the id of the comment.
-   * @param text the new text of the comment.
+   *
+   * @param commentId the id of the comment
+   * @param text the new text of the comment
    */
   public void updateComment(int commentId, String text) {
     String sql = "UPDATE comments SET text = ? WHERE id = ?";
@@ -1336,6 +1424,7 @@ public class Database {
   
   /**
    * Delete a comment.
+   *
    * @param commentId the id of the comment
    */
   public void deleteComment(int commentId) {
@@ -1351,6 +1440,7 @@ public class Database {
 
   /**
    * Get all comments for a recipe.
+   *
    * @param recipeId the id of the recipe
    * @return the list of comments
    */

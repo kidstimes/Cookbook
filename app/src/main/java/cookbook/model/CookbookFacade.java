@@ -15,6 +15,7 @@ public class CookbookFacade {
   private User user;
   private Database database;
   private ArrayList<Recipe> recipes;
+  private ArrayList<User> loggedOutUsers;
 
 
   /**
@@ -23,6 +24,7 @@ public class CookbookFacade {
   public CookbookFacade(Database database) {
     recipes = new ArrayList<Recipe>();
     this.database = database;
+    this.loggedOutUsers = new ArrayList<>();
   }
 
   public void loadAllRecipes() {
@@ -66,8 +68,15 @@ public class CookbookFacade {
     return database.isDeletedUserInDatabase(userName);
   }
 
+  /**
+   * Set the user to logged in user and load logged out users.
+   *
+   * @param userName the username of the logged in user
+   */
   public void setCurrentUser(String userName) {
     user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
+    loggedOutUsers = database.loadLoggedOutUsers(user);
+    System.out.println("Userid" + database.getUserId(userName));
   }
 
   public String getUserDisplayName() {
@@ -437,19 +446,23 @@ public class CookbookFacade {
     database.clearUserShoppingList(user.getUsername());
     for (Dinner dinner : user.getWeeklyDinners()) {
       for (Recipe recipe : dinner.getRecipes()) {
-        database.addRecipeToShoppingList(user.getUsername(), recipe.getId(), dinner.getWeekNumber());
+        database.addRecipeToShoppingList(user.getUsername(),
+            recipe.getId(), dinner.getWeekNumber());
       }
     }
   }
 
-  /**Edit a ingredient in the shopping list of the user.
+  /**
+   * Edit a ingredient in the shopping list of the user.
    *
    * @param ingredientName the name of the ingredient
    * @param newQuantity the new quantity of the ingredient
    * @param weekNumber the week number of the shopping list
    */
-  public void editIngredientInShoppingList(String ingredientName, float newQuantity, int weekNumber) {
-    database.editIngredientQuantityInShoppingList(user.getUsername(), ingredientName, newQuantity, weekNumber);
+  public void editIngredientInShoppingList(String ingredientName,
+        float newQuantity, int weekNumber) {
+    database.editIngredientQuantityInShoppingList(user.getUsername(),
+        ingredientName, newQuantity, weekNumber);
   }
 
   /** Delete a ingredient in the shopping list of the user.
@@ -533,6 +546,13 @@ public class CookbookFacade {
     return database.getComments(recipeId);
   }
 
+  public ArrayList<Message> getReceivedMessagesOfUser() {
+    return user.getReceivedMessages();
+  }
+
+  public ArrayList<Message> getSentMessagesOfUser() {
+    return user.getSentMessages();
+  }
 
   public ArrayList<Message> getInboxMessages() {
     //return database.getInboxMessages(user.getId());
@@ -559,6 +579,24 @@ public class CookbookFacade {
 	}
 
 
+  /**
+   * Add a message to the sent messages of the user.
+   *
+   * @param messageId the unique id of the message
+   * @param recipe the recipe being sent with the message
+   * @param text the text being sent with the message
+   * @param receiverUsername the username of the user that received the message
+   */
+  public void sendMessageToUser(int messageId, Recipe recipe,
+      String text, String receiverUsername) {
+    User receiver = new User(null, null);
+    for (User user : loggedOutUsers) {
+      if (user.getUsername() == receiverUsername) {
+        receiver = user;
+      }
+    }
+    user.sendMessage(messageId, recipe, text, receiver);
+  }
 
 
 }

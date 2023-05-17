@@ -15,7 +15,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-
+/**
+ * View for the help page.
+ */
 public class HelpPageView {
   private BorderPane view;
   private HelpPageViewObserver observer;
@@ -43,7 +45,7 @@ public class HelpPageView {
   //get the view
   public Node getView() {
     return view;
-}
+  }
 
   /**
    * Initialize the layout.

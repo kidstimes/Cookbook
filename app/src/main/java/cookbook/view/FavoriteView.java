@@ -161,7 +161,8 @@ public class FavoriteView {
       HBox.setHgrow(recipeHbox, Priority.ALWAYS);
     
       Button deleteButton = new Button("Delete");
-      deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+      deleteButton.setStyle("-fx-font: 12px \"Roboto\";"
+          + " -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
       deleteButton.setOnAction(e -> {
         if (observer != null) {
           observer.removeRecipeFromFavorites(recipe);

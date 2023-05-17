@@ -2,13 +2,12 @@ package cookbook.view;
 
 import cookbook.model.User;
 import java.util.ArrayList;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -115,7 +114,8 @@ public class AdminView {
     // Add user button
     Button addUserButton = new Button("Add User");
     addUserButton.setStyle("-fx-font: 18px \"Roboto\";");
-    addUserButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font: 18px \"Roboto\";");
+    addUserButton.setStyle("-fx-background-color: #4CAF50;"
+        + " -fx-text-fill: white; -fx-font: 18px \"Roboto\";");
     addUserButton.setOnAction(e -> {
       addUser();
     });
@@ -147,10 +147,10 @@ public class AdminView {
       HBox userLine = new HBox(10);
       userLine.setAlignment(Pos.CENTER_LEFT);
 
-      Label userIDLabel = new Label(String.valueOf(user.getId()));
-      userIDLabel.setStyle("-fx-font: 18px \"Roboto\";");
-      userIDLabel.setMinWidth(100);
-      userIDLabel.setAlignment(Pos.CENTER_LEFT);
+      Label userIdLabel = new Label(String.valueOf(user.getId()));
+      userIdLabel.setStyle("-fx-font: 18px \"Roboto\";");
+      userIdLabel.setMinWidth(100);
+      userIdLabel.setAlignment(Pos.CENTER_LEFT);
 
       Label userNameLabel = new Label(user.getUsername());
       userNameLabel.setStyle("-fx-font: 18px \"Roboto\";");
@@ -167,24 +167,27 @@ public class AdminView {
       displayNameLabel.setMinWidth(150);
       displayNameLabel.setAlignment(Pos.CENTER_LEFT);
 
-      userLine.getChildren().addAll(userIDLabel, userNameLabel, passwordLabel, displayNameLabel);
+      userLine.getChildren().addAll(userIdLabel, userNameLabel, passwordLabel, displayNameLabel);
 
       if (!user.getUsername().equalsIgnoreCase("admin")) {
         Button editButton = new Button("Edit username and/or display name");
-        editButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
+        editButton.setStyle("-fx-background-color: white;"
+            + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editButton.setOnAction(e -> {
           editUser(user);
 
         });
     
         Button editPasswordButton = new Button("Edit Password");
-        editPasswordButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
+        editPasswordButton.setStyle("-fx-background-color: white;"
+            + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editPasswordButton.setOnAction(e -> {
           editUserPassword(user);       
         });
     
         Button deleteButton = new Button("Delete");
-        deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+        deleteButton.setStyle("-fx-font: 12px \"Roboto\";"
+            + " -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
         deleteButton.setOnAction(e -> {
           observer.deleteUser(user.getId());
           observer.goToAdmin();
@@ -252,7 +255,8 @@ public class AdminView {
     editUserPasswordDialog.getDialogPane().setContent(grid);
 
     ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-    editUserPasswordDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+    editUserPasswordDialog.getDialogPane()
+        .getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
     editUserPasswordDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
@@ -263,7 +267,7 @@ public class AdminView {
       return null;
     });
     editUserPasswordDialog.showAndWait();
-}
+  }
 
 
   /**
@@ -295,7 +299,8 @@ public class AdminView {
   
     addUserDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
-        boolean success = observer.addUser(userNameField.getText(), passwordField.getText(), displayNameField.getText());
+        boolean success = observer.addUser(userNameField.getText(),
+            passwordField.getText(), displayNameField.getText());
         if (success) {
           observer.goToAdmin();
           updateUserList();

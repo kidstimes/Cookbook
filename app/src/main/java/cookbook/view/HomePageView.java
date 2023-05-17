@@ -28,10 +28,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
-
-
-
-
 /**
  * The view for the home page.
  */
