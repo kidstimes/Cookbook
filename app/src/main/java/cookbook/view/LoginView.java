@@ -64,15 +64,14 @@ public class LoginView {
     introPane.setAlignment(Pos.CENTER);
 
     // Load an animated image
-    String animatedImageUrl = "https://i.imgur.com/PhR7Ppt.png";
-    Image animatedImage = new Image(animatedImageUrl);
+    Image animatedImageUrl = new Image(getClass().getResourceAsStream("/images/CircleOverCook.png"));
+    ImageView animatedImage = new ImageView(animatedImageUrl);
 
     // Create an ImageView and set the animated image to it
-    ImageView animatedImageView = new ImageView(animatedImage);
-    animatedImageView.setFitWidth(350); // Set the width of the image
-    animatedImageView.setPreserveRatio(true); // Maintain the aspect ratio
-    animatedImageView.setSmooth(true); // Enable smooth resizing
-    introPane.getChildren().add(animatedImageView);
+    animatedImage.setFitWidth(350); // Set the width of the image
+    animatedImage.setPreserveRatio(true); // Maintain the aspect ratio
+    animatedImage.setSmooth(true); // Enable smooth resizing
+    introPane.getChildren().add(animatedImage);
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
@@ -86,7 +85,7 @@ public class LoginView {
     //Create a RotateTransition
     RotateTransition rotateTransition = new RotateTransition();
     rotateTransition.setDuration(Duration.millis(2000));
-    rotateTransition.setNode(animatedImageView);
+    rotateTransition.setNode(animatedImage);
     rotateTransition.setByAngle(360);
     rotateTransition.setCycleCount(1);
     rotateTransition.setInterpolator(Interpolator.LINEAR);
@@ -94,7 +93,7 @@ public class LoginView {
     // Create a TranslateTransition
     TranslateTransition translateTransition = new TranslateTransition();
     translateTransition.setDuration(Duration.millis(2000));
-    translateTransition.setNode(animatedImageView);
+    translateTransition.setNode(animatedImage);
     translateTransition.setByX(100); // Move the image view 100 pixels to the right
     translateTransition.setCycleCount(1);
     translateTransition.setAutoReverse(false);
@@ -102,7 +101,7 @@ public class LoginView {
     // Create a ScaleTransition
     ScaleTransition scaleTransition = new ScaleTransition();
     scaleTransition.setDuration(Duration.millis(2000));
-    scaleTransition.setNode(animatedImageView);
+    scaleTransition.setNode(animatedImage);
     scaleTransition.setByX(0.5); // Increase the width of the image view by 50%
     scaleTransition.setByY(0.5); // Increase the height of the image view by 50%
     scaleTransition.setCycleCount(1);
@@ -116,7 +115,7 @@ public class LoginView {
     // Create a PathTransition
     PathTransition pathTransition = new PathTransition();
     pathTransition.setDuration(Duration.millis(2000));
-    pathTransition.setNode(animatedImageView);    
+    pathTransition.setNode(animatedImage);    
     pathTransition.setPath(path);
     pathTransition.setCycleCount(1);
     pathTransition.setAutoReverse(false);
@@ -138,8 +137,8 @@ public class LoginView {
       StackPane heartPane = new StackPane();
       heartPane.setAlignment(Pos.CENTER);
       // Load the heart image
-      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
-      Image heartImage = new Image(heartImageUrl);
+      Image heartImageUrl = new Image(getClass().getResourceAsStream("/images/Hamburger.png"));
+      ImageView heartImage = new ImageView(heartImageUrl);
 
       //Load the bottom right image
       String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
@@ -171,11 +170,10 @@ public class LoginView {
       StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
 
       // Create an ImageView and set the heart image to it
-      ImageView heartImageView = new ImageView(heartImage);
-      heartImageView.setFitWidth(150); // Set the width of the image
-      heartImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      heartImageView.setSmooth(true); // Enable smooth resizing
-      heartPane.getChildren().add(heartImageView);
+      heartImage.setFitWidth(150); // Set the width of the image
+      heartImage.setPreserveRatio(true); // Maintain the aspect ratio
+      heartImage.setSmooth(true); // Enable smooth resizing
+      heartPane.getChildren().add(heartImage);
 
       // Create an ImageView and set the bottom right image to it
       ImageView bottomRightImageView = new ImageView(bottomRightImage);
@@ -230,7 +228,7 @@ public class LoginView {
       // Create a PathTransition for the heart
       PathTransition heartPathTransition = new PathTransition();
       heartPathTransition.setDuration(Duration.millis(2000));
-      heartPathTransition.setNode(heartImageView);
+      heartPathTransition.setNode(heartImage);
       heartPathTransition.setPath(heartPath);
       heartPathTransition.setCycleCount(1);
       heartPathTransition.setAutoReverse(false);
@@ -244,7 +242,7 @@ public class LoginView {
       // Create a RotateTransition for the heart
       RotateTransition rotateHeartTransition = new RotateTransition();
       rotateHeartTransition.setDuration(Duration.millis(2000));
-      rotateHeartTransition.setNode(heartImageView);
+      rotateHeartTransition.setNode(heartImage);
       rotateHeartTransition.setByAngle(360);
       rotateHeartTransition.setCycleCount(1);
       rotateHeartTransition.setInterpolator(Interpolator.LINEAR);      
