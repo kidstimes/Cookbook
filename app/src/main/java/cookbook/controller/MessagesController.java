@@ -1,5 +1,8 @@
 package cookbook.controller;
 
+import java.util.ArrayList;
+
+import cookbook.model.Conversation;
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.MessagesView;
@@ -20,7 +23,7 @@ public class MessagesController extends BaseController implements MessagesViewOb
   public MessagesController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
     this.messagesView = new MessagesView(model.getUserDisplayName(),
-         model.loadReceivedMessagesFromDatabase(), model.loadSentMessagesFromDatabase());
+         model.getConversations());
     this.messagesView.setObserver(this);
   }
 
@@ -41,7 +44,6 @@ public class MessagesController extends BaseController implements MessagesViewOb
   }
 
 
-
   @Override
   public void goToAccount() {
     mainController.goToAccount();
@@ -52,5 +54,21 @@ public class MessagesController extends BaseController implements MessagesViewOb
     model.updateMessageIsRead(messageId);
   }
 
-  
+  @Override
+  public void replyMessage(String receiverUsername, String reply) {
+    model.replyMessage(receiverUsername, reply);
+  }
+
+
+  @Override
+  public String getUsername() {
+    return model.getUserName();
+  }
+
+  @Override
+  public ArrayList<Conversation> getConversations() {
+    return model.getConversations();
+  }
+
+
 }

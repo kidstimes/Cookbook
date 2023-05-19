@@ -1,6 +1,7 @@
 package cookbook.database;
 
 import cookbook.model.Comment;
+import cookbook.model.Conversation;
 import cookbook.model.Dinner;
 import cookbook.model.Ingredient;
 import cookbook.model.Message;
@@ -21,7 +22,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -1579,7 +1582,7 @@ public ArrayList<User> loadLoggedOutUsers(String username) {
             "SELECT m.id, m.text, sender.username, receiver.username, m.is_read, m.send_date, r.* FROM messages m" +
             " JOIN users sender ON m.sender_id = sender.id" +
             " JOIN users receiver ON m.recipient_id = receiver.id" +
-            " JOIN recipes r ON m.recipe_id = r.id" +
+            " LEFT JOIN recipes r ON m.recipe_id = r.id" +
             " WHERE m.recipient_id = ?")) {
       stmt.setInt(1, userId);
       ResultSet rs = stmt.executeQuery();
@@ -1590,9 +1593,12 @@ public ArrayList<User> loadLoggedOutUsers(String username) {
         String receiverName = rs.getString(4);
         boolean isRead = rs.getBoolean(5);
         LocalDate sendDate = rs.getObject(6, LocalDate.class);
-        int recipeId = rs.getInt(7);
-        Recipe recipe = getRecipeById(recipeId, recipes);
-
+        int recipeIdColumnIndex = 7;
+        Recipe recipe = null;
+        if (rs.getObject(recipeIdColumnIndex) != null) {
+            int recipeId = rs.getInt(recipeIdColumnIndex);
+            recipe = getRecipeById(recipeId, recipes);
+        }
         Message message = new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDate);
         messages.add(message);
       }
@@ -1663,6 +1669,75 @@ public ArrayList<User> loadLoggedOutUsers(String username) {
       System.out.println(e.getMessage());
     }
   }
+
+  public void replyMessage(String senderUsername, String receiverUsername, String text) {
+    int senderId = getUserId(senderUsername);
+    int receiverId = getUserId(receiverUsername);
+    String sql = "INSERT INTO messages (text, sender_id, recipient_id, is_read, send_date) VALUES (?, ?, ?, ?, ?)";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setString(1, text);
+      pstmt.setInt(2, senderId);
+      pstmt.setInt(3, receiverId);
+      pstmt.setBoolean(4, false);
+      pstmt.setObject(5, LocalDate.now());
+
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+
+
+
+  public ArrayList<Conversation> loadConversationsFromDatabase(String username, ArrayList<Recipe> recipes) {
+    int userId = getUserId(username);
+    Map<String, Conversation> conversationMap = new HashMap<>();
+
+    loadMessagesFromDatabase(userId, "sender_id", conversationMap, recipes);
+    loadMessagesFromDatabase(userId, "recipient_id", conversationMap, recipes);
+
+    return new ArrayList<>(conversationMap.values());
+}
+
+private void loadMessagesFromDatabase(int userId, String field, Map<String, Conversation> conversationMap, ArrayList<Recipe> recipes) {
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "SELECT m.id, m.text, sender.username, receiver.username, m.is_read, m.send_date, r.* FROM messages m" +
+          " JOIN users sender ON m.sender_id = sender.id" +
+          " JOIN users receiver ON m.recipient_id = receiver.id" +
+          " LEFT JOIN recipes r ON m.recipe_id = r.id" +
+          " WHERE m." + field + " = ? ORDER BY m.send_date ASC")) { // added ORDER BY clause to sort by send date
+      stmt.setInt(1, userId);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+          int messageId = rs.getInt(1);
+          String text = rs.getString(2);
+          String senderName = rs.getString(3);
+          String receiverName = rs.getString(4);
+          boolean isRead = rs.getBoolean(5);
+          LocalDate sendDate = rs.getObject(6, LocalDate.class);
+          int recipeIdColumnIndex = 7;
+          Recipe recipe = null;
+          if (rs.getObject(recipeIdColumnIndex) != null) {
+              int recipeId = rs.getInt(recipeIdColumnIndex);
+              recipe = getRecipeById(recipeId, recipes);
+          }
+
+          Message message = new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDate);
+
+          String otherUsername = field.equals("sender_id") ? receiverName : senderName;
+          Conversation conversation = conversationMap.getOrDefault(otherUsername, new Conversation(otherUsername));
+          conversation.addMessage(message);
+          conversationMap.put(otherUsername, conversation);
+      }
+      rs.close();
+  } catch (SQLException e) {
+    System.out.println(e.getMessage());
+  }
+}
+
+  
 
 }
 

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * The Message class.
  */
-public class Message {
+public class Message implements Comparable<LocalDate> {
 
   private int id;
   private Recipe recipe;
@@ -72,5 +72,10 @@ public class Message {
   
   public LocalDate getDate() {
     return date;
+  }
+
+  @Override
+  public int compareTo(LocalDate o) {
+    return date.compareTo(o);
   }
 }

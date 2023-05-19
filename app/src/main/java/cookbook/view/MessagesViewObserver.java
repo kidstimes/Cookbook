@@ -1,5 +1,8 @@
 package cookbook.view;
 
+import java.util.ArrayList;
+
+import cookbook.model.Conversation;
 import cookbook.model.Message;
 import cookbook.model.Recipe;
 
@@ -31,5 +34,12 @@ public interface MessagesViewObserver {
   void goToAccount();
 
   void updateMessageIsRead(int messageId);
+
+  void replyMessage(String receiverUsername, String reply);
+
+
+  String getUsername();
+
+  ArrayList<Conversation> getConversations();
   
 }

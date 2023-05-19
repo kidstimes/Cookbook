@@ -1,10 +1,14 @@
 package cookbook.model;
 
 import cookbook.database.Database;
+import cookbook.view.RecipeViewObserver;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.units.qual.A;
 
 
 
@@ -593,15 +597,24 @@ public class CookbookFacade {
 
   public ArrayList<Message> loadReceivedMessagesFromDatabase() {
     return database.loadReceivedMessagesFromDatabase(user.getUsername(), recipes);
+
   }
 
 
   public ArrayList<Message> loadSentMessagesFromDatabase() {
     return database.loadSentMessagesFromDatabase(user.getUsername(), recipes);
+
   }
 
   public void updateMessageIsRead(int messageId) {
     database.updateMessageIsRead(messageId);
   }
+
+  public void replyMessage(String receiverUsername, String message) {
+    database.replyMessage(getUserName(), receiverUsername, message);
+  }
   
+  public ArrayList<Conversation> getConversations() {
+    return database.loadConversationsFromDatabase(user.getUsername(), recipes);
+  }
 }
