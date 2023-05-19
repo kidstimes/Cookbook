@@ -3,6 +3,8 @@ package cookbook.view;
 import cookbook.model.Comment;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
+import cookbook.model.User;
+import cookbook.model.RecipeEditRecord;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -11,8 +13,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,13 +24,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
@@ -48,6 +46,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * View class for the recipe page.
@@ -65,15 +64,17 @@ public class RecipeView {
   private String displayName;
   private int userId;
   private ArrayList<Comment> comments;
+  private ArrayList<User> loggedoutUsers;
 
   /**
    * Recipe View Constructor.
    */
-  public RecipeView(String displayName, int userId) {
+  public RecipeView(String displayName, int userId, ArrayList<User> loggedoutUsers) {
     this.view = new BorderPane();
     this.initialServings = 2;
     this.displayName = displayName;
     this.userId = userId;
+    this.loggedoutUsers = loggedoutUsers;
   }
 
   /**
@@ -109,53 +110,22 @@ public class RecipeView {
    * init the layout of the recipe page.
    */
   public void initLayout() {
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeText = new Text(displayName + ", welcome!");
-    welcomeText.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeText);
-
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      createButton("My Account", e -> observer.goToAccount())
-      };
-
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
-
-    Region hspacer = new Region(); // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS);
-
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);
-
-    sidebar.getChildren().add(logoutHelpBox);
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
+    
+    sidebar.setActiveButton("Browse Recipes");
+    sidebar.finalizeLayout();
+        
+    // Add the sidebar to the view
     view.setLeft(sidebar);
 
     vbox = new VBox();
@@ -180,7 +150,11 @@ public class RecipeView {
 
     // Add a title (recipe name)
     Text title = new Text(recipe.getName());
+    System.out.println(recipe);
     title.setFont(Font.font("ARIAL", FontWeight.BOLD, 40));
+    title.setStyle(
+      "-fx-text-fill: #81B29A;");
+    
     title.setWrappingWidth(800);
     HBox titleBox = new HBox();
     titleBox.setMaxWidth(800);
@@ -227,8 +201,9 @@ public class RecipeView {
     shortDescription.setWrappingWidth(900);
     VBox shortDescriptionBox = new VBox(shortDescription);
     shortDescriptionBox.setMaxWidth(900);
-    shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
+    shortDescriptionBox.setPadding(new Insets(10, 0, 30, 0));
     vbox.getChildren().add(shortDescriptionBox);
+
 
     // Add DatePicker for selecting the date to add the recipe to the weekly dinner
     // list
@@ -238,8 +213,9 @@ public class RecipeView {
     selectDate.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
     selectDate.setFill(Color.DARKSLATEGREY);
     HBox dateBox = new HBox(selectDate, datePicker);
-    dateBox.setSpacing(10);
+    dateBox.setSpacing(0);
     dateBox.setAlignment(Pos.CENTER_LEFT);
+    dateBox.setPadding(new Insets(10, 0, 0, 0));
     vbox.getChildren().add(dateBox);
     datePicker.setStyle("-fx-font: 16px \"Roboto\";");
 
@@ -287,6 +263,7 @@ public class RecipeView {
     Text ingredientsTitle = new Text("Ingredients:");
     ingredientsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     VBox ingredientsTitleBox = new VBox(ingredientsTitle);
+    ingredientsTitleBox.setPadding(new Insets(30, 0, 0, 0));
     vbox.getChildren().add(ingredientsTitleBox);
     createServingSpinner();
 
@@ -329,13 +306,13 @@ public class RecipeView {
 
     // Display tags
     Text tagsTitle = new Text("Tags:");
-    tagsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
+    tagsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     HBox tagsTitleBox = new HBox(tagsTitle);
-    tagsTitleBox.setPadding(new Insets(20, 0, 20, 0));
+    tagsTitleBox.setPadding(new Insets(20, 0, 0, 0));
 
     // Display tags in a single line
     tagsHbox = new HBox();
-    tagsHbox.setSpacing(10);
+    tagsHbox.setSpacing(5);
     LinkedHashSet<String> uniqueTags = new LinkedHashSet<>(recipe.getTags());
     for (String tag : uniqueTags) {
       Text tagText = new Text("# " + tag);
@@ -461,7 +438,7 @@ public class RecipeView {
 
     // Display comments
     Text commentsTitle = new Text("Comments:");
-    commentsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 20));
+    commentsTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     VBox commentsTitleBox = new VBox(commentsTitle);
     commentsTitleBox.setPadding(new Insets(40, 0, 20, 0));
     vbox.getChildren().add(commentsTitleBox);
@@ -477,20 +454,20 @@ public class RecipeView {
       commentsContainer.getChildren().add(commentPane);
     }
     // Create a text area for users to input their comments
-    TextArea commentInput = new TextArea();
+    TextField commentInput = new TextField();
     commentInput.setPromptText("Write a comment...");
     commentInput.setStyle("-fx-font: 16px \"Roboto\";");
-    commentInput.setWrapText(true);
     commentInput.setMaxWidth(900);
     commentInput.setMaxHeight(100);
     vbox.getChildren().add(commentInput);
 
     Button postCommentButton = new Button("Post Comment");
     postCommentButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    postCommentButton.setMinWidth(100);
     postCommentButton.setStyle(
-        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        " -fx-background-color: #81B29A; -fx-text-fill: white; -fx-background-radius:"
             + " 20;-fx-effect: null;-fx-cursor: hand;"
-            + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+            + " -fx-padding: 2 5 2 5; -fx-margin: 0 0 0 10;");
     postCommentButton.setOnAction(e -> {
       String commentText = commentInput.getText().trim();
       if (!commentText.isEmpty()) {
@@ -500,6 +477,96 @@ public class RecipeView {
       }
     });
     vbox.getChildren().add(postCommentButton);
+
+    
+    Text sendTitle = new Text("Send Recipe:");
+    sendTitle.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
+    VBox sendTitleBox = new VBox(sendTitle);
+    sendTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    vbox.getChildren().add(sendTitleBox);
+
+
+    // Create TextField for user's message input
+    TextField messageInputField = new TextField();
+    messageInputField.setPromptText("Write your message here...");
+    messageInputField.setStyle("-fx-font: 16px \"Roboto\";");
+    messageInputField.setMaxWidth(900);
+    messageInputField.setMaxHeight(100);
+
+    // Create ComboBox to list all users
+    ComboBox<User> userSelectionComboBox = new ComboBox<>();
+
+    User defaultUser = new User(-1, "Select a user", "");
+    userSelectionComboBox.getItems().add(defaultUser);
+    //add arraylist of loggedoutusers to the combobox
+    for (User user : loggedoutUsers) {
+      userSelectionComboBox.getItems().add(user);
+    }
+
+    userSelectionComboBox.getSelectionModel().select(defaultUser);
+    userSelectionComboBox.setPromptText("Select a user");
+    Button sendButton = new Button("Send");
+
+    userSelectionComboBox.setConverter(new StringConverter<User>() {
+      @Override
+      public String toString(User user) {
+          return user.getUsername();
+      }
+  
+      @Override
+      public User fromString(String string) {
+          // Not needed
+          return null;
+      }
+    });
+  
+    sendButton.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
+    sendButton.setMinWidth(100);
+    sendButton.setPadding(new Insets(0, 0, 0, 50));
+    sendButton.setStyle(
+      " -fx-background-color: #81B29A; -fx-text-fill: white; -fx-background-radius:"
+          + " 20;-fx-effect: null;-fx-cursor: hand;"
+          + " -fx-padding: 2 5 2 5; -fx-margin: 0 0 0 10;");
+    sendButton.setOnAction(e -> {
+      User selectedUser = userSelectionComboBox.getSelectionModel().getSelectedItem();
+      if (selectedUser.equals(defaultUser)) {
+        return;
+      }
+      String message = messageInputField.getText();
+      if (selectedUser != null && !message.trim().isEmpty()) {
+        if (observer.sendMessageToUser(selectedUser.getUsername(), recipe, message)) {
+          showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success", "Message sent successfully.");
+        } else {
+          showInlineStyledAlert(Alert.AlertType.ERROR, "Error", "Message failed to send.");
+        }
+        messageInputField.clear();
+        userSelectionComboBox.getSelectionModel().clearSelection();
+        userSelectionComboBox.getSelectionModel().select(defaultUser);
+      } else {
+        showInlineStyledAlert(Alert.AlertType.WARNING, "Warning", "Please select a user and type a message.");
+      }
+    });
+
+    VBox messageBox = new VBox();
+    messageBox.setSpacing(10);
+    messageBox.getChildren().addAll(userSelectionComboBox, messageInputField, sendButton);
+    vbox.getChildren().add(messageBox);
+
+    Label recipeHistoryLabel = new Label("History:");
+    recipeHistoryLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
+    String createrDisplayname = observer.getDisplayNameByUsername(recipe.getCreaterUsername());
+    Label createrLabel = new Label("Recipe created by " + createrDisplayname);
+    createrLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
+    vbox.getChildren().addAll(recipeHistoryLabel, createrLabel);
+    for (RecipeEditRecord record : recipe.getEditRecords()) {
+      Label editLabel = new Label();
+      String editorDisplayname = observer.getDisplayNameByUsername(record.getUserName());
+      editLabel.setText("Edited by " + editorDisplayname + " on " + record.getDate());
+      editLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
+      vbox.getChildren().add(editLabel);
+    }
+
+
   }
 
   /**
@@ -560,6 +627,9 @@ public class RecipeView {
     return commentPane;
   }
 
+  /**
+   * Creates a spinner for selecting the number of servings.
+   */
   private void createServingSpinner() {
     servingSpinner = new Spinner<>();
     SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory
@@ -583,6 +653,10 @@ public class RecipeView {
     vbox.getChildren().add(servingSpinnerContainer);
   }
 
+  /** Updates the ingredient quantities based on the number of servings.
+   *
+   * @param servings is the number of servings
+   */
   private void updateIngredientQuantities(int servings) {
     double scaleFactor = (double) servings / initialServings;
     GridPane newIngredientsGrid = new GridPane();
@@ -646,23 +720,6 @@ public class RecipeView {
     return updatedTags;
   }
 
-  /**
-   * Create styled button with the given text and event handler.
-   *
-   * @param text         is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is
-   *                     clicked.
-   * @return the created button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(180);
-    button.setMaxWidth(200); 
-    button.setOnAction(eventHandler);
-    return button;
-  }
 
   /**
    * Show an alert with the given alert type, title, and message.

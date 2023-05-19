@@ -45,64 +45,39 @@ public class AccountView {
   }
 
   private void initLayout() {
-    view.setStyle("-fx-background-color: #F9F8F3;");
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text(displayName + ", welcome!");
-    welcomeTitle.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeTitle);
-    
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      createButton("My Account", e -> observer.goToAccount())
-      };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
 
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
+    sidebar.setActiveButton("My Account");
+    sidebar.finalizeLayout();
+        
+    // Add the sidebar to the view
     view.setLeft(sidebar);
 
     centerBox = new VBox(30);
-    centerBox.setPadding(new Insets(50, 20, 20, 20));
+    centerBox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
     centerBox.setAlignment(Pos.TOP_LEFT);
+
+    Text accountTitle = new Text("My Account");
+    accountTitle.setFont(Font.font("Roboto", 32));
+
+    Text userNameText = new Text("Your username is: " + userName);
+    userNameText.setFont(Font.font("Roboto", 20));
 
     Text accountSettingsTitle = new Text("Account Setting");
     accountSettingsTitle.setFont(Font.font("Roboto", 28));
 
-    Text userNameText = new Text("Your username is: " + userName);
-    userNameText.setFont(Font.font("Roboto", 24));
+
 
     Hyperlink changePasswordLink = new Hyperlink("Change Password");
     changePasswordLink.setFont(Font.font("Roboto", 20));
@@ -117,7 +92,7 @@ public class AccountView {
       showChangeDisplayNameForm();
     });
 
-    centerBox.getChildren().addAll(userNameText, accountSettingsTitle, changePasswordLink, changeDisplayNameLink);
+    centerBox.getChildren().addAll(accountTitle, userNameText, accountSettingsTitle, changePasswordLink, changeDisplayNameLink);
 
     view.setCenter(centerBox);
   }
@@ -128,7 +103,7 @@ public class AccountView {
   private void showChangeDisplayNameForm() {
     centerBox.getChildren().clear();
     GridPane grid = new GridPane();
-    grid.setAlignment(Pos.CENTER);
+    grid.setAlignment(Pos.CENTER_LEFT);
     grid.setPadding(new Insets(25, 25, 25, 25));
     Label newDisplayNameLabel = new Label("New display name:");
     newDisplayNameLabel.setFont(Font.font("Roboto", 20));
@@ -158,7 +133,7 @@ public class AccountView {
   private void showChangePasswordForm() {
     centerBox.getChildren().clear();
     GridPane grid = new GridPane();
-    grid.setAlignment(Pos.CENTER);
+    grid.setAlignment(Pos.CENTER_LEFT);
     grid.setPadding(new Insets(5,5,5,5));       
     Label oldPasswordLabel = new Label("Old password:");
     oldPasswordLabel.setFont(Font.font("Roboto", 20));

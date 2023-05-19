@@ -12,7 +12,6 @@ import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.property.TextAlignment;
 import cookbook.model.Ingredient;
 import cookbook.model.ShoppingList;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.DayOfWeek;
@@ -108,51 +107,22 @@ public class ShoppingListView {
    * Create side bar menu.
    */
   public void createSideBar() {
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text(displayName + ", welcome!");
-    welcomeTitle.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeTitle);
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      createButton("My Account", e -> observer.goToAccount())
-      };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
-
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
+    sidebar.setActiveButton("My Shopping List");
+    sidebar.finalizeLayout();
+        
+    // Add the sidebar to the view
     view.setLeft(sidebar);
   }
   
@@ -194,7 +164,6 @@ public class ShoppingListView {
     generatePdfButton.setOnAction(event -> {
       try {
         generatePdf();
-        showInlineStyledAlert(AlertType.INFORMATION, "Success", "PDF for "+ weekNumberLabel.getText() +" shopping list saved.");
       } catch (Exception e) {
         showInlineStyledAlert(AlertType.ERROR,
             "PDF Generation Failed", e.getMessage());
@@ -473,22 +442,10 @@ public class ShoppingListView {
     alert.showAndWait();
   }
 
-  /** Create styled button with the given text and event handler.
+  /** Generate a PDF file of the shopping list.
    *
-   * @param text is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is clicked.
-   * @return the created button
+   * @throws Exception if the file cannot be created
    */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(180);
-    button.setMaxWidth(200); 
-    button.setOnAction(eventHandler);
-    return button;
-  }
-
   public void generatePdf() throws Exception {
 
     FileChooser fileChooser = new FileChooser();

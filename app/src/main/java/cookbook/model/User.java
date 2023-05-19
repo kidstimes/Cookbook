@@ -14,8 +14,8 @@ public class User {
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
   private ArrayList<ShoppingList> shoppingLists;
-  private ArrayList<Message> inbox;
-  private ArrayList<Message> outbox;
+  private ArrayList<Message> receivedMessages;
+  private ArrayList<Message> sentMessages;
 
   
 
@@ -338,6 +338,7 @@ public class User {
     return sentMessages;
   }
 
+
   /**
    * Add a message to the received messages of the user.
    *
@@ -346,8 +347,8 @@ public class User {
    * @param text the text of the received message
    * @param sender the user that sent the message
    */
-  public void receiveMessage(int messageId, Recipe recipe, String text, User sender) {
-    this.receivedMessages.add(new Message(messageId, recipe, text, sender, this));
+  /*public void receiveMessage(int messageId, Recipe recipe, String text, String senderName, boolean is_read) {
+    this.receivedMessages.add(new Message(messageId, recipe, text, senderName, username, is_read ));
   }
 
   /**
@@ -358,8 +359,9 @@ public class User {
    * @param text the text being sent with the message
    * @param receiver the user that received the message
    */
-  public void sendMessage(int messageId, Recipe recipe, String text, User receiver) {
-    this.sentMessages.add(new Message(messageId, recipe, text, this, receiver));
-  }
+  /*public void sendMessage(int messageId, Recipe recipe, String text, User receiver, boolean is_read) {
+    this.sentMessages.add(new Message(messageId, recipe, text, username, receiver.getUsername(), is_read));
+  }*/
+
 
 }

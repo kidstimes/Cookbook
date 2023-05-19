@@ -2,8 +2,8 @@ package cookbook.view;
 
 import java.util.ArrayList;
 
-import cookbook.model.Message;
-import cookbook.model.Recipe;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -11,195 +11,166 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import cookbook.model.Message;
+import cookbook.model.Recipe;
 
 public class MessagesView {
-  private BorderPane view;
-  private MessagesViewObserver observer;
-  private String displayName;
-  private ListView<VBox> inboxView;
-  private ListView<VBox> outboxView;
-  private Image open;
-  private Image close;
-  private ArrayList<Message> inbox;
-  private ArrayList<Message> outbox;
+    private BorderPane view;
+    private MessagesViewObserver observer;
+    private ListView<VBox> inboxView;
+    private ListView<VBox> outboxView;
+    private Image open;
+    private Image close;
 
-
-  /**
-   * Constructor for the MessagesView.
-   */
-  public MessagesView(String displayName, ArrayList<Message> inbox, ArrayList<Message> outbox) {
-    this.view = new BorderPane();
-    this.displayName = displayName;
-    this.inbox = inbox;
-    this.outbox = outbox;
-
-    open = new Image(getClass().getResourceAsStream("/images/open.png"));
-    close = new Image(getClass().getResourceAsStream("/images/close.png"));
-
-    inboxView = new ListView<>();
-    outboxView = new ListView<>();
-    initLayout();
-    showInbox(inbox);
-    showOutbox(outbox);
-  }
-
-  
-  
-  /** Set the observer for this view.
-  *
-  * @param observer the observer
-  */
-  public void setObserver(MessagesViewObserver observer) {
-    this.observer = observer;
-  }
-
-  //get the view
-  public Node getView() {
-    return view;
-  }
-
-  /**
-   * Initialize the layout.
-   */
-  public void initLayout() {
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeText = new Text(displayName + ", welcome!");
-    welcomeText.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeText);
-
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      createButton("My Account", e -> observer.goToAccount())
-      };
-
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
+    public MessagesView(String displayName, ArrayList<Message> inbox, ArrayList<Message> outbox) {
+        this.view = new BorderPane();
+        this.open = new Image(getClass().getResourceAsStream("/images/open.png"));
+        this.close = new Image(getClass().getResourceAsStream("/images/close.png"));
+        this.inboxView = new ListView<>();
+        this.outboxView = new ListView<>();
+        initLayout(displayName);
+        showInbox(inbox);
+        showOutbox(outbox);
     }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
 
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
-    
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
-    view.setLeft(sidebar);
-
-    Button inboxButton = new Button("Inbox");
-    inboxButton.setOnAction(e -> view.setCenter(inboxView));
-
-    Button outboxButton = new Button("Outbox");
-    outboxButton.setOnAction(e -> view.setCenter(outboxView));
-
-    HBox buttonBox = new HBox(inboxButton, outboxButton);
-
-
-    view.setCenter(inboxView);
-    view.setRight(buttonBox);
-
-  }
-
-  public void showInbox(ArrayList<Message> messages) {
-    inboxView.getItems().clear();
-    for (Message message : inbox) {
-        inboxView.getItems().add(createMessageView(message));
+    public void setObserver(MessagesViewObserver observer) {
+        this.observer = observer;
     }
-  }
 
-  public void showOutbox(ArrayList<Message> messages) {
-    outboxView.getItems().clear();
-    for (Message message : outbox) {
-        outboxView.getItems().add(createMessageView(message));
+    public Node getView() {
+        return view;
     }
-  }
 
-  private VBox createMessageView(Message message) {
-    VBox messageView = new VBox(5);
+    public void initLayout(String displayName) {
+        Sidebar sidebar = new Sidebar(displayName);
+        sidebar.addButton("Home Page", e -> observer.goToHomePage());
+        sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+        sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+        sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+        sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+        sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+        sidebar.addButton("Messages", e -> observer.goToMessages());
+        sidebar.addButton("My Account", e -> observer.goToAccount());
+        sidebar.addHyperlink("Help", e -> observer.goToHelp());
+        sidebar.addHyperlink("Log Out", e -> observer.userLogout());
 
-    ImageView envelopeIcon = new ImageView(message.isRead() ? open : close);
-    envelopeIcon.setFitHeight(20);
-    envelopeIcon.setFitWidth(20);
+        sidebar.setActiveButton("Messages");
+        sidebar.finalizeLayout();
 
-    Recipe recipe = message.getRecipe();
-    Text sender = new Text(message.getSenderUserName());
+        view.setLeft(sidebar);
 
-    Hyperlink recipeLink = new Hyperlink(message.getRecipe().getName());
-    recipeLink.setVisible(false);
-    recipeLink.setOnAction(e -> observer.goToRecipe(recipe));
-    Text messageText = new Text(message.getText());
-    messageText.setVisible(false);
+        Button inboxButton = new Button("Inbox");
+        inboxButton.setOnAction(e -> view.setCenter(inboxView));
 
-    messageView.getChildren().addAll(envelopeIcon, sender, recipeLink, messageText);
+        Button outboxButton = new Button("Outbox");
+        outboxButton.setOnAction(e -> view.setCenter(outboxView));
 
-    // Set up a mouse click event on the sender Text to toggle visibility
-    sender.setOnMouseClicked(e -> {
-        boolean visibility = !recipeLink.isVisible();
-        recipeLink.setVisible(visibility);
-        messageText.setVisible(visibility);
-        if (visibility) {
-            message.read();
-            envelopeIcon.setImage(open);
-            messageView.setStyle(""); // Clear background color
+        VBox buttonBox = new VBox(10, inboxButton, outboxButton);
+        view.setRight(buttonBox);
+
+        view.setCenter(inboxView); 
+    }
+
+    public void showInbox(ArrayList<Message> messages) {
+        inboxView.getItems().clear();
+        for (Message message : messages) {
+            inboxView.getItems().add(createInboxMessageView(message));
         }
-    });
-    if (!message.isRead()) {
-        messageView.setStyle("-fx-background-color: grey;");
     }
 
-    return messageView;
-}
+    public void showOutbox(ArrayList<Message> messages) {
+        outboxView.getItems().clear();
+        for (Message message : messages) {
+            outboxView.getItems().add(createOutboxMessageView(message));
+        }
+    }
 
-  /** Create styled button with the given text and event handler.
-   *
-   * @param text is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is clicked.
-   * @return the created button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(180);
-    button.setMaxWidth(200); 
-    button.setOnAction(eventHandler);
-    return button;
-  }
-}
+    private VBox createInboxMessageView(Message message) {
+        return createMessageView(message, true);
+    }
 
+    private VBox createOutboxMessageView(Message message) {
+        return createMessageView(message, false);
+    }
+
+    private VBox createMessageView(Message message, boolean isInbox) {
+      ImageView envelopeIcon = new ImageView(isInbox ? (message.isRead() ? open : close) : close);
+      envelopeIcon.setFitHeight(30);
+      envelopeIcon.setFitWidth(30);
   
-
+      String senderOrReceiver = isInbox ? "Sender: " : "Receiver: ";
+      String username = isInbox ? message.getSenderUsername() : message.getReceiverUsername();
+  
+      Text sender = new Text("   " + senderOrReceiver + username);
+      sender.setFont(isInbox && !message.isRead() ? Font.font("Roboto", FontWeight.BOLD, 24) : new Font("Roboto", 24));
+  
+      Recipe recipe = message.getRecipe();
+      Hyperlink recipeLink = new Hyperlink("   " + recipe.getName());
+      recipeLink.setOnAction(e -> observer.goToRecipe(recipe));
+      recipeLink.setFont(new Font("Roboto", 22));
+      recipeLink.setTextFill(Color.web("#81B29A"));  // set the color of hyperlink
+  
+      Text messageText = new Text("   " + message.getText());
+      messageText.setFont(new Font("Roboto", 24));
+  
+      TextField replyInput = new TextField();
+      replyInput.setPromptText("Type your reply here...");
+      replyInput.setFont(new Font("Roboto", 20));
+      replyInput.setVisible(false); // Set visibility to false initially
+  
+      Button replyButton = new Button("Reply");
+      replyButton.setStyle("-fx-background-color: #81B29A; -fx-text-fill: white; -fx-font-size: 24px;");
+      replyButton.setOnAction(e -> {
+          if (!replyInput.getText().isEmpty()) {
+              //observer.replyMessage(message, replyInput.getText());
+              replyInput.clear();
+          }
+      });
+      replyButton.setVisible(false); // Set visibility to false initially
+  
+      VBox messageContent = new VBox(5, sender, messageText, recipeLink, replyInput, replyButton);
+      messageContent.setVisible(false);
+  
+      Text date = new Text(message.getDate().toString());
+      date.setFont(new Font("Roboto", 14));
+  
+      HBox messageHeader = new HBox(5, envelopeIcon, date, messageContent); 
+      messageHeader.setAlignment(Pos.CENTER_LEFT);
+  
+      VBox messageView = new VBox(5, messageHeader);
+      messageView.setOnMouseClicked(e -> {
+          boolean visibility = !messageContent.isVisible();
+          messageContent.setVisible(visibility);
+          replyButton.setVisible(visibility); 
+          replyInput.setVisible(visibility); 
+  
+          if (isInbox && visibility && !message.isRead()) {
+              message.read();
+              observer.updateMessageIsRead(message.getId());
+              envelopeIcon.setImage(open);
+              messageView.setStyle("-fx-background-color: #F9F8F3;");
+              sender.setFont(new Font("Roboto", 24));
+          }
+      });
+  
+      if (isInbox && !message.isRead()) {
+          messageView.setStyle("-fx-background-color: grey;");
+      } else {
+          messageView.setStyle("-fx-background-color: #F9F8F3;");
+      }
+  
+      return messageView;
+  }
+  
+}

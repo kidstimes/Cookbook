@@ -1,5 +1,6 @@
 package cookbook.view;
 
+import cookbook.model.Message;
 import cookbook.model.Recipe;
 
 /**
@@ -28,5 +29,7 @@ public interface MessagesViewObserver {
   void goToHelp();
 
   void goToAccount();
+
+  void updateMessageIsRead(int messageId);
   
 }

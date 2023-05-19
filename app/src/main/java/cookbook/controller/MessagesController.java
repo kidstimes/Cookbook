@@ -19,7 +19,8 @@ public class MessagesController extends BaseController implements MessagesViewOb
    */
   public MessagesController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
-    this.messagesView = new MessagesView(model.getUserDisplayName(), model.getInboxMessages(), model.getOutboxMessages() );
+    this.messagesView = new MessagesView(model.getUserDisplayName(),
+         model.loadReceivedMessagesFromDatabase(), model.loadSentMessagesFromDatabase());
     this.messagesView.setObserver(this);
   }
 
@@ -44,6 +45,11 @@ public class MessagesController extends BaseController implements MessagesViewOb
   @Override
   public void goToAccount() {
     mainController.goToAccount();
+  }
+
+  @Override
+  public void updateMessageIsRead(int messageId) {
+    model.updateMessageIsRead(messageId);
   }
 
   

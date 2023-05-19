@@ -16,6 +16,7 @@ public class CookbookFacade {
   private Database database;
   private ArrayList<Recipe> recipes;
   private ArrayList<User> loggedOutUsers;
+  private ArrayList<User> allUsers;
 
 
   /**
@@ -75,17 +76,32 @@ public class CookbookFacade {
    */
   public void setCurrentUser(String userName) {
     user = new User(database.getUserId(userName), userName, database.getUserDisplayName(userName));
-    loggedOutUsers = database.loadLoggedOutUsers(user);
-    System.out.println("Userid" + database.getUserId(userName));
   }
 
+  public ArrayList<User> getLoggedOutUsers() {
+    return database.loadLoggedOutUsers(user.getUsername());
+  }
+
+  //get current user display name
   public String getUserDisplayName() {
     return user.getDisplayName();
   }
-
+  
+  //get current username
   public String getUserName() {
     return user.getUsername();
   }
+
+  /** Get user display name by given username.
+   *
+   * @param userName the username of the user
+   * @return the display name of the user
+   */
+  public String getDisplayNameByUsername(String userName) {
+    return database.getUserDisplayName(userName);
+  }
+
+
 
   public int getUserId() {
     return user.getId();
@@ -97,6 +113,8 @@ public class CookbookFacade {
   public void editUser(int userId, String userName, String displayName) {
     database.editUser(userId, userName, displayName);
   }
+
+
 
   /*
    * editUserPassword to edit the user's password.
@@ -426,7 +444,7 @@ public class CookbookFacade {
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
-    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients);
+    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients, user.getUsername());
   }
 
   /** Add all ingredients of a recipe to the shopping list of the user.
@@ -485,7 +503,9 @@ public class CookbookFacade {
    * @return an arraylist with all the users
    */
   public ArrayList<User> loadAllUsers() {
-    return database.loadAllUsersFromDatabase();
+    ArrayList<User> allUsers = database.loadAllUsersFromDatabase();
+    this.allUsers = allUsers;
+    return allUsers;
   }
 
   /**
@@ -554,23 +574,10 @@ public class CookbookFacade {
     return user.getSentMessages();
   }
 
-  public ArrayList<Message> getInboxMessages() {
-    //return database.getInboxMessages(user.getId());
-    ArrayList<Message> messages = new ArrayList<Message>();
-
-    return messages;
-  }
-
-  public ArrayList<Message> getOutboxMessages() {
-    //return database.getOutboxMessages(user.getId());
-    ArrayList<Message> messages = new ArrayList<Message>();
-
-    return messages;
-  }
 
 	public int getNumberUnreadMessages() {
     int numberUnreadMessages = 0;
-    for (Message message : getInboxMessages()) {
+    for (Message message : loadReceivedMessagesFromDatabase()) {
       if (!message.isRead()) {
         numberUnreadMessages++;
       }
@@ -579,24 +586,22 @@ public class CookbookFacade {
 	}
 
 
-  /**
-   * Add a message to the sent messages of the user.
-   *
-   * @param messageId the unique id of the message
-   * @param recipe the recipe being sent with the message
-   * @param text the text being sent with the message
-   * @param receiverUsername the username of the user that received the message
-   */
-  public void sendMessageToUser(int messageId, Recipe recipe,
-      String text, String receiverUsername) {
-    User receiver = new User(null, null);
-    for (User user : loggedOutUsers) {
-      if (user.getUsername() == receiverUsername) {
-        receiver = user;
-      }
-    }
-    user.sendMessage(messageId, recipe, text, receiver);
+
+  public boolean sendMessageToUser(String selectedUser, Recipe recipe, String message) {
+    return database.sendMessageToUser(user.getUsername(), selectedUser, recipe.getId(), message);
+  }
+
+  public ArrayList<Message> loadReceivedMessagesFromDatabase() {
+    return database.loadReceivedMessagesFromDatabase(user.getUsername(), recipes);
   }
 
 
+  public ArrayList<Message> loadSentMessagesFromDatabase() {
+    return database.loadSentMessagesFromDatabase(user.getUsername(), recipes);
+  }
+
+  public void updateMessageIsRead(int messageId) {
+    database.updateMessageIsRead(messageId);
+  }
+  
 }

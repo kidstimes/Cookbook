@@ -2,6 +2,8 @@ package cookbook.model;
 
 import java.util.ArrayList;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 /**
  * The Recipe class.
  */
@@ -15,6 +17,8 @@ public class Recipe {
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
   private ArrayList<Comment> comments;
+  private String createrUsername;
+  private ArrayList<RecipeEditRecord> editRecords;
 
   /**
    * Recipe Constructor.
@@ -54,11 +58,13 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
     this.directions = directions;
+    this.createrUsername = createrUsername;
+    this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
     this.ingredients = new ArrayList<Ingredient>();
@@ -95,6 +101,10 @@ public class Recipe {
 
   public void setShortDesc(String shortDesc) {
     this.shortDesc = shortDesc;
+  }
+
+  public String getCreaterUsername(){
+    return createrUsername;
   }
 
   public String getDirections() {
@@ -193,6 +203,15 @@ public class Recipe {
    */
   public boolean isStarred() {
     return starred;
+  }
+
+  public ArrayList<RecipeEditRecord> getEditRecords() {
+    ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<RecipeEditRecord>();
+    for (RecipeEditRecord record : editRecords) {
+      copyEditRecords.add(record);
+    }
+    return copyEditRecords;
+
   }
 
   

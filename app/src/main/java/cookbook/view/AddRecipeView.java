@@ -6,8 +6,6 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -85,82 +82,58 @@ public class AddRecipeView {
    * Initialize the add recipe view.
    */
   private void initLayout() {
-
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(120);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text title = new Text(displayName + ", welcome!");
-    title.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(title);
-
-    // Add five options to the homepage, one per row
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> {
-        clearAllInput();
-        observer.goToHomePage();
-      }),
-      createButton("Browse Recipes", e -> {
-        clearAllInput();
-        observer.goToBrowser();
-      }),
-      createButton("Add a Recipe", e -> {
-        observer.goToAddRecipe();
-      }),
-      createButton("Weekly Dinner List", e -> {
-        clearAllInput();
-        observer.goToWeeklyDinner();
-      }),
-      createButton("My Favorites", e -> {
-        clearAllInput();
-        observer.goToMyFavorite();
-      }),
-      createButton("My Shopping List", e -> {
-        clearAllInput();
-        observer.goToShoppingList();
-      }),
-      createButton("Messages", e -> { 
-        clearAllInput();
-        observer.goToMessages();
-      }),
-      createButton("My Account", e -> {
-        clearAllInput();
-        observer.goToAccount();
-      }),
-      };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> {
+      clearAllInput();
+      observer.goToHomePage();
+    });
+    sidebar.addButton("Browse Recipes", e -> {
+      clearAllInput();
+      observer.goToBrowser();
+    });
+    sidebar.addButton("Add a Recipe", e -> {
+      clearAllInput();
+      observer.goToAddRecipe();
+    });
+    sidebar.addButton("Weekly Dinner List", e -> {
+      clearAllInput();
+      observer.goToWeeklyDinner();
+    });
+    sidebar.addButton("My Favorites", e -> {
+      clearAllInput();
+      observer.goToMyFavorite();
+    });
+    sidebar.addButton("My Shopping List", e -> {
+      clearAllInput();
+      observer.goToShoppingList();
+    });
+    sidebar.addButton("Messages", e -> {
+      clearAllInput();
+      observer.goToMessages();
+    });
+    sidebar.addButton("My Account", e -> {
+      clearAllInput();
+      observer.goToAccount();
+    });
+    sidebar.addHyperlink("Help", e -> {
+      clearAllInput();
+      observer.goToHelp();
+    });
+    sidebar.addHyperlink("Log Out", e -> {
+      clearAllInput();
       observer.userLogout();
     });
 
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
-    
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
+    sidebar.setActiveButton("Add a Recipe");
+        
+    // Add the sidebar to the view
+    sidebar.finalizeLayout();
     view.setLeft(sidebar);
 
+
     VBox root = new VBox();
-    root.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    root.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3;");
+
 
 
     // Add Recipe title
@@ -508,22 +481,6 @@ public class AddRecipeView {
 
     // Set view
     view.setCenter(scrollPane);
-  }
-
-  /** Create styled button with the given text and event handler.
-   *
-   * @param text is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is clicked.
-   * @return the created button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(180);
-    button.setMaxWidth(200); 
-    button.setOnAction(eventHandler);
-    return button;
   }
 
   // Clear all input fields
