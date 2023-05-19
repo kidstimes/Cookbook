@@ -2,8 +2,6 @@ package cookbook.model;
 
 import java.util.ArrayList;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
 /**
  * The Recipe class.
  */
@@ -58,7 +56,8 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, ArrayList<RecipeEditRecord> editRecords) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername,
+      ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
@@ -103,7 +102,7 @@ public class Recipe {
     this.shortDesc = shortDesc;
   }
 
-  public String getCreaterUsername(){
+  public String getCreaterUsername() {
     return createrUsername;
   }
 
@@ -205,6 +204,11 @@ public class Recipe {
     return starred;
   }
 
+  /**
+   * Get the edit history of the recipe.
+   *
+   * @return the edit history of the recipe
+   */
   public ArrayList<RecipeEditRecord> getEditRecords() {
     ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<RecipeEditRecord>();
     for (RecipeEditRecord record : editRecords) {
