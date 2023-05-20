@@ -249,7 +249,7 @@ public class LoginView {
 
       // Start the TranslateTransition
       newImageTranslateTransition.play();
-      
+
       // Add the new Image to the VBox
       progressBox.getChildren().add(newImage);
 
@@ -314,6 +314,59 @@ public class LoginView {
 
       // Start the TranslateTransition
       topLeftTranslateTransition.play();
+
+      // Load the left side image
+      Image leftImageUrl = new Image(getClass().getResourceAsStream("/images/LeftMoomin.png")); 
+      ImageView leftImage = new ImageView(leftImageUrl);
+
+      // Create an ImageView and set the left side image to it
+      leftImage.setFitWidth(300); // Set the width of the image
+      leftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      leftImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(leftImage);
+      StackPane.setAlignment(leftImage, Pos.CENTER_LEFT);
+
+      // Create a TranslateTransition for the left side image
+      TranslateTransition leftTranslateTransition = new TranslateTransition();
+      leftTranslateTransition.setDuration(Duration.millis(500));  
+      leftTranslateTransition.setNode(leftImage);
+      leftTranslateTransition.setByY(-20);  // Move 20 pixels up
+      leftTranslateTransition.setAutoReverse(true);  // Move back and forth
+      leftTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      leftTranslateTransition.play();
+
+      // Create a FadeTransition for the leftImage
+      FadeTransition leftFadeTransition = new FadeTransition(Duration.seconds(2), leftImage);
+      leftFadeTransition.setFromValue(1.0);  // fully visible
+      leftFadeTransition.setToValue(0.0);  // invisible
+
+      // Load the right side image
+      Image rightImageUrl = new Image(getClass().getResourceAsStream("/images/MoominRight.png")); 
+      ImageView rightImage = new ImageView(rightImageUrl);
+
+      // Create an ImageView and set the right side image to it
+      rightImage.setFitWidth(200); // Set the width of the image
+      rightImage.setPreserveRatio(true); // Maintain the aspect ratio
+      rightImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(rightImage);
+      StackPane.setAlignment(rightImage, Pos.CENTER_RIGHT);
+
+      // Create a TranslateTransition for the right side image
+      TranslateTransition rightTranslateTransition = new TranslateTransition();
+      rightTranslateTransition.setDuration(Duration.millis(500));  
+      rightTranslateTransition.setNode(rightImage);
+      rightTranslateTransition.setByY(-20);  // Move 20 pixels up
+      rightTranslateTransition.setAutoReverse(true);  // Move back and forth
+      rightTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      rightTranslateTransition.play();
 
       // Create a Timeline
       Timeline timeline = new Timeline();
