@@ -141,23 +141,22 @@ public class LoginView {
       ImageView heartImage = new ImageView(heartImageUrl);
 
       //Load the bottom right image
-      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
-      Image bottomRightImage = new Image(bottomRightImageUrl);
+      Image bottomRightImageUrl = new Image(getClass().getResourceAsStream("/images/Vege.png")); 
+      ImageView bottomRightImage = new ImageView(bottomRightImageUrl);
 
       // Load the bottom left image
-      String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
-      Image bottomLeftImage = new Image(bottomLeftImageUrl);
+      Image bottomLeftImageUrl = new Image(getClass().getResourceAsStream("/images/King.png"));
+      ImageView bottomLeftImage = new ImageView(bottomLeftImageUrl);
 
       // Create an ImageView and set the bottom left image to it
-      ImageView bottomLeftImageView = new ImageView(bottomLeftImage);
-      bottomLeftImageView.setFitWidth(300); // Set the width of the image
-      bottomLeftImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      bottomLeftImageView.setSmooth(true); // Enable smooth resizing
+      bottomLeftImage.setFitWidth(300); // Set the width of the image
+      bottomLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomLeftImage.setSmooth(true); // Enable smooth resizing
 
       //Create a RotateTransition for the bottom left image
       RotateTransition bottomLeftRotateTransition = new RotateTransition();
       bottomLeftRotateTransition.setDuration(Duration.millis(2000));
-      bottomLeftRotateTransition.setNode(bottomLeftImageView);
+      bottomLeftRotateTransition.setNode(bottomLeftImage);
       bottomLeftRotateTransition.setByAngle(360);
       bottomLeftRotateTransition.setCycleCount(1);
       bottomLeftRotateTransition.setInterpolator(Interpolator.LINEAR);
@@ -166,8 +165,8 @@ public class LoginView {
       bottomLeftRotateTransition.play();
 
 
-      heartPane.getChildren().add(bottomLeftImageView);
-      StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
+      heartPane.getChildren().add(bottomLeftImage);
+      StackPane.setAlignment(bottomLeftImage, Pos.BOTTOM_LEFT);
 
       // Create an ImageView and set the heart image to it
       heartImage.setFitWidth(150); // Set the width of the image
@@ -176,13 +175,12 @@ public class LoginView {
       heartPane.getChildren().add(heartImage);
 
       // Create an ImageView and set the bottom right image to it
-      ImageView bottomRightImageView = new ImageView(bottomRightImage);
-      bottomRightImageView.setFitWidth(300); // Set the width of the image
-      bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      bottomRightImageView.setSmooth(true); // Enable smooth resizing
+      bottomRightImage.setFitWidth(300); // Set the width of the image
+      bottomRightImage.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomRightImage.setSmooth(true); // Enable smooth resizing
 
-      heartPane.getChildren().add(bottomRightImageView);
-      StackPane.setAlignment(bottomRightImageView, Pos.BOTTOM_RIGHT);
+      heartPane.getChildren().add(bottomRightImage);
+      StackPane.setAlignment(bottomRightImage, Pos.BOTTOM_RIGHT);
       
       //Add a VBox
       VBox progressBox = new VBox();
@@ -200,17 +198,16 @@ public class LoginView {
       progressLabel.setTextFill(Color.BLACK);
 
       // Load the bottom image
-      String bottomImageUrl = "https://i.imgur.com/GwBkQQN.png";
-      Image bottomImage = new Image(bottomImageUrl);
+      Image bottomImageUrl = new Image(getClass().getResourceAsStream("/images/Logo.png"));
+      ImageView bottomImage = new ImageView(bottomImageUrl);
 
       // Create an ImageView and set the bottom image to it
-      ImageView bottomImageView = new ImageView(bottomImage);
-      bottomImageView.setFitWidth(500); // Set the width of the image
-      bottomImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      bottomImageView.setSmooth(true); // Enable smooth resizing
+      bottomImage.setFitWidth(500); // Set the width of the image
+      bottomImage.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomImage.setSmooth(true); // Enable smooth resizing
 
       // Add the Label to the VBox
-      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImageView);
+      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImage);
 
       //Set Position
       StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
@@ -329,22 +326,21 @@ public class LoginView {
   private void initLayout() {
 
     // Load an image
-    String imageUrl = "https://i.imgur.com/x8pcjxL.png";
-    Image image = new Image(imageUrl);
+    Image imageUrl = new Image(getClass().getResourceAsStream("/images/ColorLogo.png"));
+    ImageView image = new ImageView(imageUrl);
 
     // Create an ImageView and set the image to it
-    ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(800); // Set the width of the image
-    imageView.setPreserveRatio(true); // Maintain the aspect ratio
-    imageView.setSmooth(true); // Enable smooth resizing
+    image.setFitWidth(800); // Set the width of the image
+    image.setPreserveRatio(true); // Maintain the aspect ratio
+    image.setSmooth(true); // Enable smooth resizing
 
 
     VBox mainContainer = new VBox(10);
     mainContainer.setAlignment(Pos.CENTER);
     mainContainer.setPadding(new Insets(20));
 
-    createAnimation(imageView); 
-    mainContainer.getChildren().add(imageView);
+    createAnimation(image); 
+    mainContainer.getChildren().add(image);
 
     // Welcome message
     Label welcomeMessage = new Label("Welcome to Cookbook");
