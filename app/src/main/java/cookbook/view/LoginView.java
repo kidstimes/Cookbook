@@ -149,7 +149,7 @@ public class LoginView {
       ImageView bottomLeftImage = new ImageView(bottomLeftImageUrl);
 
       // Create an ImageView and set the bottom left image to it
-      bottomLeftImage.setFitWidth(300); // Set the width of the image
+      bottomLeftImage.setFitWidth(250); // Set the width of the image
       bottomLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
       bottomLeftImage.setSmooth(true); // Enable smooth resizing
 
@@ -179,13 +179,23 @@ public class LoginView {
       bottomRightImage.setPreserveRatio(true); // Maintain the aspect ratio
       bottomRightImage.setSmooth(true); // Enable smooth resizing
 
+      //Create a RotateTransition for the bottom right image
+      RotateTransition bottomRightRotateTransition = new RotateTransition();
+      bottomRightRotateTransition.setDuration(Duration.millis(2000));
+      bottomRightRotateTransition.setNode(bottomRightImage);
+      bottomRightRotateTransition.setByAngle(360);
+      bottomRightRotateTransition.setCycleCount(1);
+      bottomRightRotateTransition.setInterpolator(Interpolator.LINEAR);
+
+      //Start the RotateTransition
+      bottomRightRotateTransition.play();
       heartPane.getChildren().add(bottomRightImage);
       StackPane.setAlignment(bottomRightImage, Pos.BOTTOM_RIGHT);
       
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(10); 
+      progressBox.setSpacing(5); 
 
 
       // Create a ProgressBar
