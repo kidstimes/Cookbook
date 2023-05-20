@@ -216,6 +216,17 @@ public class LoginView {
       bottomImage.setPreserveRatio(true); // Maintain the aspect ratio
       bottomImage.setSmooth(true); // Enable smooth resizing
 
+      // Create a TranslateTransition for the Java image
+      TranslateTransition bottomImageTranslateTransition = new TranslateTransition();
+      bottomImageTranslateTransition.setDuration(Duration.millis(500));  
+      bottomImageTranslateTransition.setNode(bottomImage);
+      bottomImageTranslateTransition.setByY(-20);  // Move 20 pixels up
+      bottomImageTranslateTransition.setAutoReverse(true);  // Move back and forth
+      bottomImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      bottomImageTranslateTransition.play();
+
       // Add the Label to the VBox
       progressBox.getChildren().addAll(progressBar, progressLabel, bottomImage);
 
@@ -228,6 +239,17 @@ public class LoginView {
       newImage.setPreserveRatio(true); // Maintain the aspect ratio
       newImage.setSmooth(true); // Enable smooth resizing
 
+      // Create a TranslateTransition for the new logo image
+      TranslateTransition newImageTranslateTransition = new TranslateTransition();
+      newImageTranslateTransition.setDuration(Duration.millis(500));  
+      newImageTranslateTransition.setNode(newImage);
+      newImageTranslateTransition.setByY(-20);  // Move 20 pixels up
+      newImageTranslateTransition.setAutoReverse(true);  // Move back and forth
+      newImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      newImageTranslateTransition.play();
+      
       // Add the new Image to the VBox
       progressBox.getChildren().add(newImage);
 
@@ -327,6 +349,8 @@ public class LoginView {
     });
 
     parallelTransition.play();
+
+    
   }    
 
   
