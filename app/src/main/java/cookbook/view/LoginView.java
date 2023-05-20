@@ -282,6 +282,17 @@ public class LoginView {
       heartPane.getChildren().add(topLeftImage);
       StackPane.setAlignment(topLeftImage, Pos.TOP_LEFT);
 
+      // Create a TranslateTransition for the top left image
+      TranslateTransition topLeftTranslateTransition = new TranslateTransition();
+      topLeftTranslateTransition.setDuration(Duration.millis(500));  
+      topLeftTranslateTransition.setNode(topLeftImage);
+      topLeftTranslateTransition.setByY(-20);  // Move 20 pixels up
+      topLeftTranslateTransition.setAutoReverse(true);  // Move back and forth
+      topLeftTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      topLeftTranslateTransition.play();
+
       // Create a Timeline
       Timeline timeline = new Timeline();
 
