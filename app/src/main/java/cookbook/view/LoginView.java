@@ -195,7 +195,7 @@ public class LoginView {
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(5); 
+      progressBox.setSpacing(0); 
 
 
       // Create a ProgressBar
@@ -208,16 +208,28 @@ public class LoginView {
       progressLabel.setTextFill(Color.BLACK);
 
       // Load the bottom image
-      Image bottomImageUrl = new Image(getClass().getResourceAsStream("/images/Logo.png"));
+      Image bottomImageUrl = new Image(getClass().getResourceAsStream("/images/Java.png"));
       ImageView bottomImage = new ImageView(bottomImageUrl);
 
       // Create an ImageView and set the bottom image to it
-      bottomImage.setFitWidth(500); // Set the width of the image
+      bottomImage.setFitWidth(800); // Set the width of the image
       bottomImage.setPreserveRatio(true); // Maintain the aspect ratio
       bottomImage.setSmooth(true); // Enable smooth resizing
 
       // Add the Label to the VBox
       progressBox.getChildren().addAll(progressBar, progressLabel, bottomImage);
+
+      // Load the new image
+      Image newImageUrl = new Image(getClass().getResourceAsStream("/images/Logo.png"));
+      ImageView newImage = new ImageView(newImageUrl);
+
+      // Create an ImageView and set the new image to it
+      newImage.setFitWidth(400); // Set the width of the image
+      newImage.setPreserveRatio(true); // Maintain the aspect ratio
+      newImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the new Image to the VBox
+      progressBox.getChildren().add(newImage);
 
       //Set Position
       StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
@@ -256,6 +268,19 @@ public class LoginView {
 
       // Set the view's center to the heartPane
       view.setCenter(heartPane);
+
+      // Load the top left image
+      Image topLeftImageUrl = new Image(getClass().getResourceAsStream("/images/Moomin.png")); 
+      ImageView topLeftImage = new ImageView(topLeftImageUrl);
+
+      // Create an ImageView and set the top left image to it
+      topLeftImage.setFitWidth(300); // Set the width of the image
+      topLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      topLeftImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(topLeftImage);
+      StackPane.setAlignment(topLeftImage, Pos.TOP_LEFT);
 
       // Create a Timeline
       Timeline timeline = new Timeline();
