@@ -116,8 +116,9 @@ public class BrowserView {
     searchResultsVbox.getChildren().clear();
 
     // Add a title to the homepage
-    Text title = new Text("Recipe Browser");
-    title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
+    Label title = new Label("Recipe Browser");
+    title.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32px;-fx-font-weight: bold;");
+    title.setFont(Font.font("ROBOTO"));
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     rootVbox.getChildren().add(title);
 

@@ -601,20 +601,21 @@ public class CookbookFacade {
   }
 
 
-  public ArrayList<Message> loadSentMessagesFromDatabase() {
-    return database.loadSentMessagesFromDatabase(user.getUsername(), recipes);
-
-  }
 
   public void updateMessageIsRead(int messageId) {
     database.updateMessageIsRead(messageId);
   }
 
-  public void replyMessage(String receiverUsername, String message) {
-    database.replyMessage(getUserName(), receiverUsername, message);
+  public boolean replyMessage(String receiverUsername, String message) {
+    return database.replyMessage(getUserName(), receiverUsername, message);
   }
   
   public ArrayList<Conversation> getConversations() {
     return database.loadConversationsFromDatabase(user.getUsername(), recipes);
   }
+
+  public Message getLatestMessage() {
+    return database.getLatestMessageFromUserAsSender(user.getUsername(), recipes);
+  }
+
 }

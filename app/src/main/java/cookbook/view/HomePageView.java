@@ -47,7 +47,7 @@ public class HomePageView {
   public HomePageView(String displayName,
          boolean hasWeeklyDinner, boolean hasNextWeekShoppingList, int numberUnreadMessages) {
     this.view = new BorderPane();
-    view.setStyle("-fx-background-color: #F9F8F3;");
+    view.setStyle("-fx-background-color: #69a486;");
     this.displayName = displayName;
     this.hasWeeklyDinner = hasWeeklyDinner;
     this.hasNextWeekShoppingList = hasNextWeekShoppingList;
@@ -100,7 +100,6 @@ public class HomePageView {
     
     sidebar.setActiveButton("Home Page");
     sidebar.finalizeLayout();
-    // Add the sidebar to the view
     view.setLeft(sidebar);
 
   }
@@ -110,10 +109,10 @@ public class HomePageView {
   private void createCenterView() {
     VBox centerView = new VBox(50);
     centerView.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3;");
-
     centerView.setAlignment(Pos.TOP_LEFT);
     Label title = new Label("Home Page");
     title.setFont(Font.font("Roboto", 32));
+    title.setStyle("-fx-text-fill: #69a486;");
     centerView.getChildren().add(title);
     Label welcomLabel = new Label("Welcome to cookbook, " + displayName + "!");
     welcomLabel.setFont(Font.font("Roboto", 24));

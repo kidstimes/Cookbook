@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
@@ -74,8 +75,8 @@ public class FavoriteView {
     scrollPane.setFitToWidth(true); 
     scrollPane.setStyle("-fx-background-color: #F9F8F3;");
     // Add title
-    Text title = new Text("My Favorite Recipes");
-    title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
+    Label title = new Label("My Favorite Recipes");
+    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486;");
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     recipeListVbox.getChildren().add(title);
 

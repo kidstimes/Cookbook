@@ -140,7 +140,7 @@ public class ShoppingListView {
 
     // Add title above the weekly menu
     Label titleLabel = new Label("Shopping List");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
     centerView.getChildren().addAll(titleLabel);
 
     HBox titleBox  =  new HBox();

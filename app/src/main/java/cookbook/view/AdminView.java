@@ -70,7 +70,7 @@ public class AdminView {
 
     // Add the title to the userListContainer here
     Label titleLabel = new Label("Admin Page");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
     userListContainer.getChildren().add(titleLabel);
     Label userListLabel = new Label("All Users");
     userListLabel.setStyle("-fx-font: 26px \"Roboto\";");
@@ -166,7 +166,7 @@ public class AdminView {
     }
     // Add user button
     Button addUserButton = new Button("Add User");
-    addUserButton.setStyle("-fx-background-color: #81B29A;"
+    addUserButton.setStyle("-fx-background-color: #69a486;"
             + " -fx-text-fill: #F4F1DE; -fx-font: 18px \"Roboto\";");
     addUserButton.setOnAction(e -> {
       addUser();

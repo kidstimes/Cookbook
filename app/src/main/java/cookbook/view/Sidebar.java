@@ -32,18 +32,18 @@ public class Sidebar extends VBox {
     setMaxWidth(250);
     setStyle("-fx-padding: 20px 0px 20px 0px;-fx-background-color: #F9F8F3;");
     this.setFillWidth(true);
-    title = new Label("Welcome," );
+    title = new Label("Welcome,");
     subtitle = new Label(displayName);
 
     title.setPrefWidth(250);
     title.setWrapText(true);
-    title.setFont(Font.font("Roboto", FontWeight.BOLD, 20));
+    title.setFont(Font.font("Roboto", FontWeight.BOLD, 22));
     title.setStyle("-fx-text-fill:#3D405B;");
-    title.setStyle("-fx-padding: 50px 20px 0px 50px;");
+    title.setStyle("-fx-padding: 30px 20px 0px 50px;");
     title.setAlignment(Pos.CENTER_LEFT);
     subtitle.setPrefWidth(250);
     subtitle.setWrapText(true);
-    subtitle.setFont(Font.font("Roboto", FontWeight.BOLD, 20));
+    subtitle.setFont(Font.font("Roboto", FontWeight.BOLD, 22));
     subtitle.setStyle("-fx-text-fill:#3D405B;");
     subtitle.setStyle("-fx-padding: 0px 20px 30px 50px;");
 
@@ -61,7 +61,7 @@ public class Sidebar extends VBox {
   public void addButton(String name, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(name);
     button.setStyle("-fx-background-color:#F9F8F3 ; -fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
-    button.setFont(Font.font("Roboto", 18));
+    button.setFont(Font.font("Roboto", 20));
     button.setMaxWidth(Double.MAX_VALUE);
     button.setPrefHeight(45);
     button.setOnAction(e -> {
@@ -84,8 +84,8 @@ public class Sidebar extends VBox {
    */
   public void addHyperlink(String name, EventHandler<ActionEvent> eventHandler) {
     Hyperlink hyperlink = new Hyperlink(name);
-    hyperlink.setFont(Font.font("Roboto", 16));
-    hyperlink.setStyle("-fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 20px;");
+    hyperlink.setFont(Font.font("Roboto", 18));
+    hyperlink.setStyle("-fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
     hyperlink.setOnAction(eventHandler);
     hyperlinks.put(name, hyperlink);
     hyperlinkBox.getChildren().add(hyperlink);

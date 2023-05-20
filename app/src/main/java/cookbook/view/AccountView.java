@@ -68,8 +68,8 @@ public class AccountView {
     centerBox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
     centerBox.setAlignment(Pos.TOP_LEFT);
 
-    Text accountTitle = new Text("My Account");
-    accountTitle.setFont(Font.font("Roboto", 32));
+    Label accountTitle = new Label("My Account");
+    accountTitle.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486;");
 
     Text userNameText = new Text("Your username is: " + userName);
     userNameText.setFont(Font.font("Roboto", 20));

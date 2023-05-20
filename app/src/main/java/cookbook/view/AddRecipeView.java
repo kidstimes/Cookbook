@@ -138,7 +138,9 @@ public class AddRecipeView {
 
     // Add Recipe title
     Label titleLabel = new Label("Add a Recipe");
-    titleLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 32));
+
+    titleLabel.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32;-fx-font-weight: bold;");
+    titleLabel.setFont(Font.font("Roboto"));
     root.getChildren().add(titleLabel);
 
     // Error label

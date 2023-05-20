@@ -1,6 +1,7 @@
 package cookbook.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
@@ -19,6 +20,7 @@ public class Recipe {
   private ArrayList<Comment> comments;
   private String createrUsername;
   private ArrayList<RecipeEditRecord> editRecords;
+  private Date date;
 
   /**
    * Recipe Constructor.
@@ -58,12 +60,13 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, ArrayList<RecipeEditRecord> editRecords) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, Date date, ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
     this.directions = directions;
     this.createrUsername = createrUsername;
+    this.date = date;
     this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
@@ -246,6 +249,10 @@ public class Recipe {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
+  }
+
+  public Date getCreationDate() {
+    return date;
   }
 
 }
