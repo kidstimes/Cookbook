@@ -31,6 +31,11 @@ public class HelpSection {
    */
   public ArrayList<HelpSubsection> getSubsectionsWithKeywords(String keywords) {
     ArrayList<HelpSubsection> results = new ArrayList<>();
+
+    if (keywords.length() < 3) {
+      return results;
+    }
+
     for (HelpSubsection subsection : subsections) {
       if (subsection.containsAllKeywords(keywords)) {
         results.add(subsection);
