@@ -60,15 +60,14 @@ public class LoginView {
     introPane.setAlignment(Pos.CENTER);
 
     // Load an animated image
-    String animatedImageUrl = "https://i.imgur.com/PhR7Ppt.png";
-    Image animatedImage = new Image(animatedImageUrl);
+    Image animatedImageUrl = new Image(getClass().getResourceAsStream("/images/CircleOverCook.png"));
+    ImageView animatedImage = new ImageView(animatedImageUrl);
 
     // Create an ImageView and set the animated image to it
-    ImageView animatedImageView = new ImageView(animatedImage);
-    animatedImageView.setFitWidth(350); // Set the width of the image
-    animatedImageView.setPreserveRatio(true); // Maintain the aspect ratio
-    animatedImageView.setSmooth(true); // Enable smooth resizing
-    introPane.getChildren().add(animatedImageView);
+    animatedImage.setFitWidth(350); // Set the width of the image
+    animatedImage.setPreserveRatio(true); // Maintain the aspect ratio
+    animatedImage.setSmooth(true); // Enable smooth resizing
+    introPane.getChildren().add(animatedImage);
 
     // Create a FadeTransition
     FadeTransition fadeTransition = new FadeTransition();
@@ -82,7 +81,7 @@ public class LoginView {
     //Create a RotateTransition
     RotateTransition rotateTransition = new RotateTransition();
     rotateTransition.setDuration(Duration.millis(2000));
-    rotateTransition.setNode(animatedImageView);
+    rotateTransition.setNode(animatedImage);
     rotateTransition.setByAngle(360);
     rotateTransition.setCycleCount(1);
     rotateTransition.setInterpolator(Interpolator.LINEAR);
@@ -90,7 +89,7 @@ public class LoginView {
     // Create a TranslateTransition
     TranslateTransition translateTransition = new TranslateTransition();
     translateTransition.setDuration(Duration.millis(2000));
-    translateTransition.setNode(animatedImageView);
+    translateTransition.setNode(animatedImage);
     translateTransition.setByX(100); // Move the image view 100 pixels to the right
     translateTransition.setCycleCount(1);
     translateTransition.setAutoReverse(false);
@@ -98,7 +97,7 @@ public class LoginView {
     // Create a ScaleTransition
     ScaleTransition scaleTransition = new ScaleTransition();
     scaleTransition.setDuration(Duration.millis(2000));
-    scaleTransition.setNode(animatedImageView);
+    scaleTransition.setNode(animatedImage);
     scaleTransition.setByX(0.5); // Increase the width of the image view by 50%
     scaleTransition.setByY(0.5); // Increase the height of the image view by 50%
     scaleTransition.setCycleCount(1);
@@ -112,7 +111,7 @@ public class LoginView {
     // Create a PathTransition
     PathTransition pathTransition = new PathTransition();
     pathTransition.setDuration(Duration.millis(2000));
-    pathTransition.setNode(animatedImageView);    
+    pathTransition.setNode(animatedImage);    
     pathTransition.setPath(path);
     pathTransition.setCycleCount(1);
     pathTransition.setAutoReverse(false);
@@ -136,19 +135,18 @@ public class LoginView {
       heartPane.setAlignment(Pos.CENTER);
 
       // Load the bottom left image
-      String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
-      Image bottomLeftImage = new Image(bottomLeftImageUrl);
+      Image bottomLeftImageUrl = new Image(getClass().getResourceAsStream("/images/King.png"));
+      ImageView bottomLeftImage = new ImageView(bottomLeftImageUrl);
 
       // Create an ImageView and set the bottom left image to it
-      ImageView bottomLeftImageView = new ImageView(bottomLeftImage);
-      bottomLeftImageView.setFitWidth(300); // Set the width of the image
-      bottomLeftImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      bottomLeftImageView.setSmooth(true); // Enable smooth resizing
+      bottomLeftImage.setFitWidth(250); // Set the width of the image
+      bottomLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomLeftImage.setSmooth(true); // Enable smooth resizing
 
       //Create a RotateTransition for the bottom left image
       RotateTransition bottomLeftRotateTransition = new RotateTransition();
       bottomLeftRotateTransition.setDuration(Duration.millis(2000));
-      bottomLeftRotateTransition.setNode(bottomLeftImageView);
+      bottomLeftRotateTransition.setNode(bottomLeftImage);
       bottomLeftRotateTransition.setByAngle(360);
       bottomLeftRotateTransition.setCycleCount(1);
       bottomLeftRotateTransition.setInterpolator(Interpolator.LINEAR);
@@ -157,8 +155,8 @@ public class LoginView {
       bottomLeftRotateTransition.play();
 
 
-      heartPane.getChildren().add(bottomLeftImageView);
-      StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
+      heartPane.getChildren().add(bottomLeftImage);
+      StackPane.setAlignment(bottomLeftImage, Pos.BOTTOM_LEFT);
 
       // Create an ImageView and set the heart image to it
       String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
@@ -177,13 +175,15 @@ public class LoginView {
       bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
       bottomRightImageView.setSmooth(true); // Enable smooth resizing
 
-      heartPane.getChildren().add(bottomRightImageView);
-      StackPane.setAlignment(bottomRightImageView, Pos.BOTTOM_RIGHT);
+      //Start the RotateTransition
+      bottomRightRotateTransition.play();
+      heartPane.getChildren().add(bottomRightImage);
+      StackPane.setAlignment(bottomRightImage, Pos.BOTTOM_RIGHT);
       
       //Add a VBox
       VBox progressBox = new VBox();
       progressBox.setAlignment(Pos.CENTER);
-      progressBox.setSpacing(10); 
+      progressBox.setSpacing(0); 
 
 
       // Create a ProgressBar
@@ -196,17 +196,50 @@ public class LoginView {
       progressLabel.setTextFill(Color.BLACK);
 
       // Load the bottom image
-      String bottomImageUrl = "https://i.imgur.com/GwBkQQN.png";
-      Image bottomImage = new Image(bottomImageUrl);
+      Image bottomImageUrl = new Image(getClass().getResourceAsStream("/images/Java.png"));
+      ImageView bottomImage = new ImageView(bottomImageUrl);
 
       // Create an ImageView and set the bottom image to it
-      ImageView bottomImageView = new ImageView(bottomImage);
-      bottomImageView.setFitWidth(500); // Set the width of the image
-      bottomImageView.setPreserveRatio(true); // Maintain the aspect ratio
-      bottomImageView.setSmooth(true); // Enable smooth resizing
+      bottomImage.setFitWidth(800); // Set the width of the image
+      bottomImage.setPreserveRatio(true); // Maintain the aspect ratio
+      bottomImage.setSmooth(true); // Enable smooth resizing
+
+      // Create a TranslateTransition for the Java image
+      TranslateTransition bottomImageTranslateTransition = new TranslateTransition();
+      bottomImageTranslateTransition.setDuration(Duration.millis(500));  
+      bottomImageTranslateTransition.setNode(bottomImage);
+      bottomImageTranslateTransition.setByY(-20);  // Move 20 pixels up
+      bottomImageTranslateTransition.setAutoReverse(true);  // Move back and forth
+      bottomImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      bottomImageTranslateTransition.play();
 
       // Add the Label to the VBox
-      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImageView);
+      progressBox.getChildren().addAll(progressBar, progressLabel, bottomImage);
+
+      // Load the new image
+      Image newImageUrl = new Image(getClass().getResourceAsStream("/images/Logo.png"));
+      ImageView newImage = new ImageView(newImageUrl);
+
+      // Create an ImageView and set the new image to it
+      newImage.setFitWidth(400); // Set the width of the image
+      newImage.setPreserveRatio(true); // Maintain the aspect ratio
+      newImage.setSmooth(true); // Enable smooth resizing
+
+      // Create a TranslateTransition for the new logo image
+      TranslateTransition newImageTranslateTransition = new TranslateTransition();
+      newImageTranslateTransition.setDuration(Duration.millis(500));  
+      newImageTranslateTransition.setNode(newImage);
+      newImageTranslateTransition.setByY(-20);  // Move 20 pixels up
+      newImageTranslateTransition.setAutoReverse(true);  // Move back and forth
+      newImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      newImageTranslateTransition.play();
+
+      // Add the new Image to the VBox
+      progressBox.getChildren().add(newImage);
 
       //Set Position
       StackPane.setAlignment(progressBox, Pos.BOTTOM_CENTER);
@@ -225,7 +258,7 @@ public class LoginView {
       // Create a PathTransition for the heart
       PathTransition heartPathTransition = new PathTransition();
       heartPathTransition.setDuration(Duration.millis(2000));
-      heartPathTransition.setNode(heartImageView);
+      heartPathTransition.setNode(heartImage);
       heartPathTransition.setPath(heartPath);
       heartPathTransition.setCycleCount(1);
       heartPathTransition.setAutoReverse(false);
@@ -239,13 +272,90 @@ public class LoginView {
       // Create a RotateTransition for the heart
       RotateTransition rotateHeartTransition = new RotateTransition();
       rotateHeartTransition.setDuration(Duration.millis(2000));
-      rotateHeartTransition.setNode(heartImageView);
+      rotateHeartTransition.setNode(heartImage);
       rotateHeartTransition.setByAngle(360);
       rotateHeartTransition.setCycleCount(1);
       rotateHeartTransition.setInterpolator(Interpolator.LINEAR);      
 
       // Set the view's center to the heartPane
       view.setCenter(heartPane);
+
+      // Load the top left image
+      Image topLeftImageUrl = new Image(getClass().getResourceAsStream("/images/Moomin.png")); 
+      ImageView topLeftImage = new ImageView(topLeftImageUrl);
+
+      // Create an ImageView and set the top left image to it
+      topLeftImage.setFitWidth(300); // Set the width of the image
+      topLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      topLeftImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(topLeftImage);
+      StackPane.setAlignment(topLeftImage, Pos.TOP_LEFT);
+
+      // Create a TranslateTransition for the top left image
+      TranslateTransition topLeftTranslateTransition = new TranslateTransition();
+      topLeftTranslateTransition.setDuration(Duration.millis(500));  
+      topLeftTranslateTransition.setNode(topLeftImage);
+      topLeftTranslateTransition.setByY(-20);  // Move 20 pixels up
+      topLeftTranslateTransition.setAutoReverse(true);  // Move back and forth
+      topLeftTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      topLeftTranslateTransition.play();
+
+      // Load the left side image
+      Image leftImageUrl = new Image(getClass().getResourceAsStream("/images/LeftMoomin.png")); 
+      ImageView leftImage = new ImageView(leftImageUrl);
+
+      // Create an ImageView and set the left side image to it
+      leftImage.setFitWidth(300); // Set the width of the image
+      leftImage.setPreserveRatio(true); // Maintain the aspect ratio
+      leftImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(leftImage);
+      StackPane.setAlignment(leftImage, Pos.CENTER_LEFT);
+
+      // Create a TranslateTransition for the left side image
+      TranslateTransition leftTranslateTransition = new TranslateTransition();
+      leftTranslateTransition.setDuration(Duration.millis(500));  
+      leftTranslateTransition.setNode(leftImage);
+      leftTranslateTransition.setByY(-20);  // Move 20 pixels up
+      leftTranslateTransition.setAutoReverse(true);  // Move back and forth
+      leftTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      leftTranslateTransition.play();
+
+      // Create a FadeTransition for the leftImage
+      FadeTransition leftFadeTransition = new FadeTransition(Duration.seconds(2), leftImage);
+      leftFadeTransition.setFromValue(1.0);  // fully visible
+      leftFadeTransition.setToValue(0.0);  // invisible
+
+      // Load the right side image
+      Image rightImageUrl = new Image(getClass().getResourceAsStream("/images/MoominRight.png")); 
+      ImageView rightImage = new ImageView(rightImageUrl);
+
+      // Create an ImageView and set the right side image to it
+      rightImage.setFitWidth(200); // Set the width of the image
+      rightImage.setPreserveRatio(true); // Maintain the aspect ratio
+      rightImage.setSmooth(true); // Enable smooth resizing
+
+      // Add the image to the StackPane
+      heartPane.getChildren().add(rightImage);
+      StackPane.setAlignment(rightImage, Pos.CENTER_RIGHT);
+
+      // Create a TranslateTransition for the right side image
+      TranslateTransition rightTranslateTransition = new TranslateTransition();
+      rightTranslateTransition.setDuration(Duration.millis(500));  
+      rightTranslateTransition.setNode(rightImage);
+      rightTranslateTransition.setByY(-20);  // Move 20 pixels up
+      rightTranslateTransition.setAutoReverse(true);  // Move back and forth
+      rightTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+
+      // Start the TranslateTransition
+      rightTranslateTransition.play();
 
       // Create a Timeline
       Timeline timeline = new Timeline();
@@ -281,6 +391,8 @@ public class LoginView {
     });
 
     parallelTransition.play();
+
+    
   }    
 
   
@@ -326,22 +438,21 @@ public class LoginView {
   private void initLayout() {
 
     // Load an image
-    String imageUrl = "https://i.imgur.com/x8pcjxL.png";
-    Image image = new Image(imageUrl);
+    Image imageUrl = new Image(getClass().getResourceAsStream("/images/ColorLogo.png"));
+    ImageView image = new ImageView(imageUrl);
 
     // Create an ImageView and set the image to it
-    ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(800); // Set the width of the image
-    imageView.setPreserveRatio(true); // Maintain the aspect ratio
-    imageView.setSmooth(true); // Enable smooth resizing
+    image.setFitWidth(800); // Set the width of the image
+    image.setPreserveRatio(true); // Maintain the aspect ratio
+    image.setSmooth(true); // Enable smooth resizing
 
 
     VBox mainContainer = new VBox(10);
     mainContainer.setAlignment(Pos.CENTER);
     mainContainer.setPadding(new Insets(20));
 
-    createAnimation(imageView); 
-    mainContainer.getChildren().add(imageView);
+    createAnimation(image); 
+    mainContainer.getChildren().add(image);
 
     // Welcome message
     Label welcomeMessage = new Label("Welcome to Cookbook");
