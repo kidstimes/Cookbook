@@ -191,6 +191,15 @@ private VBox createUserView(Conversation conversation) {
   private void showMessages(ArrayList<Message> messages) {
     messagesView.getItems().clear();
     messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
+    if (messages.isEmpty()) {
+      Label noMessagesLabel = new Label("No messages to display.");
+      noMessagesLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
+      noMessagesLabel.setTextFill(Color.web("#FFFFFF"));
+      noMessagesLabel.setPadding(new Insets(20, 20, 20, 20)); 
+      VBox noMessagesBox = new VBox(noMessagesLabel);
+      messagesView.getItems().add(noMessagesBox);
+      return;
+  }
 
     messagesView.setStyle("-fx-background-color: #F9F8F3;");
     messages.sort(Comparator.comparing(Message::getDateTime));
