@@ -72,7 +72,7 @@ public class HelpPageView {
 
         Hyperlink backButton = new Hyperlink("All help topics");
         backButton.setOnAction(e -> observer.goToHelp());
-        backButton.setStyle(" -fx-text-fill: #3D405B; -fx-font: 20px \"Roboto\"; -fx-padding: 10 20 10 50; -fx-cursor: hand;");
+        backButton.setStyle(" -fx-font: 20px \"Roboto\"; -fx-padding: 10 20 10 50; -fx-cursor: hand;");
         searchField.setPromptText("Type keyword(s) here, separated by space");
         HBox searchFieldBox = new HBox();
         searchFieldBox.getChildren().addAll(searchField, searchButton);
