@@ -20,6 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -29,6 +30,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * The messages view class for the application.
@@ -191,6 +193,15 @@ private VBox createUserView(Conversation conversation) {
   private void showMessages(ArrayList<Message> messages) {
     messagesView.getItems().clear();
     messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
+    if (messages.isEmpty()) {
+      Label noMessagesLabel = new Label("No messages to display.");
+      noMessagesLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
+      noMessagesLabel.setTextFill(Color.web("#FFFFFF"));
+      noMessagesLabel.setPadding(new Insets(20, 20, 20, 20)); 
+      VBox noMessagesBox = new VBox(noMessagesLabel);
+      messagesView.getItems().add(noMessagesBox);
+      return;
+  }
 
     messagesView.setStyle("-fx-background-color: #F9F8F3;");
     messages.sort(Comparator.comparing(Message::getDateTime));
@@ -343,13 +354,21 @@ private VBox createUserView(Conversation conversation) {
         messageBox.getChildren().add(recipeBox);
     }
     if (!message.getSenderUsername().equals(observer.getUsername())) {
-        messageBox.setOnMouseClicked(e -> {
-            observer.updateMessageIsRead(message.getId());
-            message.markAsRead();
-            messageBox.setStyle("-fx-text-fill: black;");
-            refreshView();
-        });
-        return messageBox;
+      messageBox.setOnMouseClicked(e -> {
+
+        observer.updateMessageIsRead(message.getId());
+        message.markAsRead();
+        messageBox.setStyle("-fx-text-fill: black;");
+        refreshView();
+    });
+    
+    if (!message.isRead()) {
+      Tooltip tooltip = new Tooltip("Click to mark as read");
+      tooltip.setFont(Font.font("Roboto", 16));
+      tooltip.setShowDuration(Duration.millis(200));
+      Tooltip.install(messageBox, tooltip);
+    return messageBox;
+  }
     }
     if (message.getSenderUsername().equals(observer.getUsername())) {
         messageBox.setOnMouseClicked(e -> {

@@ -12,6 +12,7 @@ name VARCHAR(255) NOT NULL,
 description TEXT NOT NULL,
 instructions TEXT NOT NULL,
 user_id INT NOT NULL,
+date_added DATE NOT NULL,
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE RecipeEditHistory (
@@ -50,12 +51,12 @@ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE messages (
 id INT PRIMARY KEY AUTO_INCREMENT,
-text TEXT NOT NULL,
+text TEXT,
 sender_id INT NOT NULL,
 recipient_id INT NOT NULL,
 recipe_id INT,
 is_read BOOLEAN NOT NULL,
-send_date Date NOT NULL,
+send_date DateTime NOT NULL,
 FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
 FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE,
 FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
@@ -97,15 +98,26 @@ FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 UNIQUE (user_id, recipe_id)
 );
+CREATE TABLE HelpSection (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(100)
+);
+CREATE TABLE HelpSubsection (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  section_id INT,
+  title VARCHAR(100),
+  text TEXT,
+  FOREIGN KEY (section_id) REFERENCES HelpSection(id)
+);
 INSERT INTO users (id, userName, password_hash, displayname)
 VALUES (1, 'admin', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','admin');
-INSERT INTO recipes (name, description, instructions, user_id)
-VALUES
-('Chicken Alfredo', 'Creamy pasta dish with chicken and parmesan cheese', '1. Cook pasta according to package instructions. \n2. In a separate pan, cook chicken until browned. \n3. Add heavy cream and parmesan cheese to the chicken and cook until thickened. \n4. Serve chicken mixture over cooked pasta.', 1),
-('Beef Tacos', 'Tacos filled with seasoned ground beef and toppings', '1. Brown ground beef in a pan. \n2. Add taco seasoning and water to the beef and simmer. \n3. Warm tortillas in a separate pan. \n4. Assemble tacos with beef and desired toppings.', 1),
-('Spaghetti Bolognese', 'Classic Italian dish with spaghetti and tomato-based sauce', '1. Cook spaghetti according to package instructions. \n2. In a separate pan, cook ground beef until browned. \n3. Add chopped onions and garlic to the beef and cook until softened. \n4. Add canned tomatoes, tomato paste, and seasonings to the beef mixture and simmer. \n5. Serve beef mixture over cooked spaghetti.', 1),
-('Caprese Salad', 'Salad made with fresh mozzarella, tomatoes, and basil', '1. Slice fresh mozzarella and tomatoes. \n2. Layer mozzarella and tomato slices on a plate. \n3. Drizzle with olive oil and balsamic vinegar. \n4. Sprinkle with salt, pepper, and chopped fresh basil.', 1),
-('Grilled Cheese', 'Classic sandwich made with bread and melted cheese', '1. Butter two slices of bread. \n2. Place cheese between the slices of bread. \n3. Cook sandwich on a hot skillet until bread is toasted and cheese is melted.', 1);
+INSERT INTO recipes (name, description, instructions, user_id, date_added) 
+VALUES 
+('Chicken Alfredo', 'Creamy pasta dish with chicken and parmesan cheese', '1. Cook pasta according to package instructions. \n2. In a separate pan, cook chicken until browned. \n3. Add heavy cream and parmesan cheese to the chicken and cook until thickened. \n4. Serve chicken mixture over cooked pasta.', 1, '2023-05-16'),
+('Beef Tacos', 'Tacos filled with seasoned ground beef and toppings', '1. Brown ground beef in a pan. \n2. Add taco seasoning and water to the beef and simmer. \n3. Warm tortillas in a separate pan. \n4. Assemble tacos with beef and desired toppings.', 1, '2023-05-16'),
+('Spaghetti Bolognese', 'Classic Italian dish with spaghetti and tomato-based sauce', '1. Cook spaghetti according to package instructions. \n2. In a separate pan, cook ground beef until browned. \n3. Add chopped onions and garlic to the beef and cook until softened. \n4. Add canned tomatoes, tomato paste, and seasonings to the beef mixture and simmer. \n5. Serve beef mixture over cooked spaghetti.', 1, '2023-05-16'),
+('Caprese Salad', 'Salad made with fresh mozzarella, tomatoes, and basil', '1. Slice fresh mozzarella and tomatoes. \n2. Layer mozzarella and tomato slices on a plate. \n3. Drizzle with olive oil and balsamic vinegar. \n4. Sprinkle with salt, pepper, and chopped fresh basil.', 1, '2023-05-16'),
+('Grilled Cheese', 'Classic sandwich made with bread and melted cheese', '1. Butter two slices of bread. \n2. Place cheese between the slices of bread. \n3. Cook sandwich on a hot skillet until bread is toasted and cheese is melted.', 1, '2023-05-16');
 INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
 VALUES
 ('Penne Pasta', 1, 12, 'oz'),
@@ -146,8 +158,8 @@ INSERT INTO recipe_tags (recipe_id, tag_id) VALUES
 (4, 4), -- Caprese Salad is gluten-free
 (5, 6), -- Grilled Cheese is a main course
 (5, 2); -- Grilled Cheese is vegetarian
-INSERT INTO recipes (name, description, instructions, user_id)
-VALUES ('Beef and Penne Pasta', 'Pasta dish with ground beef and penne', '1. Cook penne pasta according to package instructions. \n2. Brown ground beef in a separate pan. \n3. Add onion and garlic to the beef and cook until softened. \n4. Add canned tomatoes, tomato paste, and taco seasoning to the beef and simmer. \n5. Serve beef mixture over cooked penne pasta.',1);
+INSERT INTO recipes (name, description, instructions, user_id, date_added)
+VALUES ('Beef and Penne Pasta', 'Pasta dish with ground beef and penne', '1. Cook penne pasta according to package instructions. \n2. Brown ground beef in a separate pan. \n3. Add onion and garlic to the beef and cook until softened. \n4. Add canned tomatoes, tomato paste, and taco seasoning to the beef and simmer. \n5. Serve beef mixture over cooked penne pasta.',1, '2023-05-16');
 INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
 VALUES 
 ('Penne Pasta', 6, 8, 'ounces'),
@@ -159,8 +171,8 @@ VALUES
 ('Taco Seasoning', 6, 2, 'tablespoons');
 INSERT INTO recipe_tags (recipe_id, tag_id)
 VALUES (6, 1), (6, 3), (6, 4);
-INSERT INTO recipes (name, description, instructions, user_id)
-VALUES ('Chicken Parmesan', 'Breaded chicken served with tomato sauce and melted cheese', '1. Preheat the oven to 375°F. \n2. Pound chicken breasts until they are even in thickness. \n3. Mix breadcrumbs, parmesan cheese, and Italian seasoning in a shallow dish. \n4. Dip chicken in beaten egg, then coat with breadcrumb mixture. \n5. Heat oil in a skillet and cook chicken until browned. \n6. Transfer chicken to a baking dish, top with tomato sauce and mozzarella cheese. \n7. Bake for 20-25 minutes or until cheese is melted and bubbly.', 1);
+INSERT INTO recipes (name, description, instructions, user_id, date_added)
+VALUES ('Chicken Parmesan', 'Breaded chicken served with tomato sauce and melted cheese', '1. Preheat the oven to 375°F. \n2. Pound chicken breasts until they are even in thickness. \n3. Mix breadcrumbs, parmesan cheese, and Italian seasoning in a shallow dish. \n4. Dip chicken in beaten egg, then coat with breadcrumb mixture. \n5. Heat oil in a skillet and cook chicken until browned. \n6. Transfer chicken to a baking dish, top with tomato sauce and mozzarella cheese. \n7. Bake for 20-25 minutes or until cheese is melted and bubbly.', 1, '2023-05-16');
 INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
 VALUES 
 ('Boneless Chicken Breast', 7, 4, 'pieces'),
@@ -173,8 +185,8 @@ VALUES
 ('Mozzarella Cheese', 7, 1, 'cup');
 INSERT INTO recipe_tags (recipe_id, tag_id)
 VALUES (7, 1), (7, 2), (7, 4);
-INSERT INTO recipes (name, description, instructions, user_id)
-VALUES ('Beef and Broccoli Stir-Fry', 'Stir-fried beef and broccoli in a savory sauce', '1. Cut beef into thin strips and marinate in soy sauce, cornstarch, and sugar. \n2. In a wok or large skillet, heat oil over high heat. \n3. Add garlic and ginger and stir-fry for 30 seconds. \n4. Add beef and stir-fry until browned. \n5. Add broccoli and stir-fry for 2-3 minutes. \n6. Mix together soy sauce, oyster sauce, and cornstarch. \n7. Add sauce to the wok and stir-fry until thickened.',1);
+INSERT INTO recipes (name, description, instructions, user_id, date_added)
+VALUES ('Beef and Broccoli Stir-Fry', 'Stir-fried beef and broccoli in a savory sauce', '1. Cut beef into thin strips and marinate in soy sauce, cornstarch, and sugar. \n2. In a wok or large skillet, heat oil over high heat. \n3. Add garlic and ginger and stir-fry for 30 seconds. \n4. Add beef and stir-fry until browned. \n5. Add broccoli and stir-fry for 2-3 minutes. \n6. Mix together soy sauce, oyster sauce, and cornstarch. \n7. Add sauce to the wok and stir-fry until thickened.',1, '2023-05-16');
 INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
 VALUES 
 ('Beef Sirloin Steak', 8, 1, 'pound'),
@@ -188,8 +200,8 @@ VALUES
 ('Oyster Sauce', 8, 2, 'tablespoons');
 INSERT INTO recipe_tags (recipe_id, tag_id)
 VALUES (8, 1), (8, 2), (8, 5);
-INSERT INTO recipes (name, description, instructions, user_id)
-VALUES ('Caprese Stuffed Chicken', 'Chicken breasts stuffed with mozzarella cheese, tomatoes, and basil', '1. Preheat oven to 400°F. \n2. Cut a pocket in each chicken breast. \n3. Stuff each pocket with slices of mozzarella cheese, tomato, and fresh basil. \n4. Season chicken with salt and pepper. \n5. Heat oil in a skillet over medium-high heat. \n6. Add chicken and sear until browned. \n7. Transfer chicken to a baking dish and bake for 20-25 minutes or until chicken is cooked through and cheese is melted.',1);
+INSERT INTO recipes (name, description, instructions, user_id, date_added)
+VALUES ('Caprese Stuffed Chicken', 'Chicken breasts stuffed with mozzarella cheese, tomatoes, and basil', '1. Preheat oven to 400°F. \n2. Cut a pocket in each chicken breast. \n3. Stuff each pocket with slices of mozzarella cheese, tomato, and fresh basil. \n4. Season chicken with salt and pepper. \n5. Heat oil in a skillet over medium-high heat. \n6. Add chicken and sear until browned. \n7. Transfer chicken to a baking dish and bake for 20-25 minutes or until chicken is cooked through and cheese is melted.',1, '2023-05-16');
 INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
 VALUES
 ('Boneless Chicken Breast', 9, 4, 'pieces'),
