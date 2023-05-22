@@ -42,7 +42,8 @@ public class AddRecipeController extends BaseController implements AddRecipeView
     //check if recipe name is already in database
     if (model.checkRecipeName(recipeData[0])) {
       addRecipeView.showInlineStyledAlert(Alert.AlertType.WARNING, "Recipe Exists",
-          String.format("Recipe named %s already in cookbook. Please check and enter again.", recipeData[0]));
+          String.format("Recipe named %s already in cookbook. "
+              + "Please check and enter again.", recipeData[0]));
       return false;
     }
     model.addRecipe(recipeData, ingredients, tags);

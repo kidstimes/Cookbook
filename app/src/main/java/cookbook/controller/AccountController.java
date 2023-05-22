@@ -6,6 +6,9 @@ import cookbook.view.AccountViewObserver;
 import javafx.scene.Node;
 
 
+/**
+ * Controller for managing the account page of a user.
+ */
 public class AccountController extends BaseController implements AccountViewObserver {
   private AccountView accountView;
 
@@ -43,7 +46,7 @@ public class AccountController extends BaseController implements AccountViewObse
       }
     } else {
       accountView.showError("Old password is incorrect");
-    };
+    }
   }
 
   @Override
