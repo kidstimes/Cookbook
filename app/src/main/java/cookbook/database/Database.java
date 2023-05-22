@@ -3,6 +3,8 @@ package cookbook.database;
 import cookbook.model.Comment;
 import cookbook.model.Conversation;
 import cookbook.model.Dinner;
+import cookbook.model.HelpSection;
+import cookbook.model.HelpSubsection;
 import cookbook.model.Ingredient;
 import cookbook.model.Message;
 import cookbook.model.Recipe;
@@ -12,13 +14,9 @@ import cookbook.model.User;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -185,15 +183,16 @@ public class Database {
     try {
       // Get the user id
       int userId = getUserId(userName);
+      LocalDate dateAdded = LocalDate.now();
       // Insert the recipe into the recipes table
-      String query = "INSERT INTO recipes (name, description, instructions, user_id)"
-          + " VALUES (?, ?, ?)";
-      try (PreparedStatement statement = connection.prepareStatement(query,
-          Statement.RETURN_GENERATED_KEYS)) {
+      String query = "INSERT INTO recipes (name, description, instructions, user_id, date_added) VALUES (?, ?, ?, ?, ?)";
+      try (PreparedStatement statement =
+           connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
         statement.setString(1, recipe[0]);
         statement.setString(2, recipe[1]);
         statement.setString(3, recipe[2]);
         statement.setInt(4, userId);
+        statement.setDate(5, Date.valueOf(dateAdded));
         statement.executeUpdate();
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
@@ -290,23 +289,47 @@ public class Database {
     }
   }
 
-  /**
-   * Load recipes from the database and return arraylist of Recipe (from model)
-   * objects.
-   */
-  public ArrayList<Recipe> loadAllRecipes(String username) {
-    ArrayList<Recipe> recipes = new ArrayList<>();
-    try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "SELECT r.id, r.name, r.description, r.instructions, u.username "
-            + "FROM recipes r JOIN users u ON r.user_id = u.id")) {
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        Integer recipeId = rs.getInt(1);
-        String name = rs.getString(2);
-        String description = rs.getString(3);
-        String instructions = rs.getString(4);
-        String createrUsername = rs.getString(5);
+/**
+ * Load recipes from the database and return arraylist of Recipe (from model)
+ * objects.
+ */
+/**
+ * Load recipes from the database and return arraylist of Recipe (from model)
+ * objects.
+ */
+public ArrayList<Recipe> loadAllRecipes(String username) {
+  ArrayList<Recipe> recipes = new ArrayList<>();
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "SELECT r.id, r.name, r.description, r.instructions, r.date_added, u.username " +
+          "FROM recipes r JOIN users u ON r.user_id = u.id")) {
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      Integer recipeId = rs.getInt(1);
+      String name = rs.getString(2);
+      String description = rs.getString(3);
+      String instructions = rs.getString(4);
+      Date dateAdded = rs.getDate(5);
+
+      String createrUsername = rs.getString(6);
+
+      // load ingredients and tags
+      ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
+      ArrayList<String> tags = loadTagsForRecipe(recipeId, username);
+
+      // load edit records
+      ArrayList<RecipeEditRecord> editRecords = loadEditRecordsForRecipe(recipeId);
+
+      // create the recipe objects with ingredients, tags, dateAdded and edit records
+      Recipe recipe = new Recipe(recipeId, name, description, instructions, ingredients, tags, createrUsername, dateAdded, editRecords);
+      recipes.add(recipe);
+    }
+    rs.close();
+  } catch (SQLException e) {
+    System.out.println(e.getMessage());
+  }
+  return recipes;
+}
 
         // load ingredients and tags
         ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
@@ -1595,7 +1618,7 @@ public class Database {
       pstmt.setInt(3, receiverId);
       pstmt.setInt(4, recipeId);
       pstmt.setBoolean(5, false);
-      pstmt.setObject(6, LocalDate.now());
+      pstmt.setObject(6, LocalDateTime.now());
 
       pstmt.executeUpdate();
       return true;
@@ -1605,6 +1628,8 @@ public class Database {
 
     return false;
   }
+
+
 
   /**
    * Load the received messages of a user from the database.
@@ -1634,15 +1659,14 @@ public class Database {
         String senderName = rs.getString(3);
         String receiverName = rs.getString(4);
         boolean isRead = rs.getBoolean(5);
-        LocalDate sendDate = rs.getObject(6, LocalDate.class);
+        LocalDateTime sendDateTime = rs.getObject(6, LocalDateTime.class);
         int recipeIdColumnIndex = 7;
         Recipe recipe = null;
         if (rs.getObject(recipeIdColumnIndex) != null) {
           int recipeId = rs.getInt(recipeIdColumnIndex);
           recipe = getRecipeById(recipeId, recipes);
         }
-        Message message = new Message(messageId, recipe, text,
-            senderName, receiverName, isRead, sendDate);
+        Message message = new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDateTime);
         messages.add(message);
       }
       rs.close();
@@ -1653,49 +1677,16 @@ public class Database {
     return messages;
   }
 
-  /**
-   * Load the sent messages of a user.
-   *
-   * @param senderUsername the username of the sender
-   * @param recipes the recipes of the cookbook
-   * @return the sent messages of the user
-   */
-  public ArrayList<Message> loadSentMessagesFromDatabase(String senderUsername,
-        ArrayList<Recipe> recipes) {
-    int senderId = getUserId(senderUsername);
-    ArrayList<Message> messages = new ArrayList<>();
 
-    try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "SELECT m.id, m.text, sender.username, receiver.username, "
-            + "m.is_read, m.send_date, r.* FROM messages m"
-            + " JOIN users sender ON m.sender_id = sender.id"
-            + " JOIN users receiver ON m.recipient_id = receiver.id"
-            + " JOIN recipes r ON m.recipe_id = r.id"
-            + " WHERE m.sender_id = ?")) {
-      stmt.setInt(1, senderId);
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        int messageId = rs.getInt(1);
-        String text = rs.getString(2);
-        String senderName = rs.getString(3);
-        String receiverName = rs.getString(4);
-        boolean isRead = rs.getBoolean(5);
-        LocalDate sendDate = rs.getObject(6, LocalDate.class);
-        int recipeId = rs.getInt(7);
-        Recipe recipe = getRecipeById(recipeId, recipes);
-
-        Message message = new Message(messageId, recipe, text,
-            senderName, receiverName, isRead, sendDate);
-        messages.add(message);
+  private Recipe getRecipeById(int recipeId, ArrayList<Recipe> recipes) {
+    for (Recipe recipe : recipes) {
+      if (recipe.getId() == recipeId) {
+        return recipe;
       }
-      rs.close();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
     }
-
-    return messages;
+    return null;
   }
+
 
   /**
    * Update a message to read.
@@ -1714,14 +1705,7 @@ public class Database {
     }
   }
 
-  /**
-   * Add a reply message to the database.
-   *
-   * @param senderUsername the username of the sender
-   * @param receiverUsername the username of the receiver
-   * @param text the text of the message reply
-   */
-  public void replyMessage(String senderUsername, String receiverUsername, String text) {
+  public boolean replyMessage(String senderUsername, String receiverUsername, String text) {
     int senderId = getUserId(senderUsername);
     int receiverId = getUserId(receiverUsername);
     String sql = "INSERT INTO messages (text, sender_id, recipient_id, is_read, send_date) "
@@ -1731,12 +1715,13 @@ public class Database {
       pstmt.setInt(2, senderId);
       pstmt.setInt(3, receiverId);
       pstmt.setBoolean(4, false);
-      pstmt.setObject(5, LocalDate.now());
+      pstmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 
       pstmt.executeUpdate();
+      return true;
     } catch (SQLException e) {
       System.out.println(e.getMessage());
-    }
+    } return false;
   }
 
   /**
@@ -1757,18 +1742,14 @@ public class Database {
     return new ArrayList<>(conversationMap.values());
   }
 
-  private void loadMessagesFromDatabase(int userId, String field,
-        Map<String, Conversation> conversationMap,
-      ArrayList<Recipe> recipes) {
+  private void loadMessagesFromDatabase(int userId, String field, Map<String, Conversation> conversationMap, ArrayList<Recipe> recipes) {
     try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "SELECT m.id, m.text, sender.username, receiver.username, "
-            + "m.is_read, m.send_date, r.* FROM messages m"
-            + " JOIN users sender ON m.sender_id = sender.id"
-            + " JOIN users receiver ON m.recipient_id = receiver.id"
-            + " LEFT JOIN recipes r ON m.recipe_id = r.id"
-            + " WHERE m." + field + " = ? ORDER BY m.send_date ASC")) {
-      // added ORDER BY clause to sort by send date
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT m.id, m.text, sender.username, receiver.username, m.is_read, m.send_date, r.* FROM messages m" +
+                            " JOIN users sender ON m.sender_id = sender.id" +
+                            " JOIN users receiver ON m.recipient_id = receiver.id" +
+                            " LEFT JOIN recipes r ON m.recipe_id = r.id" +
+                            " WHERE m." + field + " = ? ORDER BY m.send_date ASC")) { // added ORDER BY clause to sort by send date
       stmt.setInt(1, userId);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
@@ -1777,7 +1758,7 @@ public class Database {
         String senderName = rs.getString(3);
         String receiverName = rs.getString(4);
         boolean isRead = rs.getBoolean(5);
-        LocalDate sendDate = rs.getObject(6, LocalDate.class);
+        Timestamp sendDate = rs.getTimestamp(6); // Changed from LocalDate to Timestamp
         int recipeIdColumnIndex = 7;
         Recipe recipe = null;
         if (rs.getObject(recipeIdColumnIndex) != null) {
@@ -1785,12 +1766,10 @@ public class Database {
           recipe = getRecipeById(recipeId, recipes);
         }
 
-        Message message = new Message(messageId, recipe, text, senderName,
-            receiverName, isRead, sendDate);
+        Message message = new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDate.toLocalDateTime());
 
         String otherUsername = field.equals("sender_id") ? receiverName : senderName;
-        Conversation conversation = conversationMap.getOrDefault(otherUsername,
-            new Conversation(otherUsername));
+        Conversation conversation = conversationMap.getOrDefault(otherUsername, new Conversation(otherUsername));
         conversation.addMessage(message);
         conversationMap.put(otherUsername, conversation);
       }
@@ -1800,4 +1779,72 @@ public class Database {
     }
   }
 
+  public Message getLatestMessageFromUserAsSender(String username, ArrayList<Recipe> recipes) {
+    int userId = getUserId(username);
+    String sql = "SELECT m.id, m.text, sender.username, receiver.username, m.is_read, m.send_date, r.* FROM messages m" +
+            " JOIN users sender ON m.sender_id = sender.id" +
+            " JOIN users receiver ON m.recipient_id = receiver.id" +
+            " LEFT JOIN recipes r ON m.recipe_id = r.id" +
+            " WHERE m.sender_id = ? ORDER BY m.send_date DESC LIMIT 1";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+      pstmt.setInt(1, userId);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        int messageId = rs.getInt(1);
+        String text = rs.getString(2);
+        String senderName = rs.getString(3);
+        String receiverName = rs.getString(4);
+        boolean isRead = rs.getBoolean(5);
+        LocalDateTime sendDateTime = rs.getObject(6, LocalDateTime.class);
+        int recipeIdColumnIndex = 7;
+        Recipe recipe = null;
+        if (rs.getObject(recipeIdColumnIndex) != null) {
+          int recipeId = rs.getInt(recipeIdColumnIndex);
+          recipe = getRecipeById(recipeId, recipes);
+        }
+        return new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDateTime);
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  
+  public ArrayList<HelpSection> getHelpSections() {
+    ArrayList<HelpSection> helpSections = new ArrayList<>();
+    String sql = "SELECT * FROM HelpSection";
+    try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String title = rs.getString("title");
+        ArrayList<HelpSubsection> subsections = getHelpSubsections(id);
+        helpSections.add(new HelpSection(id, title, subsections));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return helpSections;
+  }
+
+
+public ArrayList<HelpSubsection> getHelpSubsections(int sectionId) {
+  ArrayList<HelpSubsection> helpSubsections = new ArrayList<>();
+  String sql = "SELECT * FROM HelpSubsection WHERE section_id = ?";
+  try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+    stmt.setInt(1, sectionId);
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String text = rs.getString("text");
+      helpSubsections.add(new HelpSubsection(id, title, text));
+    }
+  } catch (SQLException e) {
+    e.printStackTrace();
+  }
+  return helpSubsections;
+}
 }

@@ -1,11 +1,11 @@
 package cookbook.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * The Message class.
  */
-public class Message implements Comparable<LocalDate> {
+public class Message implements Comparable<LocalDateTime> {
 
   private int id;
   private Recipe recipe;
@@ -13,7 +13,7 @@ public class Message implements Comparable<LocalDate> {
   private String senderUsername;
   private String receiverUsername;
   private boolean isRead;
-  private LocalDate date;
+  private LocalDateTime dateTime;
 
   /**
    * Message Constructor.
@@ -25,14 +25,14 @@ public class Message implements Comparable<LocalDate> {
    * @param receiverUsername the username receiving the message
    */
   public Message(int id, Recipe recipe, String text, String senderUsername,
-       String receiverUsername, boolean isRead, LocalDate date) {
+       String receiverUsername, boolean isRead, LocalDateTime dateTime) {
     this.id = id;
     this.recipe = recipe;
     this.text = text;
     this.senderUsername = senderUsername;
     this.receiverUsername = receiverUsername;
     this.isRead = isRead;
-    this.date = date;
+    this.dateTime = dateTime;
   }
 
   public int getId() {
@@ -59,8 +59,8 @@ public class Message implements Comparable<LocalDate> {
     return isRead;
   }
 
-  public void setRead(boolean read) {
-    isRead = read;
+  public void markAsRead() {
+    isRead = true;
   }
 
   /**
@@ -70,12 +70,12 @@ public class Message implements Comparable<LocalDate> {
     isRead = true;
   }
   
-  public LocalDate getDate() {
-    return date;
+  public LocalDateTime getDateTime() {
+    return dateTime;
   }
 
   @Override
-  public int compareTo(LocalDate o) {
-    return date.compareTo(o);
+  public int compareTo(LocalDateTime o) {
+    return dateTime.compareTo(o);
   }
 }

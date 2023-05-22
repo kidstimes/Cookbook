@@ -27,16 +27,9 @@ public class Conversation {
     this.messages.add(message);
   }
 
-  /**
-   * Get the most recent unread message.
-   *
-   * @return the most recent unread message
-   */
   public Message getMostRecentUnreadMessage() {
-    return messages.stream()
-        .filter(message -> !message.isRead())
-        .max(Comparator.comparing(Message::getDate))
-        .orElse(null);
+    return messages.stream().filter(message -> !message.isRead())
+              .max(Comparator.comparing(Message::getDateTime)).orElse(null);
   }
 
   /**
@@ -45,9 +38,23 @@ public class Conversation {
    * @return the most recent message
    */
   public Message getMostRecentMessage() {
-    return messages.stream()
-        .max(Comparator.comparing(Message::getDate))
-        .orElse(null);
+  	return messages.stream().max(Comparator.comparing(Message::getDateTime)).orElse(null);
   }
+
+  public boolean hasUnreadReceivedMessages(String username) {
+    return this.messages.stream()
+        .filter(message -> !message.getSenderUsername().equals(username))
+        .anyMatch(message -> !message.isRead());
+  }
+
+  public boolean allMessagesSentByUser(String username) {
+    return this.messages.stream()
+            .allMatch(message -> message.getSenderUsername().equals(username));
+  }
+
+  public int countUnreadReceivedMessages(String username) {
+    return (int) messages.stream().filter(m -> m.getReceiverUsername().equals(username) && !m.isRead()).count();
+  }
+    
 
 }

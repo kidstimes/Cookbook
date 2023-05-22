@@ -1,6 +1,7 @@
 package cookbook.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * The Recipe class.
@@ -17,6 +18,7 @@ public class Recipe {
   private ArrayList<Comment> comments;
   private String createrUsername;
   private ArrayList<RecipeEditRecord> editRecords;
+  private Date date;
 
   /**
    * Recipe Constructor.
@@ -56,13 +58,13 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername,
-      ArrayList<RecipeEditRecord> editRecords) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, Date date, ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
     this.directions = directions;
     this.createrUsername = createrUsername;
+    this.date = date;
     this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
@@ -204,10 +206,9 @@ public class Recipe {
     return starred;
   }
 
-  /**
-   * Get the edit history of the recipe.
+  /** Get a copy of the edit records.
    *
-   * @return the edit history of the recipe
+   * @return an arraylist with the edit records.
    */
   public ArrayList<RecipeEditRecord> getEditRecords() {
     ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<RecipeEditRecord>();
@@ -250,6 +251,14 @@ public class Recipe {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
+  }
+
+  /** Get the creation date of the recipe.
+   *
+   * @return the creation date of the recipe
+   */
+  public Date getCreationDate() {
+    return date;
   }
 
 }

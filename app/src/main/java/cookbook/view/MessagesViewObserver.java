@@ -33,11 +33,20 @@ public interface MessagesViewObserver {
 
   void updateMessageIsRead(int messageId);
 
-  void replyMessage(String receiverUsername, String reply);
-
+  boolean replyMessage(String receiverUsername, String reply);
 
   String getUsername();
 
   ArrayList<Conversation> getConversations();
+
+  String getDisplayNameByUsername(String username);
+
+  void addRecipeToFavorite(Recipe recipe);
+
+  void removeRecipeFromFavorite(Recipe recipe);
+
+
+  Message getLatestMessage();
+
   
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cookbook.model.Conversation;
 import cookbook.model.CookbookFacade;
+import cookbook.model.Message;
 import cookbook.model.Recipe;
 import cookbook.view.MessagesView;
 import cookbook.view.MessagesViewObserver;
@@ -23,8 +24,8 @@ public class MessagesController extends BaseController implements MessagesViewOb
   public MessagesController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
     this.messagesView = new MessagesView(model.getUserDisplayName(),
-         model.getConversations());
-    this.messagesView.setObserver(this);
+         model.getConversations(), this);
+
   }
 
 
@@ -55,8 +56,8 @@ public class MessagesController extends BaseController implements MessagesViewOb
   }
 
   @Override
-  public void replyMessage(String receiverUsername, String reply) {
-    model.replyMessage(receiverUsername, reply);
+  public boolean replyMessage(String receiverUsername, String reply) {
+    return model.replyMessage(receiverUsername, reply);
   }
 
 
@@ -70,5 +71,24 @@ public class MessagesController extends BaseController implements MessagesViewOb
     return model.getConversations();
   }
 
+  @Override
+  public String getDisplayNameByUsername(String username) {
+    return model.getDisplayNameByUsername(username);
+  }
+
+  @Override
+  public void addRecipeToFavorite(Recipe recipe) {
+    model.addRecipeToFavorites(recipe);
+  }
+
+  @Override
+  public void removeRecipeFromFavorite(Recipe recipe) {
+    model.removeRecipeFromFavorites(recipe);
+  }
+
+  @Override
+  public Message getLatestMessage() {
+    return model.getLatestMessage();
+  }
 
 }

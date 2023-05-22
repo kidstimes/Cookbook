@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.units.qual.A;
+
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
+
+
 /**
  * The Cookbook facade class.
  */
@@ -14,6 +20,7 @@ public class CookbookFacade {
   private Database database;
   private ArrayList<Recipe> recipes;
   private ArrayList<User> allUsers;
+  private ArrayList<HelpSection> helpSections;
 
   /**
    * Cookbook Constructor.
@@ -595,20 +602,40 @@ public class CookbookFacade {
   }
 
 
-  public ArrayList<Message> loadSentMessagesFromDatabase() {
-    return database.loadSentMessagesFromDatabase(user.getUsername(), recipes);
-
-  }
 
   public void updateMessageIsRead(int messageId) {
     database.updateMessageIsRead(messageId);
   }
 
-  public void replyMessage(String receiverUsername, String message) {
-    database.replyMessage(getUserName(), receiverUsername, message);
+  public boolean replyMessage(String receiverUsername, String message) {
+    return database.replyMessage(getUserName(), receiverUsername, message);
   }
   
   public ArrayList<Conversation> getConversations() {
     return database.loadConversationsFromDatabase(user.getUsername(), recipes);
   }
+
+  public Message getLatestMessage() {
+    return database.getLatestMessageFromUserAsSender(user.getUsername(), recipes);
+  }
+
+
+  public ArrayList<HelpSection> getHelpSections() {
+    ArrayList<HelpSection> helpSections = database.getHelpSections();
+    this.helpSections = helpSections;
+    return helpSections;
+  }
+
+
+  public ArrayList<HelpSubsection> searchHelpContent(String keywords) {
+    ArrayList<HelpSubsection> helpSubsections = new ArrayList<HelpSubsection>();
+    for (HelpSection helpSection : helpSections) {
+      helpSubsections.addAll(helpSection.getSubsectionsWithKeywords(keywords));
+    }
+    return helpSubsections;
+  }
+
+
+  
+
 }
