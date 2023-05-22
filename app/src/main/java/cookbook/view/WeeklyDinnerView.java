@@ -2,7 +2,6 @@ package cookbook.view;
 
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
-import cookbook.view.WeeklyDinnerViewObserver;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -104,7 +103,6 @@ public class WeeklyDinnerView {
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
     logoutButton.setFont(Font.font("Roboto", 14));
     logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
@@ -122,6 +120,7 @@ public class WeeklyDinnerView {
       observer.goToHelp();
     });
     
+    HBox logoutHelpBox = new HBox(10);
     logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
     logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
     
@@ -362,7 +361,8 @@ public class WeeklyDinnerView {
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; "
+              + "-fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
@@ -412,11 +412,13 @@ public class WeeklyDinnerView {
     alert.setContentText(message);
     // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; "
+        + "-fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
+          + "-fx-padding: 5 10 5 10;");
     });
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");

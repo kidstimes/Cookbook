@@ -1,6 +1,5 @@
 package cookbook.view;
 
-import cookbook.view.HelpPageViewObserver;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -16,6 +15,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 
+/**
+ * View for the help page.
+ */
 public class HelpPageView {
   private BorderPane view;
   private HelpPageViewObserver observer;
@@ -43,7 +45,7 @@ public class HelpPageView {
   //get the view
   public Node getView() {
     return view;
-}
+  }
 
   /**
    * Initialize the layout.
@@ -65,14 +67,13 @@ public class HelpPageView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
     logoutButton.setFont(Font.font("Roboto", 14));
     logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
@@ -90,6 +91,7 @@ public class HelpPageView {
       observer.goToHelp();
     });
     
+    HBox logoutHelpBox = new HBox(10);
     logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
     logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
     

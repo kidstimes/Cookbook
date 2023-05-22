@@ -14,7 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-
+/**
+ * View for the messages.
+ */
 public class MessagesView {
   private BorderPane view;
   private MessagesViewObserver observer;
@@ -64,7 +66,7 @@ public class MessagesView {
       createButton("My Favorites", e -> observer.goToMyFavorite()),
       createButton("My Shopping List", e -> observer.goToShoppingList()),
       createButton("Messages", e -> observer.goToMessages()),
-      };
+    };
     for (Button button : sidebarButtons) {
       sidebar.getChildren().add(button);
     }

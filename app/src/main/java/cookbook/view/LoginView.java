@@ -1,8 +1,5 @@
 package cookbook.view;
 
-
-import javax.swing.text.AbstractDocument.LeafElement;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -31,7 +28,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -131,19 +127,13 @@ public class LoginView {
     });
 
     // Play all animations simultaneously
-    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, rotateTransition, scaleTransition, pathTransition);
+    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition,
+        rotateTransition, scaleTransition, pathTransition);
 
     parallelTransition.setOnFinished(e -> {
       // Create a StackPane
       StackPane heartPane = new StackPane();
       heartPane.setAlignment(Pos.CENTER);
-      // Load the heart image
-      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
-      Image heartImage = new Image(heartImageUrl);
-
-      //Load the bottom right image
-      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
-      Image bottomRightImage = new Image(bottomRightImageUrl);
 
       // Load the bottom left image
       String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
@@ -171,6 +161,8 @@ public class LoginView {
       StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
 
       // Create an ImageView and set the heart image to it
+      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
+      Image heartImage = new Image(heartImageUrl);
       ImageView heartImageView = new ImageView(heartImage);
       heartImageView.setFitWidth(150); // Set the width of the image
       heartImageView.setPreserveRatio(true); // Maintain the aspect ratio
@@ -178,6 +170,8 @@ public class LoginView {
       heartPane.getChildren().add(heartImageView);
 
       // Create an ImageView and set the bottom right image to it
+      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png";
+      Image bottomRightImage = new Image(bottomRightImageUrl);
       ImageView bottomRightImageView = new ImageView(bottomRightImage);
       bottomRightImageView.setFitWidth(300); // Set the width of the image
       bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
@@ -222,7 +216,8 @@ public class LoginView {
       Path heartPath = new Path();
       heartPath.getElements().add(new MoveTo(-200, -200));  // Start from the left
       for (int i = 0; i < 5; i++) {  // Jump 5 times
-        heartPath.getElements().add(new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
+        heartPath.getElements().add(
+          new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
       }
       heartPath.getElements().add(new LineTo(500, -200));  // Move to the right
 
@@ -376,7 +371,8 @@ public class LoginView {
     Button loginButton = new Button("Login");
     loginButton.setMaxWidth(Double.MAX_VALUE);
     //set login button style here
-    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; -fx-font-size: 16; -fx-font-weight: bold;");
+    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; "
+        + "-fx-font-size: 16; -fx-font-weight: bold;");
     loginButton.setOnAction(event -> {
       String username = usernameField.getText();
       String password = passwordField.getText();
