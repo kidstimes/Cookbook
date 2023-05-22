@@ -1,11 +1,7 @@
 package cookbook.model;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 
-/**
- * The Conversation class.
- */
 public class Conversation {
   private String otherUsername;
   private ArrayList<Message> messages;
@@ -32,11 +28,6 @@ public class Conversation {
               .max(Comparator.comparing(Message::getDateTime)).orElse(null);
   }
 
-  /**
-   * Get the most recent message.
-   *
-   * @return the most recent message
-   */
   public Message getMostRecentMessage() {
   	return messages.stream().max(Comparator.comparing(Message::getDateTime)).orElse(null);
   }

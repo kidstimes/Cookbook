@@ -8,6 +8,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -29,6 +31,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  * The view for the weekly dinner page.
@@ -77,51 +80,21 @@ public class WeeklyDinnerView {
 
   // Create the side bar menu
   private void createSidebar() {
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text title = new Text(displayName + ", welcome!");
-    title.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(title);
-
-    Button[] sidebarButtons = {
-        createButton("Home Page", e -> observer.goToHomePage()),
-        createButton("Browse Recipes", e -> observer.goToBrowser()),
-        createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-        createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-        createButton("My Favorites", e -> observer.goToMyFavorite()),
-        createButton("My Shopping List", e -> observer.goToShoppingList()),
-        createButton("Messages", e -> observer.goToMessages()),
-    };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
-
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    HBox logoutHelpBox = new HBox(10);
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
+    sidebar.setActiveButton("Weekly Dinner List");
+    sidebar.finalizeLayout();
+    // Add the sidebar to the view
     view.setLeft(sidebar);
   }
 
@@ -358,8 +331,8 @@ public class WeeklyDinnerView {
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; "
-              + "-fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color:"
+              + " white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
@@ -393,13 +366,12 @@ public class WeeklyDinnerView {
     alert.setHeaderText(null);
     alert.setContentText(message);
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; "
-        + "-fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
-    // Set custom styles for the buttons
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
+        + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
-          + "-fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B;"
+          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
     });
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
