@@ -1,6 +1,7 @@
 package cookbook.view;
 
 import cookbook.model.Conversation;
+import cookbook.model.Message;
 import cookbook.model.Recipe;
 import java.util.ArrayList;
 
@@ -44,7 +45,6 @@ public interface MessagesViewObserver {
   void addRecipeToFavorite(Recipe recipe);
 
   void removeRecipeFromFavorite(Recipe recipe);
-
 
   Message getLatestMessage();
 
