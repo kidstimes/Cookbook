@@ -2,7 +2,6 @@ package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
-import cookbook.model.User;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
 import java.time.LocalDate;
