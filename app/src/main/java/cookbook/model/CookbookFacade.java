@@ -1,18 +1,10 @@
 package cookbook.model;
 
 import cookbook.database.Database;
-import cookbook.view.RecipeViewObserver;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.units.qual.A;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
-
 
 /**
  * The Cookbook facade class.
@@ -21,8 +13,6 @@ public class CookbookFacade {
   private User user;
   private Database database;
   private ArrayList<Recipe> recipes;
-  private ArrayList<User> loggedOutUsers;
-  private ArrayList<User> allUsers;
   private ArrayList<HelpSection> helpSections;
 
 
@@ -32,7 +22,6 @@ public class CookbookFacade {
   public CookbookFacade(Database database) {
     recipes = new ArrayList<Recipe>();
     this.database = database;
-    this.loggedOutUsers = new ArrayList<>();
   }
 
   public void loadAllRecipes() {
@@ -451,7 +440,8 @@ public class CookbookFacade {
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
-    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients, user.getUsername());
+    database.editRecipeInDatabase(recipe.getId(), name, description,
+        instructions, ingredients, user.getUsername());
   }
 
   /** Add all ingredients of a recipe to the shopping list of the user.
@@ -511,7 +501,6 @@ public class CookbookFacade {
    */
   public ArrayList<User> loadAllUsers() {
     ArrayList<User> allUsers = database.loadAllUsersFromDatabase();
-    this.allUsers = allUsers;
     return allUsers;
   }
 
@@ -581,8 +570,12 @@ public class CookbookFacade {
     return user.getSentMessages();
   }
 
-
-	public int getNumberUnreadMessages() {
+  /**
+   * Get the number of unread messages of the user.
+   *
+   * @return the number of unread messages
+   */
+  public int getNumberUnreadMessages() {
     int numberUnreadMessages = 0;
     for (Message message : loadReceivedMessagesFromDatabase()) {
       if (!message.isRead()) {
@@ -590,7 +583,7 @@ public class CookbookFacade {
       }
     }
     return numberUnreadMessages;
-	}
+  }
 
 
 
@@ -621,14 +614,23 @@ public class CookbookFacade {
     return database.getLatestMessageFromUserAsSender(user.getUsername(), recipes);
   }
 
-
+  /**
+   * Get the sections of the help system.
+   *
+   * @return an arraylist with the help sections
+   */
   public ArrayList<HelpSection> getHelpSections() {
     ArrayList<HelpSection> helpSections = database.getHelpSections();
     this.helpSections = helpSections;
     return helpSections;
   }
 
-
+  /**
+   * Search the subsections for the given keywords.
+   *
+   * @param keywords the keywords to search for
+   * @return an arraylist with the subsections
+   */
   public ArrayList<HelpSubsection> searchHelpContent(String keywords) {
     ArrayList<HelpSubsection> helpSubsections = new ArrayList<HelpSubsection>();
     for (HelpSection helpSection : helpSections) {
