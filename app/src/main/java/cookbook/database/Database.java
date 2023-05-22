@@ -331,6 +331,7 @@ public ArrayList<Recipe> loadAllRecipes(String username) {
   return recipes;
 }
 
+/*
         // load ingredients and tags
         ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
         ArrayList<String> tags = loadTagsForRecipe(recipeId, username);
@@ -349,6 +350,7 @@ public ArrayList<Recipe> loadAllRecipes(String username) {
     }
     return recipes;
   }
+*/
 
   private ArrayList<RecipeEditRecord> loadEditRecordsForRecipe(int recipeId) {
     ArrayList<RecipeEditRecord> editRecords = new ArrayList<>();
@@ -1675,16 +1677,6 @@ public ArrayList<Recipe> loadAllRecipes(String username) {
     }
 
     return messages;
-  }
-
-
-  private Recipe getRecipeById(int recipeId, ArrayList<Recipe> recipes) {
-    for (Recipe recipe : recipes) {
-      if (recipe.getId() == recipeId) {
-        return recipe;
-      }
-    }
-    return null;
   }
 
 
