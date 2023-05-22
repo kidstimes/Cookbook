@@ -2,16 +2,22 @@ package cookbook.view;
 
 import cookbook.model.User;
 import java.util.ArrayList;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * View for the admin page.
@@ -22,6 +28,7 @@ public class AdminView {
   private ArrayList<User> users;
   private VBox userListContainer;
   private String displayName;
+  private VBox usersContainer;
 
   /** Constructor for the admin view.
    *
@@ -45,82 +52,49 @@ public class AdminView {
   private void initLayout() {
     view.setStyle("-fx-background-color: #F9F8F3;");
     // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text(displayName + ", welcome!");
-    welcomeTitle.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeTitle);
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 14));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
-
-    Region hspacer = new Region();  // This will take up as much space as possible
-    HBox.setHgrow(hspacer, Priority.ALWAYS); 
-    
-    Button helpButton = new Button("Help");
-    helpButton.setFont(Font.font("Roboto", 14));
-    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    helpButton.setOnAction(e -> {
-      observer.goToHelp();
-    });
-    
-    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
-    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
-    
-    sidebar.getChildren().add(logoutHelpBox); 
+    sidebar.setActiveButton("My Account");
+    sidebar.finalizeLayout();
+        
+    // Add the sidebar to the view
     view.setLeft(sidebar);
 
     // Add a title to the admin page
+    userListContainer = new VBox();
+    userListContainer.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    userListContainer.setSpacing(20);
+
+    // Add the title to the userListContainer here
     Label titleLabel = new Label("Admin Page");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
-    view.setTop(titleLabel);
-    BorderPane.setAlignment(titleLabel, Pos.CENTER);
-    userListContainer = new VBox(5);
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
+    userListContainer.getChildren().add(titleLabel);
+    Label userListLabel = new Label("All Users");
+    userListLabel.setStyle("-fx-font: 26px \"Roboto\";");
+    userListContainer.getChildren().add(userListLabel);
+    
+    usersContainer = new VBox();
+    userListContainer.getChildren().add(usersContainer);
+    
     view.setCenter(userListContainer);
 
-    // Add a label for the Users list
-    Label userListLabel = new Label("Users");
-    userListLabel.setStyle("-fx-font: 20px \"Roboto\";");
-    userListContainer.getChildren().add(userListLabel);
-    // Display the list of users
     updateUserList();
   }
 
   private void updateUserList() {
-    userListContainer.getChildren().clear();
-    userListContainer.setSpacing(15);
+    usersContainer.getChildren().clear();
+    usersContainer.setSpacing(15);
 
-    // Add user button
-    Button addUserButton = new Button("Add User");
-    addUserButton.setStyle("-fx-font: 18px \"Roboto\";");
-    addUserButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font: 18px \"Roboto\";");
-    addUserButton.setOnAction(e -> {
-      addUser();
-    });
-    userListContainer.getChildren().add(addUserButton);
-
-    // Add a title row
     HBox titleLine = new HBox(10);
     titleLine.setAlignment(Pos.CENTER_LEFT);
     Label userIdTitle = new Label("User ID");
@@ -146,10 +120,10 @@ public class AdminView {
       HBox userLine = new HBox(10);
       userLine.setAlignment(Pos.CENTER_LEFT);
 
-      Label userIDLabel = new Label(String.valueOf(user.getId()));
-      userIDLabel.setStyle("-fx-font: 18px \"Roboto\";");
-      userIDLabel.setMinWidth(100);
-      userIDLabel.setAlignment(Pos.CENTER_LEFT);
+      Label userIdLabel = new Label(String.valueOf(user.getId()));
+      userIdLabel.setStyle("-fx-font: 18px \"Roboto\";");
+      userIdLabel.setMinWidth(100);
+      userIdLabel.setAlignment(Pos.CENTER_LEFT);
 
       Label userNameLabel = new Label(user.getUsername());
       userNameLabel.setStyle("-fx-font: 18px \"Roboto\";");
@@ -166,24 +140,27 @@ public class AdminView {
       displayNameLabel.setMinWidth(150);
       displayNameLabel.setAlignment(Pos.CENTER_LEFT);
 
-      userLine.getChildren().addAll(userIDLabel, userNameLabel, passwordLabel, displayNameLabel);
+      userLine.getChildren().addAll(userIdLabel, userNameLabel, passwordLabel, displayNameLabel);
 
       if (!user.getUsername().equalsIgnoreCase("admin")) {
         Button editButton = new Button("Edit username and/or display name");
-        editButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
+        editButton.setStyle("-fx-background-color: white;"
+            + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editButton.setOnAction(e -> {
           editUser(user);
 
         });
     
         Button editPasswordButton = new Button("Edit Password");
-        editPasswordButton.setStyle("-fx-background-color: white; -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
+        editPasswordButton.setStyle("-fx-background-color: white;"
+            + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
         editPasswordButton.setOnAction(e -> {
           editUserPassword(user);       
         });
     
         Button deleteButton = new Button("Delete");
-        deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+        deleteButton.setStyle("-fx-font: 12px \"Roboto\";"
+            + " -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
         deleteButton.setOnAction(e -> {
           observer.deleteUser(user.getId());
           observer.goToAdmin();
@@ -192,8 +169,16 @@ public class AdminView {
         userLine.getChildren().addAll(editButton, editPasswordButton, deleteButton);
       } 
       userListContainer.getChildren().add(userLine);
+      
     }
-    
+    // Add user button
+    Button addUserButton = new Button("Add User");
+    addUserButton.setStyle("-fx-background-color: #69a486;"
+            + " -fx-text-fill: #F4F1DE; -fx-font: 18px \"Roboto\";");
+    addUserButton.setOnAction(e -> {
+      addUser();
+    });
+    userListContainer.getChildren().add(addUserButton);
     
   }
 
@@ -251,7 +236,8 @@ public class AdminView {
     editUserPasswordDialog.getDialogPane().setContent(grid);
 
     ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-    editUserPasswordDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+    editUserPasswordDialog.getDialogPane()
+        .getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
     editUserPasswordDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
@@ -262,8 +248,7 @@ public class AdminView {
       return null;
     });
     editUserPasswordDialog.showAndWait();
-}
-
+  }
 
   /**
    * Add a new user.
@@ -294,7 +279,8 @@ public class AdminView {
   
     addUserDialog.setResultConverter(dialogButton -> {
       if (dialogButton == saveButtonType) {
-        boolean success = observer.addUser(userNameField.getText(), passwordField.getText(), displayNameField.getText());
+        boolean success = observer.addUser(userNameField.getText(),
+            passwordField.getText(), displayNameField.getText());
         if (success) {
           observer.goToAdmin();
           updateUserList();
@@ -307,12 +293,20 @@ public class AdminView {
     addUserDialog.showAndWait();
   }
   
-
-
+  /** Show an error message.
+   *
+   * @param string the error message
+   */
   public void showError(String string) {
     showInlineStyledAlert(AlertType.ERROR, "Error", string);
   }
 
+  /** Show an alert.
+   *
+   * @param alertType the type of alert
+   * @param title the title of the alert
+   * @param message the message of the alert
+   */
   private void showInlineStyledAlert(AlertType alertType, String title, String message) {
     Alert alert = new Alert(alertType);
     alert.setTitle(title);
@@ -323,15 +317,5 @@ public class AdminView {
     alert.showAndWait();
   }
   
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
-    button.setOnAction(eventHandler);
-    return button;
-  }
-
 
 }

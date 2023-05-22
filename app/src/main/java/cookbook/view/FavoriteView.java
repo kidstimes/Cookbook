@@ -2,14 +2,13 @@ package cookbook.view;
 
 import cookbook.model.Recipe;
 import java.util.ArrayList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
@@ -51,13 +50,17 @@ public class FavoriteView {
 
   private void initLayout(String displayName) {
     
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(20);
-    sidebar.setMaxWidth(120);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text(displayName + ", welcome!");
-    welcomeTitle.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeTitle);
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
     Button[] sidebarButtons = {
       createButton("Home Page", e -> observer.goToHomePage()),
@@ -105,8 +108,8 @@ public class FavoriteView {
     scrollPane.setFitToWidth(true); 
     scrollPane.setStyle("-fx-background-color: #F9F8F3;");
     // Add title
-    Text title = new Text("My Favorite Recipes");
-    title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
+    Label title = new Label("My Favorite Recipes");
+    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486;");
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     recipeListVbox.getChildren().add(title);
 
@@ -181,21 +184,6 @@ public class FavoriteView {
 
   }
 
-  /** Create a button with a fixed width and a background color.
-   *
-   * @param text the text to be displayed on the button
-   * @param eventHandler the event handler for the button
-   * @return the button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
-    button.setOnAction(eventHandler);
-    return button;
-  }
 }
 
 

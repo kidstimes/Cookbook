@@ -32,7 +32,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
    * Get the browser view.
    */
   public Node getView() {
-    //browserView.updateRecipes(model.getRecipes());
     return this.browserView.getView();
   }
 

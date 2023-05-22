@@ -1,24 +1,27 @@
 package cookbook.database;
 
 import cookbook.model.Comment;
+import cookbook.model.Conversation;
 import cookbook.model.Dinner;
+import cookbook.model.HelpSection;
+import cookbook.model.HelpSubsection;
 import cookbook.model.Ingredient;
+import cookbook.model.Message;
 import cookbook.model.Recipe;
+import cookbook.model.RecipeEditRecord;
 import cookbook.model.ShoppingList;
 import cookbook.model.User;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -180,6 +183,7 @@ public class Database {
     try {
       // Get the user id
       int userId = getUserId(userName);
+      LocalDate dateAdded = LocalDate.now();
       // Insert the recipe into the recipes table
       String query = "INSERT INTO recipes (name, description, instructions) VALUES (?, ?, ?)";
       try (PreparedStatement statement = connection.prepareStatement(query,
@@ -285,24 +289,83 @@ public class Database {
    * Load recipes from the database and return arraylist of Recipe (from model)
    * objects.
    */
-  public ArrayList<Recipe> loadAllRecipes(String userName) {
-    ArrayList<Recipe> recipes = new ArrayList<>();
-    try (
-        PreparedStatement stmt = connection.prepareStatement(
-            "SELECT r.id, r.name, r.description, r.instructions FROM recipes r")) {
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        Integer recipeId = rs.getInt(1);
-        String name = rs.getString(2);
-        String description = rs.getString(3);
-        String instructions = rs.getString(4);
+  private int insertIngredient(int recipeId, String name,
+      float quantity, String measurementUnit) {
+    String query = "INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit) "
+        + "VALUES (?, ?, ?, ?)";
+    try (PreparedStatement statement = connection.prepareStatement(query,
+        Statement.RETURN_GENERATED_KEYS)) {
+      statement.setString(1, name);
+      statement.setInt(2, recipeId);
+      statement.setFloat(3, quantity);
+      statement.setString(4, measurementUnit);
+      statement.executeUpdate();
+      try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+        if (generatedKeys.next()) {
+          return generatedKeys.getInt(1);
+        } else {
+          return -1;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println("Error while inserting ingredient: " + e.getMessage());
+      return -1;
+    }
+  }
 
+/**
+ * Load recipes from the database and return arraylist of Recipe (from model)
+ * objects.
+ */
+/**
+ * Load recipes from the database and return arraylist of Recipe (from model)
+ * objects.
+ */
+public ArrayList<Recipe> loadAllRecipes(String username) {
+  ArrayList<Recipe> recipes = new ArrayList<>();
+  try (
+      PreparedStatement stmt = connection.prepareStatement(
+          "SELECT r.id, r.name, r.description, r.instructions, r.date_added, u.username " +
+          "FROM recipes r JOIN users u ON r.user_id = u.id")) {
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      Integer recipeId = rs.getInt(1);
+      String name = rs.getString(2);
+      String description = rs.getString(3);
+      String instructions = rs.getString(4);
+      Date dateAdded = rs.getDate(5);
+
+      String createrUsername = rs.getString(6);
+
+      // load ingredients and tags
+      ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
+      ArrayList<String> tags = loadTagsForRecipe(recipeId, username);
+
+      // load edit records
+      ArrayList<RecipeEditRecord> editRecords = loadEditRecordsForRecipe(recipeId);
+
+      // create the recipe objects with ingredients, tags, dateAdded and edit records
+      Recipe recipe = new Recipe(recipeId, name, description, instructions, ingredients, tags, createrUsername, dateAdded, editRecords);
+      recipes.add(recipe);
+    }
+    rs.close();
+  } catch (SQLException e) {
+    System.out.println(e.getMessage());
+  }
+  return recipes;
+}
+
+/*
         // load ingredients and tags
         ArrayList<String[]> ingredients = loadIngredientsForRecipe(recipeId);
-        ArrayList<String> tags = loadTagsForRecipe(recipeId, userName);
+        ArrayList<String> tags = loadTagsForRecipe(recipeId, username);
 
-        // create the recipe objects with ingredients and tags
-        Recipe recipe = new Recipe(recipeId, name, description, instructions, ingredients, tags);
+        // load edit records
+        ArrayList<RecipeEditRecord> editRecords = loadEditRecordsForRecipe(recipeId);
+
+        // create the recipe objects with ingredients, tags and edit records
+        Recipe recipe = new Recipe(recipeId, name, description,
+            instructions, ingredients, tags, createrUsername, editRecords);
         recipes.add(recipe);
       }
       rs.close();
@@ -310,6 +373,28 @@ public class Database {
       System.out.println(e.getMessage());
     }
     return recipes;
+  }
+*/
+
+  private ArrayList<RecipeEditRecord> loadEditRecordsForRecipe(int recipeId) {
+    ArrayList<RecipeEditRecord> editRecords = new ArrayList<>();
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "SELECT u.username, reh.edit_date "
+            + "FROM RecipeEditHistory reh JOIN users u ON reh.user_id = u.id "
+            + "WHERE reh.recipe_id = ?")) {
+      stmt.setInt(1, recipeId);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        String editorUsername = rs.getString(1);
+        LocalDate editDate = rs.getDate(2).toLocalDate();
+        editRecords.add(new RecipeEditRecord(editorUsername, editDate));
+      }
+      rs.close();
+    } catch (SQLException e) {
+      System.out.println("Error while loading recipe edit records: " + e.getMessage());
+    }
+    return editRecords;
   }
 
   /**
@@ -934,9 +1019,18 @@ public class Database {
               Float.parseFloat(newIngredient[1]), newIngredient[2]);
         }
       }
+      String insertHistoryQuery = "INSERT INTO recipeEditHistory (recipe_id, user_id, edit_date)"
+          + " VALUES (?, ?, ?)";
+      try (PreparedStatement insertHistoryStmt = connection.prepareStatement(insertHistoryQuery)) {
+        insertHistoryStmt.setInt(1, recipeId);
+        insertHistoryStmt.setInt(2, userId);
+        insertHistoryStmt.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+        insertHistoryStmt.executeUpdate();
+      }
     } catch (SQLException e) {
       System.out.println("Error while editing recipe in database: " + e.getMessage());
     }
+
   }
 
   /**

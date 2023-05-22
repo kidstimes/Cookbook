@@ -31,5 +31,7 @@ public interface ShoppingListViewObserver {
   void updateShoppingList();
 
   void goToHelp();
+
+  void goToAccount();
   
 }

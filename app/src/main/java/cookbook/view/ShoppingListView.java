@@ -12,6 +12,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import cookbook.model.Ingredient;
 import cookbook.model.ShoppingList;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -44,6 +45,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 
 
 /**
@@ -166,7 +168,7 @@ public class ShoppingListView {
 
     // Add title above the weekly menu
     Label titleLabel = new Label("Shopping List");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
     centerView.getChildren().addAll(titleLabel);
 
     HBox titleBox  =  new HBox();
@@ -478,11 +480,9 @@ public class ShoppingListView {
     alert.showAndWait();
   }
 
-  /** Create a button with the given text and event handler.
+  /** Generate a PDF file of the shopping list.
    *
-   * @param text the text to display on the button
-   * @param eventHandler the event handler to handle the button click
-   * @return the created button
+   * @throws Exception if the file cannot be created
    */
   private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(text);
