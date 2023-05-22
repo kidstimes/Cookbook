@@ -1,10 +1,8 @@
 package cookbook.view;
 
-import java.util.ArrayList;
-
 import cookbook.model.Conversation;
-import cookbook.model.Message;
 import cookbook.model.Recipe;
+import java.util.ArrayList;
 
 /**
  * Observer for the messages view.
