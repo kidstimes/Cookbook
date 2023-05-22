@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.units.qual.A;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 
 
 /**
@@ -21,6 +23,7 @@ public class CookbookFacade {
   private ArrayList<Recipe> recipes;
   private ArrayList<User> loggedOutUsers;
   private ArrayList<User> allUsers;
+  private ArrayList<HelpSection> helpSections;
 
 
   /**
@@ -617,5 +620,24 @@ public class CookbookFacade {
   public Message getLatestMessage() {
     return database.getLatestMessageFromUserAsSender(user.getUsername(), recipes);
   }
+
+
+  public ArrayList<HelpSection> getHelpSections() {
+    ArrayList<HelpSection> helpSections = database.getHelpSections();
+    this.helpSections = helpSections;
+    return helpSections;
+  }
+
+
+  public ArrayList<HelpSubsection> searchHelpContent(String keywords) {
+    ArrayList<HelpSubsection> helpSubsections = new ArrayList<HelpSubsection>();
+    for (HelpSection helpSection : helpSections) {
+      helpSubsections.addAll(helpSection.getSubsectionsWithKeywords(keywords));
+    }
+    return helpSubsections;
+  }
+
+
+  
 
 }

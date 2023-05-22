@@ -50,7 +50,6 @@ public class FavoriteView {
 
   private void initLayout(String displayName) {
     
-    // create a vbox to hold the menu buttons
     Sidebar sidebar = new Sidebar(displayName);
     sidebar.addButton("Home Page", e -> observer.goToHomePage());
     sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
@@ -65,7 +64,6 @@ public class FavoriteView {
     
     sidebar.setActiveButton("My Favorites");
     sidebar.finalizeLayout();
-    // Add the sidebar to the view
     view.setLeft(sidebar);
     
     VBox recipeListVbox = new VBox(10);

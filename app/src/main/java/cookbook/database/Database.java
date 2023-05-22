@@ -3,6 +3,8 @@ package cookbook.database;
 import cookbook.model.Comment;
 import cookbook.model.Conversation;
 import cookbook.model.Dinner;
+import cookbook.model.HelpSection;
+import cookbook.model.HelpSubsection;
 import cookbook.model.Ingredient;
 import cookbook.model.Message;
 import cookbook.model.Recipe;
@@ -1600,8 +1602,8 @@ public ArrayList<User> loadLoggedOutUsers(String username) {
         int recipeIdColumnIndex = 7;
         Recipe recipe = null;
         if (rs.getObject(recipeIdColumnIndex) != null) {
-            int recipeId = rs.getInt(recipeIdColumnIndex);
-            recipe = getRecipeById(recipeId, recipes);
+          int recipeId = rs.getInt(recipeIdColumnIndex);
+          recipe = getRecipeById(recipeId, recipes);
         }
         Message message = new Message(messageId, recipe, text, senderName, receiverName, isRead, sendDateTime);
         messages.add(message);
@@ -1738,7 +1740,41 @@ public ArrayList<User> loadLoggedOutUsers(String username) {
   }
 
   
+  public ArrayList<HelpSection> getHelpSections() {
+    ArrayList<HelpSection> helpSections = new ArrayList<>();
+    String sql = "SELECT * FROM HelpSection";
+    try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String title = rs.getString("title");
+        ArrayList<HelpSubsection> subsections = getHelpSubsections(id);
+        helpSections.add(new HelpSection(id, title, subsections));
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return helpSections;
+  }
 
+
+public ArrayList<HelpSubsection> getHelpSubsections(int sectionId) {
+  ArrayList<HelpSubsection> helpSubsections = new ArrayList<>();
+  String sql = "SELECT * FROM HelpSubsection WHERE section_id = ?";
+  try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+    stmt.setInt(1, sectionId);
+    ResultSet rs = stmt.executeQuery();
+    while (rs.next()) {
+      int id = rs.getInt("id");
+      String title = rs.getString("title");
+      String text = rs.getString("text");
+      helpSubsections.add(new HelpSubsection(id, title, text));
+    }
+  } catch (SQLException e) {
+    e.printStackTrace();
+  }
+  return helpSubsections;
+}
 }
 
 

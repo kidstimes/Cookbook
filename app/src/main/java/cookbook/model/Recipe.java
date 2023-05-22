@@ -3,8 +3,6 @@ package cookbook.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
 /**
  * The Recipe class.
  */
@@ -106,7 +104,7 @@ public class Recipe {
     this.shortDesc = shortDesc;
   }
 
-  public String getCreaterUsername(){
+  public String getCreaterUsername() {
     return createrUsername;
   }
 
@@ -208,6 +206,10 @@ public class Recipe {
     return starred;
   }
 
+  /** Get a copy of the edit records.
+   *
+   * @return an arraylist with the edit records.
+   */
   public ArrayList<RecipeEditRecord> getEditRecords() {
     ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<RecipeEditRecord>();
     for (RecipeEditRecord record : editRecords) {
@@ -251,6 +253,10 @@ public class Recipe {
     }
   }
 
+  /** Get the creation date of the recipe.
+   *
+   * @return the creation date of the recipe
+   */
   public Date getCreationDate() {
     return date;
   }
