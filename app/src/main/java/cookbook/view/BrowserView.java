@@ -98,10 +98,43 @@ public class BrowserView {
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    sidebar.setActiveButton("Browse Recipes");
-    sidebar.finalizeLayout();
-        
-    // Add the sidebar to the view
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+    };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 14));
+    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+
+    Region hspacer = new Region();  // This will take up as much space as possible
+    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    
+    Button helpButton = new Button("Help");
+    helpButton.setFont(Font.font("Roboto", 14));
+    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    helpButton.setOnAction(e -> {
+      observer.goToHelp();
+    });
+    
+    HBox logoutHelpBox = new HBox(10);
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
     view.setLeft(sidebar);
 
     rootVbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");

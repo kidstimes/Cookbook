@@ -134,13 +134,6 @@ public class LoginView {
       // Create a StackPane
       StackPane heartPane = new StackPane();
       heartPane.setAlignment(Pos.CENTER);
-      // Load the heart image
-      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
-      Image heartImage = new Image(heartImageUrl);
-
-      //Load the bottom right image
-      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png"; 
-      Image bottomRightImage = new Image(bottomRightImageUrl);
 
       // Load the bottom left image
       String bottomLeftImageUrl = "https://i.imgur.com/ffTEx7e.png";
@@ -168,6 +161,8 @@ public class LoginView {
       StackPane.setAlignment(bottomLeftImageView, Pos.BOTTOM_LEFT);
 
       // Create an ImageView and set the heart image to it
+      String heartImageUrl = "https://i.imgur.com/PJZqJbc.png";
+      Image heartImage = new Image(heartImageUrl);
       ImageView heartImageView = new ImageView(heartImage);
       heartImageView.setFitWidth(150); // Set the width of the image
       heartImageView.setPreserveRatio(true); // Maintain the aspect ratio
@@ -175,6 +170,8 @@ public class LoginView {
       heartPane.getChildren().add(heartImageView);
 
       // Create an ImageView and set the bottom right image to it
+      String bottomRightImageUrl = "https://i.imgur.com/jE4VQbO.png";
+      Image bottomRightImage = new Image(bottomRightImageUrl);
       ImageView bottomRightImageView = new ImageView(bottomRightImage);
       bottomRightImageView.setFitWidth(300); // Set the width of the image
       bottomRightImageView.setPreserveRatio(true); // Maintain the aspect ratio
@@ -374,8 +371,8 @@ public class LoginView {
     Button loginButton = new Button("Login");
     loginButton.setMaxWidth(Double.MAX_VALUE);
     //set login button style here
-    loginButton.setStyle("-fx-background-color: #3D405B;"
-        + " -fx-text-fill: #ffffff; -fx-font-size: 16; -fx-font-weight: bold;");
+    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; "
+        + "-fx-font-size: 16; -fx-font-weight: bold;");
     loginButton.setOnAction(event -> {
       String username = usernameField.getText();
       String password = passwordField.getText();

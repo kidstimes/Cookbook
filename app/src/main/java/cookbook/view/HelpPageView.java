@@ -1,5 +1,8 @@
 package cookbook.view;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -17,6 +20,9 @@ import org.checkerframework.checker.units.qual.s;
 import cookbook.model.HelpSection;
 import cookbook.model.HelpSubsection;
 
+/**
+ * View for the help page.
+ */
 public class HelpPageView {
     private BorderPane view;  
     private VBox helpSectionsPane;
@@ -53,120 +59,61 @@ public class HelpPageView {
         this.observer = observer;
     }
 
-    private void initLayout() {
-        Sidebar sidebar = new Sidebar(displayName);
-        sidebar.addButton("Home Page", e -> observer.goToHomePage());
-        sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-        sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-        sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-        sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-        sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-        sidebar.addButton("Messages", e -> observer.goToMessages());
-        sidebar.addButton("My Account", e -> observer.goToAccount());
-        sidebar.addHyperlink("Help", e -> observer.goToHelp());
-        sidebar.addHyperlink("Log Out", e -> observer.userLogout());
-        sidebar.setActiveButton("Help");
-        sidebar.finalizeLayout();
+  //get the view
+  public Node getView() {
+    return view;
+  }
 
-        view.setLeft(sidebar);
-
-        Hyperlink backButton = new Hyperlink("All help topics");
-        backButton.setOnAction(e -> observer.goToHelp());
-        backButton.setStyle(" -fx-text-fill: # 3D405B; -fx-font: 18px \"Roboto\"; -fx-padding: 10 20 10 50; -fx-cursor: hand;");
-        searchField.setPromptText("Type keyword(s) here, separated by space");
-        HBox searchFieldBox = new HBox();
-        searchFieldBox.getChildren().addAll(searchField, searchButton);
-        searchFieldBox.setSpacing(10);
-        searchFieldBox.setPadding(new Insets(10, 10, 10, 10));
-        searchFieldBox.setPrefWidth(700);
-        searchField.setPrefWidth(600);
-        searchFieldBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Create a VBox to contain the title and search box
-        VBox titleBox = new VBox(10);
-        Label titleLabel = new Label("Help");
-        titleLabel.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486; -fx-padding: 50 50 20 50;");
-        titleBox.getChildren().addAll(titleLabel, searchFieldBox, backButton, searchResultsLabel);
-
-        // Create a VBox to contain the help sections
-        VBox contentBox = new VBox(10, titleBox, helpSectionsPane);
-
-        // Create a ScrollPane for the help sections pane
-        ScrollPane helpSectionsScrollPane = new ScrollPane(contentBox);
-        helpSectionsScrollPane.setFitToWidth(true);
-        helpSectionsScrollPane.setFitToHeight(true);
-
-        // Set the contentBox as the center of the view
-        view.setCenter(helpSectionsScrollPane);
-
-        // Add event listener for search button
-        searchButton.setStyle(
-        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-        + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
-        searchButton.setOnAction(e -> performSearch());
-
-        // Populate the help sections
-        populateHelpSections();
+  /**
+   * Initialize the layout.
+   */
+  public void initLayout() {
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(20);
+    sidebar.setMaxWidth(100);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text welcomeTitle = new Text(displayName + ", welcome!");
+    welcomeTitle.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(welcomeTitle);
+    
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+    };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
     }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 14));
+    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
 
-    private void populateHelpSections() {
-        helpSectionsPane.getChildren().clear();
-        searchField.clear();
-        searchResultsLabel.setText("");
-
-        if (storedSearchResults.isEmpty()) {
-            for (HelpSection section : helpSections) {
-                VBox sectionBox = new VBox(10);
-               Label sectionLabel = new Label(section.getTitle());
-               sectionLabel.setStyle("-fx-padding: 0 0 0 30;");
-
-                sectionLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
-
-                sectionBox.getChildren().add(sectionLabel);
-
-                for (HelpSubsection subsection : section.getSubsections()) {
-                    Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
-                    subsectionLink.setStyle("-fx-padding: 0 0 0 50;");
-                    subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
-
-                    subsectionLink.setFont(Font.font("Roboto", 16));
-                    sectionBox.getChildren().add(subsectionLink);
-                }
-
-                helpSectionsPane.getChildren().add(sectionBox);
-            }
-        } else {
-            for (HelpSubsection subsection : storedSearchResults) {
-                Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
-                subsectionLink.setStyle("-fx-padding: 0 0 0 50;");
-                subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
-                subsectionLink.setFont(Font.font("Roboto", 16));
-
-                helpSectionsPane.getChildren().add(subsectionLink);
-            }
-
-            searchResultsLabel.setText("Total results: " + storedSearchResults.size());
-        }
-    }
-
-    private void showHelpSection(HelpSection section) {
-      VBox sectionBox = new VBox(10);
-      Label title = new Label(section.getTitle());
-      title.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
-      title.setStyle("-fx-padding: 0 0 0 30;");
-  
-      sectionBox.getChildren().addAll(title);
-  
-      for (HelpSubsection subsection : section.getSubsections()) {
-          Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
-          subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
-          subsectionLink.setStyle("-fx-padding: 0 0 0 50;");
-  
-          subsectionLink.setFont(Font.font("Roboto", 16));
-          sectionBox.getChildren().add(subsectionLink);
-      }
-  
-      showContent(sectionBox);
+    Region hspacer = new Region();  // This will take up as much space as possible
+    HBox.setHgrow(hspacer, Priority.ALWAYS); 
+    
+    Button helpButton = new Button("Help");
+    helpButton.setFont(Font.font("Roboto", 14));
+    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    helpButton.setOnAction(e -> {
+      observer.goToHelp();
+    });
+    
+    HBox logoutHelpBox = new HBox(10);
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
+    view.setLeft(sidebar);
   }
   
   private void showHelpSubsection(HelpSubsection subsection) {

@@ -31,7 +31,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-
 /**
  * View for adding a recipe.
  */
@@ -79,10 +78,57 @@ public class AddRecipeView {
    * Initialize the add recipe view.
    */
   private void initLayout() {
-    Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> {
-      clearAllInput();
-      observer.goToHomePage();
+
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(20);
+    sidebar.setMaxWidth(120);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text title = new Text(displayName + ", welcome!");
+    title.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(title);
+
+    // Add five options to the homepage, one per row
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> {
+        clearAllInput();
+        observer.goToHomePage();
+      }),
+      createButton("Browse Recipes", e -> {
+        clearAllInput();
+        observer.goToBrowser();
+      }),
+      createButton("Add a Recipe", e -> {
+        observer.goToAddRecipe();
+      }),
+      createButton("Weekly Dinner List", e -> {
+        clearAllInput();
+        observer.goToWeeklyDinner();
+      }),
+      createButton("My Favorites", e -> {
+        clearAllInput();
+        observer.goToMyFavorite();
+      }),
+      createButton("My Shopping List", e -> {
+        clearAllInput();
+        observer.goToShoppingList();
+      }),
+      createButton("Messages", e -> { 
+        clearAllInput();
+        observer.goToMessages();
+      })
+    };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 14));
+    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
     });
     sidebar.addButton("Browse Recipes", e -> {
       clearAllInput();
@@ -116,15 +162,12 @@ public class AddRecipeView {
       clearAllInput();
       observer.goToHelp();
     });
-    sidebar.addHyperlink("Log Out", e -> {
-      clearAllInput();
-      observer.userLogout();
-    });
-
-    sidebar.setActiveButton("Add a Recipe");
-        
-    // Add the sidebar to the view
-    sidebar.finalizeLayout();
+    
+    HBox logoutHelpBox = new HBox(10);
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
     view.setLeft(sidebar);
 
 
@@ -179,7 +222,7 @@ public class AddRecipeView {
     Button addDirectionLineButton = new Button("Add Direction");
     addDirectionLineButton.setStyle(
         "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addDirectionLineButton.setFont(Font.font("Roboto", 14));
 
     // ListView for displaying added direction lines and delete the selected
@@ -382,7 +425,7 @@ public class AddRecipeView {
     Button addTagButton = new Button("Add Tag");
     addTagButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addTagButton.setFont(Font.font("Roboto", 14));
 
     // Define tagslist
@@ -505,13 +548,13 @@ public class AddRecipeView {
     alert.setContentText(message);
     // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
-        + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: "
+        + "#F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B;"
-          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
+          + "-fx-padding: 5 10 5 10;");
     });
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");

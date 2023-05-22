@@ -33,7 +33,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
- * The messages view class for the application.
+ * View for the messages.
  */
 public class MessagesView {
   private BorderPane view;
@@ -81,132 +81,26 @@ public class MessagesView {
    *
    * @param displayName the display name of the user
    */
-  public void initLayout(String displayName) {
-    Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
-    sidebar.addHyperlink("Help", e -> observer.goToHelp());
-    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
-    sidebar.setActiveButton("Messages");
-    sidebar.finalizeLayout();
-    view.setLeft(sidebar);
-    splitPane = new SplitPane();
-    splitPane.getItems().addAll(usersView, messagesView);
-    splitPane.setPrefSize(1300, 650);
-    splitPane.setDividerPositions(0.25f);
-    view.setCenter(splitPane);
-    Label title = new Label("Messages");
-    title.setStyle("-fx-text-fill: #69a486;-fx-padding: 0 0 0 50;");
-    title.setFont(Font.font("Roboto", FontWeight.BOLD, 32));
-    VBox titleBox = new VBox();
-    titleBox.getChildren().addAll(title, splitPane);
-    titleBox.setAlignment(Pos.TOP_LEFT);
-    titleBox.setPadding(new Insets(20, 20, 0, 20));
-    titleBox.setSpacing(10);
-    view.setCenter(titleBox);
-    usersView.setStyle("-fx-background-color: #3D405B;");
-    messagesView.setStyle("-fx-background-color: #3D405B;");
-    //set listview when select a cell color to white
-    usersView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
-    messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
-
-  }   
-
-  /** Show conversations.
-   *
-   * @param conversations the conversations to show
-   */
-  public void showConversations(ArrayList<Conversation> conversations) {
-    usersView.getItems().clear();
-    for (Conversation conversation : conversations) {
-      usersView.getItems().add(createUserView(conversation));
-    }
-  }
-
-  /** Show users that has a conversation with the user.
-   *
-   * @param conversation the conversation to show
-   * @return the user view
-   */
-private VBox createUserView(Conversation conversation) {
-    VBox userBox = new VBox();
-    Text otherUser = new Text("  " + observer.getDisplayNameByUsername(conversation.getOtherUsername()));
-    Text unreadCount = new Text("Unread messages: " + conversation.countUnreadReceivedMessages(observer.getUsername()));
-    otherUser.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
-    unreadCount.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
-
-    // Add the read dot if there are unread received messages
-    if (conversation.countUnreadReceivedMessages(observer.getUsername()) > 0) {
-      Circle readDot = new Circle(5);
-      readDot.setFill(Color.RED);
-      HBox readDotBox = new HBox(readDot);
-      readDotBox.setAlignment(Pos.TOP_RIGHT);
-      userBox.getChildren().add(readDotBox);
-    }
-
-    ImageView envelopeIcon;
-    if (conversation.allMessagesSentByUser(observer.getUsername())) {
-      if (allSentMessagesRead(conversation, observer.getUsername())) {
-        envelopeIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/sentread.png")));
-      } else {
-        envelopeIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/sent.png")));
-      }
-    } else if (conversation.hasUnreadReceivedMessages(observer.getUsername())) {
-      envelopeIcon = new ImageView(close);
-    } else {
-      envelopeIcon = new ImageView(open);
-    }
-    envelopeIcon.setFitHeight(30);
-    envelopeIcon.setFitWidth(30);
-    HBox userInfo = new HBox(envelopeIcon, otherUser);
-    userBox.getChildren().add(new VBox(userInfo, unreadCount));
-    userBox.setPadding(new Insets(10, 10, 10, 10));
-
-    userBox.setOnMouseClicked(e -> {
-      if (selectedUserBox != null) {
-        // Reset the background color of the previously selected user
-        selectedUserBox.setStyle("-fx-background-color: transparent;");
-      }
-      selectedUserBox = userBox;
-      // Change the background color of the selected user
-      selectedUserBox.setStyle("-fx-background-color: #F2CC8F;");
-      this.selectedConversation = conversation;
-      showMessages(new ArrayList<>(conversation.getMessages().stream()
-                .sorted(Comparator.comparing(Message::getDateTime))
-                .collect(Collectors.toList())));
-    });
-
-    return userBox;
-  }
-
-
-  /** Shows the messages in the conversation.
-   *
-   * @param messages The messages to show
-   */
-  private void showMessages(ArrayList<Message> messages) {
-    messagesView.getItems().clear();
-    messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
-    if (messages.isEmpty()) {
-      Label noMessagesLabel = new Label("No messages to display.");
-      noMessagesLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
-      noMessagesLabel.setTextFill(Color.web("#FFFFFF"));
-      noMessagesLabel.setPadding(new Insets(20, 20, 20, 20)); 
-      VBox noMessagesBox = new VBox(noMessagesLabel);
-      messagesView.getItems().add(noMessagesBox);
-      return;
-  }
-
-    messagesView.setStyle("-fx-background-color: #F9F8F3;");
-    messages.sort(Comparator.comparing(Message::getDateTime));
-    for (Message message : messages) {
-      messagesView.getItems().add(createMessageBox(message));
+  public void initLayout() {
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(20);
+    sidebar.setMaxWidth(100);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text welcomeTitle = new Text(displayName + ", welcome!");
+    welcomeTitle.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(welcomeTitle);
+    
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+    };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
     }
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);

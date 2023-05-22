@@ -1,15 +1,15 @@
 package cookbook.view;
 
-import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import cookbook.model.Ingredient;
 import cookbook.model.ShoppingList;
 import java.io.File;
@@ -27,6 +27,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.DialogPane;
@@ -36,7 +37,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -107,22 +107,50 @@ public class ShoppingListView {
    * Create side bar menu.
    */
   public void createSideBar() {
-    Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
-    sidebar.addHyperlink("Help", e -> observer.goToHelp());
-    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
+    // create a vbox to hold the menu buttons
+    VBox sidebar = new VBox(20);
+    sidebar.setMaxWidth(100);
+    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
+    Text welcomeTitle = new Text(displayName + ", welcome!");
+    welcomeTitle.setFont(Font.font("Roboto", 28));
+    sidebar.getChildren().add(welcomeTitle);
+    Button[] sidebarButtons = {
+      createButton("Home Page", e -> observer.goToHomePage()),
+      createButton("Browse Recipes", e -> observer.goToBrowser()),
+      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
+      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
+      createButton("My Favorites", e -> observer.goToMyFavorite()),
+      createButton("My Shopping List", e -> observer.goToShoppingList()),
+      createButton("Messages", e -> observer.goToMessages()),
+    };
+    for (Button button : sidebarButtons) {
+      sidebar.getChildren().add(button);
+    }
+    Region spacer = new Region();
+    VBox.setVgrow(spacer, Priority.ALWAYS);
+    sidebar.getChildren().add(spacer);
+    Hyperlink logoutButton = new Hyperlink("Logout");
+    logoutButton.setFont(Font.font("Roboto", 14));
+    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    logoutButton.setOnAction(e -> {
+      observer.userLogout();
+    });
+
+    Region hspacer = new Region();  // This will take up as much space as possible
+    HBox.setHgrow(hspacer, Priority.ALWAYS); 
     
-    sidebar.setActiveButton("My Shopping List");
-    sidebar.finalizeLayout();
-        
-    // Add the sidebar to the view
+    Button helpButton = new Button("Help");
+    helpButton.setFont(Font.font("Roboto", 14));
+    helpButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    helpButton.setOnAction(e -> {
+      observer.goToHelp();
+    });
+    
+    HBox logoutHelpBox = new HBox(10);
+    logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
+    logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
+    
+    sidebar.getChildren().add(logoutHelpBox); 
     view.setLeft(sidebar);
   }
   
@@ -164,6 +192,8 @@ public class ShoppingListView {
     generatePdfButton.setOnAction(event -> {
       try {
         generatePdf();
+        showInlineStyledAlert(AlertType.INFORMATION, "Success", "PDF for "
+            + weekNumberLabel.getText() + " shopping list generated.");
       } catch (Exception e) {
         showInlineStyledAlert(AlertType.ERROR,
             "PDF Generation Failed", e.getMessage());
@@ -329,30 +359,35 @@ public class ShoppingListView {
             unitLabel.setAlignment(Pos.CENTER_LEFT);
 
             Button editButton = new Button("Edit quantity");
-            editButton.setStyle("-fx-background-color: white; -fx-text-fill: #3D405B; -fx-effect: null;-fx-cursor: hand");
+            editButton.setStyle("-fx-background-color: white; -fx-text-fill: #3D405B; "
+                + "-fx-effect: null;-fx-cursor: hand");
             editButton.setFont(Font.font("Roboto", 12));
             editButton.setOnAction(e -> {
-              TextInputDialog inputDialog = new TextInputDialog(String.valueOf(ingredient.getQuantity()));
+              TextInputDialog inputDialog = new TextInputDialog(
+                  String.valueOf(ingredient.getQuantity()));
               inputDialog.setTitle("Edit Ingredient Quantity");
-              inputDialog.setHeaderText("Enter the new quantity for "+ ingredient.getName());
+              inputDialog.setHeaderText("Enter the new quantity for " + ingredient.getName());
               inputDialog.setContentText("Quantity:");
   
               Optional<String> result = inputDialog.showAndWait();
               result.ifPresent(newQuantity -> {
                 try {
                   float parsedQuantity = Float.parseFloat(newQuantity);
-                  observer.editIngredientInShoppingList(ingredient.getName(), parsedQuantity, weekNumber);
+                  observer.editIngredientInShoppingList(ingredient.getName(),
+                      parsedQuantity, weekNumber);
                   quantityLabel.setText(String.valueOf(parsedQuantity));
                   observer.updateShoppingList();
                 } catch (NumberFormatException ex) {
-                  showInlineStyledAlert(AlertType.ERROR, "Invalid Input", "Please enter a valid number for the ingredient quantity.");
+                  showInlineStyledAlert(AlertType.ERROR, "Invalid Input",
+                      "Please enter a valid number for the ingredient quantity.");
                 }
               });
             });
 
             quantityBox.getChildren().addAll(quantityLabel, editButton);
             Button deleteButton = new Button("Delete");
-            deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+            deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; "
+                + "-fx-text-fill: #E07A5F; -fx-cursor: hand; ");
             deleteButton.setFont(Font.font("Roboto", 18));
             deleteButton.setOnAction(e -> {
               observer.deleteIngredientInShoppingList(ingredient.getName(), weekNumber);
@@ -365,7 +400,8 @@ public class ShoppingListView {
             // Add a pane to push the buttons to the right side
             Pane spacer = new Pane();
             HBox.setHgrow(spacer, Priority.ALWAYS);
-            ingredientLine.getChildren().addAll(nameLabel, quantityBox, unitLabel,  spacer,  deleteButton);
+            ingredientLine.getChildren().addAll(nameLabel, quantityBox,
+                unitLabel,  spacer,  deleteButton);
             ingredientListContainer.getChildren().add(ingredientLine);
           
           }
@@ -430,11 +466,13 @@ public class ShoppingListView {
     alert.setContentText(message);
     // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; "
+        + "-fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B; "
+          + "-fx-text-fill: white; -fx-padding: 5 10 5 10;");
     });
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
@@ -446,19 +484,23 @@ public class ShoppingListView {
    *
    * @throws Exception if the file cannot be created
    */
-  public void generatePdf() throws Exception {
+  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
+    Button button = new Button(text);
+    button.setMaxWidth(Double.MAX_VALUE);
+    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
+    button.setFont(Font.font("Roboto", 18));
+    button.setOnAction(eventHandler);
+    return button;
+  }
 
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setInitialFileName("ShoppingList" + weekNumberLabel.getText() + ".pdf");
-    fileChooser.getExtensionFilters().addAll(
-        new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
-    );
-    File selectedFile = fileChooser.showSaveDialog(view.getScene().getWindow());
-    if (selectedFile == null) {
-        // User cancelled the file dialog
-        return;
-    }
-    PdfWriter writer = new PdfWriter(new FileOutputStream(selectedFile));
+  /**
+   * Generate a pdf of a shopping list for a week.
+   *
+   * @throws Exception ignore all exceptions
+   */
+  public void generatePdf() throws Exception {
+    PdfWriter writer = new PdfWriter(new FileOutputStream("ShoppingList"
+        + weekNumberLabel.getText() + ".pdf"));
     PdfDocument pdf = new PdfDocument(writer);
     Document document = new Document(pdf);
 
@@ -476,18 +518,25 @@ public class ShoppingListView {
 
     document.add(new Paragraph("\n"));
 
-    Table table = new Table(UnitValue.createPercentArray(new float[]{5, 2, 3})).useAllAvailableWidth();
-    table.addCell(new Cell().add(new Paragraph("Ingredient Name").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
-    table.addCell(new Cell().add(new Paragraph("Quantity").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
-    table.addCell(new Cell().add(new Paragraph("Measurement Unit").setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+    Table table = new Table(
+        UnitValue.createPercentArray(new float[]{5, 2, 3})).useAllAvailableWidth();
+    table.addCell(new Cell().add(new Paragraph("Ingredient Name")
+        .setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+    table.addCell(new Cell().add(new Paragraph("Quantity")
+        .setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
+    table.addCell(new Cell().add(new Paragraph("Measurement Unit")
+        .setFontColor(ColorConstants.GRAY)).setBorder(Border.NO_BORDER));
 
 
     for (ShoppingList shoppingList : shoppingLists) {
       if (shoppingList.getWeekNumber() == getWeekNumber(currentWeekStart)) {
         for (Ingredient ingredient : shoppingList.getIngredients()) {
-          table.addCell(new Cell().add(new Paragraph(ingredient.getName())).setBorder(Border.NO_BORDER));
-          table.addCell(new Cell().add(new Paragraph(String.valueOf(ingredient.getQuantity()))).setBorder(Border.NO_BORDER));
-          table.addCell(new Cell().add(new Paragraph(ingredient.getMeasurementUnit())).setBorder(Border.NO_BORDER));
+          table.addCell(new Cell().add(new Paragraph(ingredient.getName()))
+              .setBorder(Border.NO_BORDER));
+          table.addCell(new Cell().add(new Paragraph(String.valueOf(ingredient.getQuantity())))
+              .setBorder(Border.NO_BORDER));
+          table.addCell(new Cell().add(new Paragraph(ingredient.getMeasurementUnit()))
+              .setBorder(Border.NO_BORDER));
         }
       }
     }
