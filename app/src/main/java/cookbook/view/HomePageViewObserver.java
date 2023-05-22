@@ -25,13 +25,10 @@ public interface HomePageViewObserver {
 
   void goToMessages();
 
-  void handlePasswordChange(String oldPassword, String newPassword);
-
   void goToHomePage();
-
-  void changeDisplayName(String newDisplayName);
 
   void goToHelp();
 
-  void goToAdmin();
+  void goToAccount();
+
 }

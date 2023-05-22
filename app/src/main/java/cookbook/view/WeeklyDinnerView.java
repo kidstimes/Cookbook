@@ -2,15 +2,12 @@ package cookbook.view;
 
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
-import cookbook.view.WeeklyDinnerViewObserver;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,7 +29,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 /**
  * The view for the weekly dinner page.
@@ -104,7 +100,6 @@ public class WeeklyDinnerView {
     Region spacer = new Region();
     VBox.setVgrow(spacer, Priority.ALWAYS);
     sidebar.getChildren().add(spacer);
-    HBox logoutHelpBox = new HBox(10);
     Hyperlink logoutButton = new Hyperlink("Logout");
     logoutButton.setFont(Font.font("Roboto", 14));
     logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
@@ -122,6 +117,7 @@ public class WeeklyDinnerView {
       observer.goToHelp();
     });
     
+    HBox logoutHelpBox = new HBox(10);
     logoutHelpBox.getChildren().addAll(logoutButton, hspacer, helpButton);
     logoutHelpBox.setAlignment(Pos.CENTER_LEFT);  
     
@@ -143,7 +139,7 @@ public class WeeklyDinnerView {
 
     // Add title above the weekly menu
     Label titleLabel = new Label("Weekly Dinner List");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
     centerView.getChildren().add(titleLabel);
 
     VBox weekNavigation = createWeekNavigation();
@@ -362,7 +358,8 @@ public class WeeklyDinnerView {
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; "
+              + "-fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
@@ -382,21 +379,6 @@ public class WeeklyDinnerView {
     }
   }
   
-  /** Create a button with the given text and event handler.
-   *
-   * @param text the text to display on the button
-   * @param eventHandler the event handler to handle the button click
-   * @return the button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setMaxWidth(Double.MAX_VALUE);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setOnAction(eventHandler);
-    return button;
-  }
-  
   private int getWeekNumber(LocalDate date) {
     WeekFields weekFields = WeekFields.of(Locale.getDefault());
     return date.get(weekFields.weekOfWeekBasedYear());
@@ -410,15 +392,15 @@ public class WeeklyDinnerView {
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(message);
-    // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; "
+        + "-fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
+      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
+          + "-fx-padding: 5 10 5 10;");
     });
-    // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();

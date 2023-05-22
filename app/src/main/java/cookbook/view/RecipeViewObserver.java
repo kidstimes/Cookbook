@@ -52,5 +52,11 @@ public interface RecipeViewObserver {
 
   void goToHelp();
 
+  void goToAccount();
+
+  boolean sendMessageToUser(String selectedUser, Recipe recipe, String message);
+
+  String getDisplayNameByUsername(String createrUsername);
+
 
 }

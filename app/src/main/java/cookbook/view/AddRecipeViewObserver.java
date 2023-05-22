@@ -35,4 +35,6 @@ public interface AddRecipeViewObserver {
 
   void goToHelp();
 
+  void goToAccount();
+
 }

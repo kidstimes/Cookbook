@@ -32,6 +32,8 @@ public class User {
     this.weeklyDinners = new ArrayList<>();
     this.favorites = new ArrayList<>(); 
     this.shoppingLists = new ArrayList<>();
+    this.receivedMessages = new ArrayList<>();
+    this.sentMessages = new ArrayList<>();
   }
 
   public User(String username, String displayName) {
@@ -317,6 +319,49 @@ public class User {
   public ArrayList<ShoppingList> getShoppingLists() {
     return shoppingLists;
   }
-  
-  
+
+  /**
+   * Get the messages that have been received by the user (sent by other users).
+   *
+   * @return the received messages of the user
+   */
+  public ArrayList<Message> getReceivedMessages() {
+    return receivedMessages;
+  }
+
+  /**
+   * Get the messages that have been sent by the user (received by other users).
+   *
+   * @return the messages sent by the user to other users
+   */
+  public ArrayList<Message> getSentMessages() {
+    return sentMessages;
+  }
+
+
+  /**
+   * Add a message to the received messages of the user.
+   *
+   * @param messageId the unique id of the message
+   * @param recipe the recipe of the received message
+   * @param text the text of the received message
+   * @param sender the user that sent the message
+   */
+  /*public void receiveMessage(int messageId, Recipe recipe, String text, String senderName, boolean is_read) {
+    this.receivedMessages.add(new Message(messageId, recipe, text, senderName, username, is_read ));
+  }
+
+  /**
+   * Add a message to the sent messages of the user.
+   *
+   * @param messageId the unique id of the message
+   * @param recipe the recipe being sent with the message
+   * @param text the text being sent with the message
+   * @param receiver the user that received the message
+   */
+  /*public void sendMessage(int messageId, Recipe recipe, String text, User receiver, boolean is_read) {
+    this.sentMessages.add(new Message(messageId, recipe, text, username, receiver.getUsername(), is_read));
+  }*/
+
+
 }

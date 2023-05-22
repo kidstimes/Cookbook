@@ -45,6 +45,7 @@ public interface BrowserViewObserver {
 
   void goToHelp();
 
+  void goToAccount();
 
 
 
