@@ -423,4 +423,3 @@ private VBox createUserView(Conversation conversation) {
         .allMatch(Message::isRead);
   }
 }
-

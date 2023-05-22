@@ -213,26 +213,141 @@ VALUES
 ('Olive Oil', 9, 2, 'tablespoons');
 INSERT INTO recipe_tags (recipe_id, tag_id)
 VALUES (9, 1), (9, 2), (9, 4);
-
-INSERT INTO HelpSection(id, title) VALUES (1, 'Getting Started');
-INSERT INTO HelpSection(id, title) VALUES (2, 'Recipe Management');
-INSERT INTO HelpSection(id, title) VALUES (3, 'Customization and Organization');
-INSERT INTO HelpSection(id, title) VALUES (4, 'Shopping List and Sharing');
-INSERT INTO HelpSection(id, title) VALUES (5, 'Help and Administration');
-
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (1, 'Welcome', 'Welcome to Cookbook, a digital cookbook application for desktop computers. This help page will guide you through the features and functionalities of the application. If you have any questions or need assistance, refer to the sections below.', 1);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (2, 'Starting the Application', 'To start the Cookbook application, simply open the application on your desktop computer. Upon launching, you will be greeted with a short animation.', 1);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (3, 'Logging In', 'After the animation, you will be prompted to log in. Enter your login credentials to access your account. If you are a new user, contact the administrator to create an account for you or register yourself, the password must be longer than 5. If the username already exists, it will tell you the username has been taken.', 1);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (4, "Viewing Favorite Recipes", "Once logged in, you can quickly access your favorite recipes. These are the recipes you have marked as favorites for easy reference. Simply click on the Favorites section to view and access your favorite recipes. You can click the star or unstar to mark it as a favorite or not.", 2);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (5, "Creating Weekly Dinner Lists", "To plan your meals for the week, you can create weekly dinner lists. These lists allow you to organize and schedule your meals in advance. Click on the Weekly Dinner section to create and manage your weekly dinner plans. You can create the weekly dinner by using the available recipes. You can also edit the weekly dinner; it always shows the current week as a start page and can be chosen from marks on both sides or by writing the week number.", 2);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (6, "Searching for Recipes", "If you are looking for a specific recipe, you can use the search functionality. There are different search options available: Search by recipe name: Enter the name of the recipe you are looking for. Search by ingredient(s): Enter one or more ingredients to find recipes containing those ingredients. Search by tag(s): Select from a list of predefined tags or enter your own to find recipes with specific characteristics.", 2);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (7, "Browsing All Recipes", "To explore all the available recipes, click on the Browse Recipes section. This will provide you with a list of all the recipes in the application.", 2);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (8, "Adding a New Recipe", "If you have a new recipe, click the Add Recipe option. Fill in the required details, such as the recipe name, short description, ingredients, and detailed preparation steps(cannot be null for each). You can also assign tags to the recipe to make it easier to find later.", 2);
-INSERT INTO HelpSubsection(id, title, text, section_id) VALUES (9, "Viewing Recipe Details", "When you find a recipe you are interested in, click on it to view its full details. The recipe will be displayed with formatting, including bold and larger text for the name, italics for the short description, and lists for ingredients and preparation steps.", 2);
-
-
-
-
-
-
+INSERT INTO recipes (name, description, instructions, user_id)
+VALUES
+('Chicken Caesar Salad', 'A classic chicken salad recipe, featuring crunchy croutons and a creamy, garlic dressing. Ideal for lunch with friends.', '1. Heat oven to 200C/fan 180C/gas 6. Tear the ciabatta into big, ragged croutons or, if you prefer, cut with a bread knife. Spread over a large baking sheet or tray and sprinkle over 2/3rds of the olive oil. \n2. Rub the oil into the bread and season with a little salt if you like (sea salt crystals are best for this). Bake for 8-10 mins, turning the croutons a few times during cooking so they brown evenly. \n3. Rub the skinless, boneless chicken breasts with the rest of the olive oil, season. Place pan over a medium heat for 1 min, until hot, but not smoking. Lay the chicken on the pan (it will sizzle if its hot enough) and leave for 4 mins. \n4. Turn the chicken, then cook for 4 mins more. Check if its cooked by poking the tip of a sharp knife into the thickest part; there should be no sign of pink and juices will run clear. \n5. Bash the garlic cloves with the flat of a knife and peel off the skin. Crush with a garlic crusher. Mash the anchovies with a fork against the side of a small bowl. \n6. Grate a handful of parmesan cheese and mix with the garlic, anchovies, mayonnaise and white wine vinegar. Season to taste. It should be the consistency of yogurt if yours is thicker, stir in a few tsps water to thin it. \n7. Shave the cheese with a peeler. Tear the romaine lettuce into large pieces and put in a large bowl. Pull chicken into bite-size strips and scatter half over the leaves, along with half the croutons. \n8. Add most of the dressing and toss with your fingers. Scatter the rest of the chicken and croutons, then drizzle with the remaining dressing. Sprinkle the parmesan on top and serve straight away.', 1),
+('Double Chocolate Cookies', 'This recipe makes the perfect small batch double chocolate cookies so you do not need to share any cookies with anyone else!', '1. Preheat the oven to 350°F and line a baking sheet with parchment paper. Set aside. \n2. Place the softened butter and brown sugar in a medium bowl. Use a fork or a whisk to mix together until smooth and homogenous. \n3. Scrape down the sides of the bowl and add the egg yolky and vanilla extract. Mix until combined. \n4. Scrape down the bowl and add the cocoa powder, flour, baking soda and salt. Mix until just combined and no streaks of flour remain. \n5. Fold in chocolate chips until evenly distributed. \n6. Divide the cookie dough into 2 big cookies and place onto your prepared cookie sheet 2 inches apart. \n7. Bake at 350°F for 11 minutes or until the edges are set but the centers are still gooey. Allow to cool for 10 minutes on the baking sheet until set. Enjoy!', 1),
+('Chipotle Grilled Tofu', 'Tofu gets quick-marinated in an herby, citrus marinade reminiscent of Mojo sauce but with smoky notes, then grilled to perfection. The tofu does not stick and it turns out perfectly chewy and crispy!', '1. Drain the tofu. Slice the tofu crosswise into ⅓-inch slabs, about 8 to 11 slices per block. Arrange on a paper towel-lined cutting board and add a few paper towels on top. Weight with a heavy cookbook or cast-iron skillet. Press for 15 minutes to remove excess water. \n2. Make the marinade: To a blender or food processor, add the cilantro, chipotle peppers and adobo sauce, garlic, orange zest, orange juice, lime juice, olive oil, sugar, cumin, salt, and black pepper to taste. Blend until relatively smooth. Season to taste with more salt and pepper needed. Reserve 4 tablespoons of the marinade. \n3. Transfer tofu slabs to a shallow dish or pan and pour the rest of the marinade on top, using a pastry brush to evenly coat the tofu. Allow to marinate for at least 15 minutes at room temperature, or up to 1 hour in the fridge. \n4. Prepare the grill. Preheat a gas grill (between medium and medium-high) with the lid on for at least 10 minutes to get the grates really hot. Scrub down with a heavy-duty grill brush to remove any gunk or drippings. \n5. Set a small bowl with a few tablespoons of oil near the grill and oil up a wad of paper towels in the oil. Use a set of tongs to rub the preheated grill grates with the oil-soaked towels. Let the oil smoke for 40 seconds or so, then rub with oil again. Repeat three to four times total to build up a good layer of seasoning. \n6. Immediately before or as soon as you add the tofu, turn the burners directly under the tofu to low heat and close the lid. Grill the tofu for 8 to 10 minutes, until nice grill marks form. Using a pair of tongs and/or a thin metal spatula, carefully flip each tofu slab and grill for another 7 to 10 minutes. \n7. Once the tofu is grilled, brush it with the reserved marinade.', 1),
+('Soy Sauce Fried Rice', 'Make perfect soy sauce fried rice in just 5 minutes! This recipe calls for basic ingredients, and easy preparation.', '1. Gently loosen the rice grains with a fork. Set aside. \n2. In a small bowl, mix light soy sauce, dark soy sauce, sesame oil, sugar, and white pepper. Set aside. \n3. Heat a wok/skillet over high heat until hot, then pour in oil. Stir in minced garlic and fry until it turns a little golden. \n4. Add the cooked rice. Mix with the garlic then use a spatula to spread it into a thin layer. Leave to fry undisturbed for around 20 seconds. Then flip and toss to heat further (loosen any lumps with the spatula). \n5. Once the rice becomes piping hot, pour the sauce mixture over and toss well to coat the grains evenly. \n6. Stir in chopped scallions before removing the wok/skillet from the heat. Dish out and serve immediately.', 1),
+('Coconut Mango Passion Fruit Trifle', 'This delicious dessert is made with a buttery biscuit base and topped with creamy coconut whip and a sweet and fruity tropical topping. It is a light dessert that is perfect to enjoy in the spring and summer months.', '1. Place a sieve over a saucepan and strain out the passion fruit seeds. Set the seeds aside if desired, to use for garnish. \n2. With the saucepan over medium-high heat, add the mango and sugar. Cook at a gentle simmer for 4 minutes, until slightly thickened. Set aside to cool. \n3. In a large bowl, use an electric hand mixer to whip the coconut cream for a few minutes. Then add the sugar and vanilla and whip again. \n4. Add the cookies and butter to a food processor and blend into a crumb. Then add 2 Tbsp of the cookie crumbs to each serving glass and press down to form a crust on the bottom. \n5. In the now-empty food processor, blend the mango mixture until puréed. \n6. Spoon a heaping 0.25 cup of the coconut whipping cream on top of the cookie layer, followed by a tablespoon of the passion fruit mixture. Garnish as desired, and enjoy!', 1),
+('Vanilla Crème Brûlée', 'Five simple ingredients: cream, vanilla, salt, eggs and sugar make for an exquisitely rich and elegant dessert. Most crème brûlée recipes require the use of a small propane torch to achieve the crackly sugar top, but this version offers a simpler (and safer) solution: your ovens broiler.', '1. Heat oven to 325 degrees. In a saucepan, combine cream, vanilla bean and salt and cook over low heat just until hot. Let sit for a few minutes, then discard vanilla bean. \n2. In a bowl, beat yolks and sugar together until light. Stir about a quarter of the cream into this mixture, then pour sugar-egg mixture into cream and stir. Pour into four 6-ounce ramekins and place ramekins in a baking dish; fill dish with boiling water halfway up the sides of the dishes. Bake for 30 to 40 minutes, or until centers are barely set. Cool completely. Refrigerate for several hours and up to a couple of days. \n3. When ready to serve, top each custard with about a teaspoon of sugar in a thin layer. Place ramekins in a broiler 2 to 3 inches from heat source. Turn on broiler. Cook until sugar melts and browns or even blackens a bit, about 5 minutes. Serve within two hours.', 1),
+('Crêpes', 'This simple but delicious crêpe recipe can be made in minutes from ingredients that everyone has on hand.', '1. Whisk flour and eggs together in a large mixing bowl; gradually add in milk and water, stirring to combine. Add salt and melted butter; beat until smooth. \n2. Heat a lightly oiled griddle or frying pan over medium-high heat. Pour or scoop the batter onto the griddle, using approximately 1/4 cup for each crêpe. Tilt the pan with a circular motion so that the batter coats the surface evenly. \n3. Cook until the top of the crêpe is no longer wet and the bottom has turned light brown, 1 to 2 minutes. Run a spatula around the edge of the skillet to loosen the crêpe; flip and cook until the other side has turned light brown, about 1 minute more. Serve hot.', 1),
+('Braised Tofu Sichuan Style', 'Braised tofu tastes amazing when made in Sichuan style. Chewy outside and soft inside, the tofu has a spongy texture that helps to soak up all the flavour from the sauce.', '1. Slice the tofu into triangle pieces, about 2 cm thick. Pat dry their surface with kitchen paper. \n2. In a flat-bottomed wok or a frying pan (preferably a deep one as it will be used for the braising step later), heat up oil enough to cover about half the thickness of the tofu. Test with the tip of a chopstick. If bubbles appear around it, the oil is hot enough. Gently slide in the tofu pieces one by one. Turn down the heat to medium and leave to fry. Flip over once the first side turns golden. When both sides are done, transfer to a plate lined with kitchen paper to absorb excess oil. \n3. Pour out most of the oil leaving just a little in the wok/pan. Fry garlic and Sichuan chili bean paste over medium heat until fragrant. \n4. Add shiitake mushroom, the mushroom water, dark soy sauce and sugar. Bring it to a boil. \n5. Put in the fried tofu and chili pepper. Stir around then cover with a lid. Leave to braise over low heat for 2 mins. Add a little more water if needed. \n6. Pour in the starch water. Give everything a quick stir then garnish with scallions. Dish out and serve immediately.', 1),
+('Chinese Chicken Noodle Soup', 'An umami-rich, all-in-one dish made with simple ingredients, Chinese chicken noodle soup is easy to make and tastes delectable.', '1. Put dried shiitake mushrooms in a large bowl. Pour in 6 cups (1400ml) of water. Leave to soak overnight (or at least 4 hours). \n2. Put the chicken legs (or thighs) into a pot. Add the rehydrated mushrooms, along with the soaking water (leave out any residue at the bottom of the bowl). Bring to a full boil. Skim off any foam floating on the surface. \n3. Add Shaoxing rice wine, ginger, and the white part of the scallions. Turn the heat to the lowest. Cover the pot with a tight lid. Leave to gently simmer for 30 minutes or so until the meat becomes very tender. \n4. Transfer the chicken legs to a plate to cool. Discard the ginger and scallions. Add light soy sauce, salt, white pepper, and sesame oil to the broth. Taste to adjust if necessary. \n5. Once the chicken is cool to touch, remove the skin and tear the meat into bite-sized shreds. \n6. In a separate pot, bring plenty of water to a full boil. Cook the noodles over medium-high heat until fully cooked. At the very end of this process, add bok choy for a quick blanch (20 seconds). \n7. Drain the noodles and bok choy. Place them into serving bowls. Add the broth and mushrooms. Top with the shredded chicken and the green part of the scallions (finely chopped). Optionally, drizzle some chili oil over.', 1),
+('Falafel', 'Authentic falafel recipe, crisp outside and tender in the middle; combining chickpeas, fresh herbs, and spices.', '1. Transfer the dried chickpeas to a large bowl and cover them with cold water. Leave them to soak for at least 8 hours or overnight (up to 24 hours). Then drain and rinse them well. \n2. In a food processor, roughly chop the onion and garlic. \n3. Add the chickpeas and pulse into a crumb consistency before adding the cilantro and parsley and pulse a few more times into a homogenous mix. Be careful not to over-process it into a paste. There should be some texture. \n4. Transfer the falafel dough back to the large bowl and combine with the falafel spice and salt, mixing with a spoon. \n5. When you are ready to cook the falafel, add the baking powder and mix. Cover and chill the bowl in the refrigerator for 30 minutes (an hour if you have the time) before frying. \n6. To form the falafel, you can use a specific falafel scoop or a spoon (and hand-shape them into balls or slightly flattened disks). Be gentle, so they stay fluffy. \n7. In a large, heavy-based skillet, add 1.5-2 inches of oil (you need enough to cover the falafels) and heat over high heat until it gently bubbles). \n8. Carefully lower 5-6 balls/patties into the oil (cook in batches to avoid overcrowding the pan). Cook them for 3-4 minutes, flipping and continuing to cook until golden brown all over. \n9. Use a slotted spoon to remove them from the oil onto a layer of paper towels to drain.', 1);
+INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit)
+VALUES
+('Ciabatta', 10, 0.5, 'loaf(s)'),
+('Olive oil', 10, 1.5, 'tablespoon(s)'),
+('Chicken breast', 10, 1, 'piece(s)'),
+('Romaine lettuce', 10, 1, 'bunche(s)'),
+('Garlic', 10, 1, 'clove(s)'),
+('Anchovy', 10, 1, 'piece(s)'),
+('Parmesan', 10, 1, 'block(s)'),
+('Mayonnaise', 10, 2.5, 'tablespoon(s)'),
+('White wine vinegar', 10, 0.5, 'tablespoon(s)'),
+('Unsalted butter', 11, 2, 'tablespoon(s)'),
+('Brown sugar', 11, 4, 'tablespoon(s)'),
+('Egg', 11, 1, 'yolk(s)'),
+('Vanilla extract', 11, 0.25, 'teaspoon(s)'),
+('Cocoa powder', 11, 1.5, 'tablespoon(s)'),
+('Baking soda', 11, 0.125, 'teaspoon(s)'),
+('Salt', 11, 0.125, 'teaspoon(s)'),
+('All purpose flour', 11, 4, 'tablespoon(s)'),
+('Chocolate chips', 11, 3, 'tablespoon(s)'),
+('Tofu', 12, 1, 'block(s)'),
+('Cilantro', 12, 0.75, 'cup(s)'),
+('Chipotle peppers in adobo', 12, 2, 'piece(s)'),
+('Adobo sauce', 12, 2, 'teaspoon(s)'),
+('Garlic', 12, 6, 'clove(s)'),
+('Orange zest', 12, 2, 'teaspoon(s)'),
+('Orange juice', 12, 0.3, 'cup(s)'),
+('Lime juice', 12, 2.5, 'tablespoon(s)'),
+('Olive oil', 12, 0.25, 'cup(s)'),
+('Sugar', 12, 1, 'tablespoon(s)'),
+('Cumin', 12, 1, 'teaspoon(s)'),
+('Salt', 12, 1, 'teaspoon(s)'),
+('Black pepper', 12, 0.125, 'teaspoon(s)'),
+('Cooked white rice', 13, 3, 'cup(s)'),
+('Light soy sauce', 13, 1, 'tablespoon(s)'),
+('Dark soy sauce', 13, 0.5, 'tablespoon(s)'),
+('Sesame oil', 13, 0.5, 'teaspoon(s)'),
+('Sugar', 13, 0.5, 'teaspoon(s)'),
+('White pepper', 13, 0.25, 'teaspoon(s)'),
+('Vegetable oil', 13, 1, 'tablespoon(s)'),
+('Garlic', 13, 4, 'clove(s)'),
+('Scallion', 13, 1, 'stalk(s)'),
+('Passion fruit', 14, 4, 'tablespoon(s)'),
+('Frozen mango chunks', 14, 3, 'tablespoon(s)'),
+('Granulated sugar', 14, 0.5, 'teaspoon(s)'),
+('Coconut cream', 14, 0.3, 'cup(s)'),
+('Powdered sugar', 14, 2, 'teaspoon(s)'),
+('Vanilla extract', 14, 0.25, 'teaspoon(s)'),
+('Biscoff cookie', 14, 7, 'piece(s)'),
+('Vegan butter', 14, 2, 'teaspoon(s)'),
+('Heavy cream', 15, 1, 'cup(s)'),
+('Vanilla extract', 15, 0.5, 'teaspoon(s)'),
+('Salt', 15, 0.125, 'teaspoon(s)'),
+('Egg', 15, 2.5, 'yolk(s)'),
+('Sugar', 15, 0.25, 'cup(s)'),
+('All purpose flour', 16, 0.5, 'cup(s)'),
+('Egg', 16, 1, 'whole'),
+('Milk', 16, 0.25, 'cup(s)'),
+('Water', 16, 0.25, 'cup(s)'),
+('Salt', 16, 0.125, 'teaspoon(s)'),
+('Butter', 16, 1, 'tablespoon(s)'),
+('Tofu', 17, 7, 'ounce(s)'),
+('Garlic', 17, 3, 'clove(s)'),
+('Sichuan chili bean paste', 17, 1.5, 'tablespoon(s)'),
+('Dried shiitake mushroom', 17, 4, 'piece(s)'),
+('Water', 17, 0.5, 'cup'),
+('Dark soy sauce', 17, 0.5, 'teaspoon(s)'),
+('Sugar', 17, 0.5, 'teaspoon(s)'),
+('Fresh chili pepper', 17, 4, 'piece(s)'),
+('Tapioca starch', 17, 1, 'teaspoon(s)'),
+('Scallion', 17, 1, 'stalk(s)'),
+('Dried shiitake mushroom', 18, 4, 'piece(s)'),
+('Water', 18, 3, 'cup(s)'),
+('Chicken leg', 18, 1, 'piece(s)'),
+('Shaoxing rice wine', 18, 1, 'tablespoon(s)'),
+('Ginger', 18, 2, 'slice(s)'),
+('Scallion', 18, 1, 'stalk(s)'),
+('Light soy sauce', 18, 1, 'teaspoon(s)'),
+('Salt', 18, 0.25, 'teaspoon(s)'),
+('Ground white pepper', 18, 0.06, 'teaspoon(s)'),
+('Sesame oil', 18, 0.13, 'teaspoon(s)'),
+('Noodles', 18, 2, 'portion(s)'),
+('Bok choy', 18, 1, 'head(s)'),
+('Chickpeas', 19, 2, 'cup(s)'),
+('Onion', 19, 0.5, 'medium'),
+('Garlic', 19, 1.5, 'clove(s)'),
+('Cilantro', 19, 0.75, 'cup(s)'),
+('Parsley', 19, 0.75, 'cup(s)'),
+('Falafel spice', 19, 0.5, 'tablespoon(s)'),
+('Salt', 19, 0.25, 'teaspoon(s)'),
+('Baking powder', 19, 0.25, 'teaspoon(s)'),
+('Sunflower oil', 19, 2, 'cup(s)');
+INSERT INTO recipe_tags (recipe_id, tag_id)
+VALUES
+(10, 6),
+(11, 2),
+(11, 7),
+(12, 1),
+(12, 2),
+(12, 3),
+(12, 4),
+(12, 5),
+(13, 1),
+(13, 2),
+(13, 3),
+(13, 6),
+(14, 1),
+(14, 2),
+(14, 3),
+(14, 7),
+(15, 4),
+(15, 7),
+(16, 7),
+(17, 1),
+(17, 2),
+(17, 3),
+(17, 4),
+(17, 6),
+(18, 3),
+(18, 6),
+(19, 1),
+(19, 2),
+(19, 3),
+(19, 4),
+(19, 5);
 

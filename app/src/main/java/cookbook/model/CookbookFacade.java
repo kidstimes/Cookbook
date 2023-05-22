@@ -1,8 +1,6 @@
 package cookbook.model;
 
 import cookbook.database.Database;
-import cookbook.view.RecipeViewObserver;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,10 +19,8 @@ public class CookbookFacade {
   private User user;
   private Database database;
   private ArrayList<Recipe> recipes;
-  private ArrayList<User> loggedOutUsers;
   private ArrayList<User> allUsers;
   private ArrayList<HelpSection> helpSections;
-
 
   /**
    * Cookbook Constructor.
@@ -32,7 +28,6 @@ public class CookbookFacade {
   public CookbookFacade(Database database) {
     recipes = new ArrayList<Recipe>();
     this.database = database;
-    this.loggedOutUsers = new ArrayList<>();
   }
 
   public void loadAllRecipes() {
@@ -451,7 +446,8 @@ public class CookbookFacade {
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
-    database.editRecipeInDatabase(recipe.getId(), name, description, instructions, ingredients, user.getUsername());
+    database.editRecipeInDatabase(recipe.getId(), name, description,
+        instructions, ingredients, user.getUsername());
   }
 
   /** Add all ingredients of a recipe to the shopping list of the user.
@@ -581,8 +577,12 @@ public class CookbookFacade {
     return user.getSentMessages();
   }
 
-
-	public int getNumberUnreadMessages() {
+  /**
+   * Get the number of unread messages.
+   *
+   * @return the number of unread messages
+   */
+  public int getNumberUnreadMessages() {
     int numberUnreadMessages = 0;
     for (Message message : loadReceivedMessagesFromDatabase()) {
       if (!message.isRead()) {
@@ -590,9 +590,7 @@ public class CookbookFacade {
       }
     }
     return numberUnreadMessages;
-	}
-
-
+  }
 
   public boolean sendMessageToUser(String selectedUser, Recipe recipe, String message) {
     return database.sendMessageToUser(user.getUsername(), selectedUser, recipe.getId(), message);

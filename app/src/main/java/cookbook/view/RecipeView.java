@@ -3,8 +3,8 @@ package cookbook.view;
 import cookbook.model.Comment;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
-import cookbook.model.User;
 import cookbook.model.RecipeEditRecord;
+import cookbook.model.User;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -37,8 +37,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -529,7 +527,8 @@ public class RecipeView {
       String message = messageInputField.getText();
       if (selectedUser != null) {
         if (observer.sendMessageToUser(selectedUser.getUsername(), recipe, message)) {
-          showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success", "Message sent successfully.");
+          showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
+              "Message sent successfully.");
         } else {
           showInlineStyledAlert(Alert.AlertType.ERROR, "Error", "Message failed to send.");
         }
