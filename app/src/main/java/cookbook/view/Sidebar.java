@@ -1,7 +1,6 @@
 package cookbook.view;
 
 import java.util.HashMap;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -60,15 +59,18 @@ public class Sidebar extends VBox {
    */
   public void addButton(String name, EventHandler<ActionEvent> eventHandler) {
     Button button = new Button(name);
-    button.setStyle("-fx-background-color:#F9F8F3 ; -fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
+    button.setStyle("-fx-background-color:#F9F8F3 ; -fx-text-fill:#3D405B; "
+        + "-fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
     button.setFont(Font.font("Roboto", 20));
     button.setMaxWidth(Double.MAX_VALUE);
     button.setPrefHeight(45);
     button.setOnAction(e -> {
       if (activeButton != null) {
-        activeButton.setStyle("-fx-background-color:#F9F8F3 ; -fx-text-fill:#3D405B; -fx-cursor: hand; -fx-padding: 0px 20px 0px 50px;");
+        activeButton.setStyle("-fx-background-color:#F9F8F3 ; "
+            + "-fx-text-fill:#3D405B; -fx-cursor: hand; -fx-padding: 0px 20px 0px 50px;");
       }
-      button.setStyle("-fx-background-color:#F2CC8F; -fx-text-fill:#3D405B; -fx-cursor: hand; -fx-padding: 0px 20px 0px 50px;");
+      button.setStyle("-fx-background-color:#F2CC8F; -fx-text-fill:#3D405B; "
+          + "-fx-cursor: hand; -fx-padding: 0px 20px 0px 50px;");
       activeButton = button;
       eventHandler.handle(e);
     });
@@ -99,9 +101,11 @@ public class Sidebar extends VBox {
     Button button = buttons.get(name);
     if (button != null) {
       if (activeButton != null) {
-        activeButton.setStyle("-fx-background-color: #F9F8F3; -fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
+        activeButton.setStyle("-fx-background-color: #F9F8F3; -fx-text-fill:#3D405B; "
+            + "-fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
       }
-      button.setStyle("-fx-background-color:#F2CC8F; -fx-text-fill:#3D405B; -fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
+      button.setStyle("-fx-background-color:#F2CC8F; -fx-text-fill:#3D405B; "
+          + "-fx-cursor: hand;-fx-padding: 0px 20px 0px 50px;");
       activeButton = button;
     }
   }

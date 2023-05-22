@@ -3,8 +3,8 @@ package cookbook.view;
 import cookbook.model.Comment;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
-import cookbook.model.User;
 import cookbook.model.RecipeEditRecord;
+import cookbook.model.User;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -37,8 +37,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -529,7 +527,8 @@ public class RecipeView {
       String message = messageInputField.getText();
       if (selectedUser != null) {
         if (observer.sendMessageToUser(selectedUser.getUsername(), recipe, message)) {
-          showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success", "Message sent successfully.");
+          showInlineStyledAlert(Alert.AlertType.INFORMATION,
+              "Success", "Message sent successfully.");
         } else {
           showInlineStyledAlert(Alert.AlertType.ERROR, "Error", "Message failed to send.");
         }
@@ -550,7 +549,8 @@ public class RecipeView {
     recipeHistoryLabel.setPadding(new Insets(30, 0, 0, 0));
     recipeHistoryLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 24));
     String createrDisplayname = observer.getDisplayNameByUsername(recipe.getCreaterUsername());
-    Label createrLabel = new Label("Recipe created by " + createrDisplayname + " on " + recipe.getCreationDate());
+    Label createrLabel = new Label("Recipe created by " + createrDisplayname
+        + " on " + recipe.getCreationDate());
     createrLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 18));
     vbox.getChildren().addAll(recipeHistoryLabel, createrLabel);
     if (recipe.getEditRecords() != null) {
@@ -571,9 +571,9 @@ public class RecipeView {
     editButton.setPadding(new Insets(10, 0, 0, 50));
     editButton.setMinWidth(150);
     editButton.setStyle(
-      " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-          + " 20;-fx-effect: null;-fx-cursor: hand;"
-          + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
+        + " 20;-fx-effect: null;-fx-cursor: hand;"
+        + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     editButton.setOnAction(e -> editRecipe());
     vbox.getChildren().add(editButton);
 

@@ -18,10 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-
-
-
-
 /**
  * View class for the sign up page.
  */
@@ -118,7 +114,8 @@ public class SignUpView {
     signUpGrid.add(displayNameField, 1, 3);
     Button signUpButton = new Button("Sign Up");
     //set signup button style
-    signUpButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;");
+    signUpButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
+        + "-fx-font-weight: bold; -fx-font-size: 16;");
     signUpButton.setMaxWidth(Double.MAX_VALUE);
     signUpButton.setOnAction(event -> {
       String username = usernameField.getText();

@@ -1,11 +1,7 @@
 package cookbook.view;
 
-import cookbook.model.HelpSection;
 import cookbook.model.HelpSubsection;
 import java.util.ArrayList;
-
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
 
 /**
  * Interface for the HelpPageView observer.

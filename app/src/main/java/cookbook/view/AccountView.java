@@ -1,17 +1,17 @@
 package cookbook.view;
 
-import cookbook.model.User;
-import java.util.ArrayList;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -25,9 +25,11 @@ public class AccountView {
   private String userName;
   private VBox centerBox;
 
-  /** Constructor for the admin view.
+  /**
+   * Account View Constructor.
    *
-   * @param users the list of users
+   * @param displayName the display name of the user
+   * @param userName the username of the user
    */
   public AccountView(String displayName, String userName) {
     view = new BorderPane();
@@ -81,18 +83,21 @@ public class AccountView {
 
     Hyperlink changePasswordLink = new Hyperlink("Change Password");
     changePasswordLink.setFont(Font.font("Roboto", 20));
-    changePasswordLink.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    changePasswordLink.setStyle("-fx-background-color: #FFFFFF; "
+        + "-fx-effect: null;-fx-cursor: hand;");
     changePasswordLink.setOnAction(e -> {
       showChangePasswordForm();
     });
     Hyperlink changeDisplayNameLink = new Hyperlink("Change Display Name");
     changeDisplayNameLink.setFont(Font.font("Roboto", 20));
-    changeDisplayNameLink.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
+    changeDisplayNameLink.setStyle("-fx-background-color: #FFFFFF; "
+        + "-fx-effect: null;-fx-cursor: hand;");
     changeDisplayNameLink.setOnAction(e -> {
       showChangeDisplayNameForm();
     });
 
-    centerBox.getChildren().addAll(accountTitle, userNameText, accountSettingsTitle, changePasswordLink, changeDisplayNameLink);
+    centerBox.getChildren().addAll(accountTitle, userNameText, accountSettingsTitle,
+        changePasswordLink, changeDisplayNameLink);
 
     view.setCenter(centerBox);
   }
@@ -134,7 +139,7 @@ public class AccountView {
     centerBox.getChildren().clear();
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER_LEFT);
-    grid.setPadding(new Insets(5,5,5,5));       
+    grid.setPadding(new Insets(5, 5, 5, 5));
     Label oldPasswordLabel = new Label("Old password:");
     oldPasswordLabel.setFont(Font.font("Roboto", 20));
     grid.add(oldPasswordLabel, 0, 1);       
@@ -200,21 +205,6 @@ public class AccountView {
     centerBox.getChildren().addAll(adminTitle, adminButton);
   }
 
-  /** Create styled button with the given text and event handler.
-   *
-   * @param text is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is clicked.
-   * @return the created button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color:#F2CC8F ; -fx-text-fill:#3D405B; -fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(180);
-    button.setMaxWidth(200); 
-    button.setOnAction(eventHandler);
-    return button;
-  }
 
   /**
    * Show error message for the user if anything is wrong.

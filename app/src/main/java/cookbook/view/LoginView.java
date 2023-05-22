@@ -1,8 +1,5 @@
 package cookbook.view;
 
-
-import javax.swing.text.AbstractDocument.LeafElement;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -31,13 +28,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.QuadCurveTo;
 import javafx.util.Duration;
-
 
 /**
  * View class for the login page.
@@ -64,7 +59,8 @@ public class LoginView {
     introPane.setAlignment(Pos.CENTER);
 
     // Load an animated image
-    Image animatedImageUrl = new Image(getClass().getResourceAsStream("/images/CircleOverCook.png"));
+    Image animatedImageUrl = new Image(getClass().getResourceAsStream(
+        "/images/CircleOverCook.png"));
     ImageView animatedImage = new ImageView(animatedImageUrl);
 
     // Create an ImageView and set the animated image to it
@@ -130,19 +126,13 @@ public class LoginView {
     });
 
     // Play all animations simultaneously
-    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition, rotateTransition, scaleTransition, pathTransition);
+    ParallelTransition parallelTransition = new ParallelTransition(fadeTransition,
+        rotateTransition, scaleTransition, pathTransition);
 
     parallelTransition.setOnFinished(e -> {
       // Create a StackPane
       StackPane heartPane = new StackPane();
       heartPane.setAlignment(Pos.CENTER);
-      // Load the heart image
-      Image heartImageUrl = new Image(getClass().getResourceAsStream("/images/Hamburger.png"));
-      ImageView heartImage = new ImageView(heartImageUrl);
-
-      //Load the bottom right image
-      Image bottomRightImageUrl = new Image(getClass().getResourceAsStream("/images/Vege.png")); 
-      ImageView bottomRightImage = new ImageView(bottomRightImageUrl);
 
       // Load the bottom left image
       Image bottomLeftImageUrl = new Image(getClass().getResourceAsStream("/images/King.png"));
@@ -168,11 +158,17 @@ public class LoginView {
       heartPane.getChildren().add(bottomLeftImage);
       StackPane.setAlignment(bottomLeftImage, Pos.BOTTOM_LEFT);
 
-      // Create an ImageView and set the heart image to it
+      // Load the heart image and create an ImageView and set the heart image to it
+      Image heartImageUrl = new Image(getClass().getResourceAsStream("/images/Hamburger.png"));
+      ImageView heartImage = new ImageView(heartImageUrl);
       heartImage.setFitWidth(150); // Set the width of the image
       heartImage.setPreserveRatio(true); // Maintain the aspect ratio
       heartImage.setSmooth(true); // Enable smooth resizing
       heartPane.getChildren().add(heartImage);
+
+      //Load the bottom right image
+      Image bottomRightImageUrl = new Image(getClass().getResourceAsStream("/images/Vege.png")); 
+      ImageView bottomRightImage = new ImageView(bottomRightImageUrl);
 
       // Create an ImageView and set the bottom right image to it
       bottomRightImage.setFitWidth(300); // Set the width of the image
@@ -222,7 +218,8 @@ public class LoginView {
       bottomImageTranslateTransition.setNode(bottomImage);
       bottomImageTranslateTransition.setByY(-20);  // Move 20 pixels up
       bottomImageTranslateTransition.setAutoReverse(true);  // Move back and forth
-      bottomImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+      bottomImageTranslateTransition.setCycleCount(
+          TranslateTransition.INDEFINITE);  // Repeat indefinitely
 
       // Start the TranslateTransition
       bottomImageTranslateTransition.play();
@@ -245,7 +242,8 @@ public class LoginView {
       newImageTranslateTransition.setNode(newImage);
       newImageTranslateTransition.setByY(-20);  // Move 20 pixels up
       newImageTranslateTransition.setAutoReverse(true);  // Move back and forth
-      newImageTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+      newImageTranslateTransition.setCycleCount(
+          TranslateTransition.INDEFINITE);  // Repeat indefinitely
 
       // Start the TranslateTransition
       newImageTranslateTransition.play();
@@ -261,7 +259,8 @@ public class LoginView {
       Path heartPath = new Path();
       heartPath.getElements().add(new MoveTo(-200, -200));  // Start from the left
       for (int i = 0; i < 5; i++) {  // Jump 5 times
-        heartPath.getElements().add(new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
+        heartPath.getElements().add(
+            new QuadCurveTo(-100 + i * 100, 100 * ((i % 2) * 2 - 1), i * 100, -200));
       }
       heartPath.getElements().add(new LineTo(500, -200));  // Move to the right
 
@@ -310,7 +309,8 @@ public class LoginView {
       topLeftTranslateTransition.setNode(topLeftImage);
       topLeftTranslateTransition.setByY(-20);  // Move 20 pixels up
       topLeftTranslateTransition.setAutoReverse(true);  // Move back and forth
-      topLeftTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+      topLeftTranslateTransition.setCycleCount(
+          TranslateTransition.INDEFINITE);  // Repeat indefinitely
 
       // Start the TranslateTransition
       topLeftTranslateTransition.play();
@@ -363,7 +363,8 @@ public class LoginView {
       rightTranslateTransition.setNode(rightImage);
       rightTranslateTransition.setByY(-20);  // Move 20 pixels up
       rightTranslateTransition.setAutoReverse(true);  // Move back and forth
-      rightTranslateTransition.setCycleCount(TranslateTransition.INDEFINITE);  // Repeat indefinitely
+      rightTranslateTransition.setCycleCount(
+          TranslateTransition.INDEFINITE);  // Repeat indefinitely
 
       // Start the TranslateTransition
       rightTranslateTransition.play();
@@ -493,7 +494,8 @@ public class LoginView {
     Button loginButton = new Button("Login");
     loginButton.setMaxWidth(Double.MAX_VALUE);
     //set login button style here
-    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; -fx-font-size: 16; -fx-font-weight: bold;");
+    loginButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: #ffffff; "
+        + "-fx-font-size: 16; -fx-font-weight: bold;");
     loginButton.setOnAction(event -> {
       String username = usernameField.getText();
       String password = passwordField.getText();
