@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Handler for the database connection.
@@ -48,13 +47,6 @@ public class Database {
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-  }
-
-  /**
-   * Get the connection with the database.
-   */
-  public Connection getConnection() {
-    return connection;
   }
 
   /**
@@ -264,17 +256,15 @@ public class Database {
   }
 
   /**
-   * Inserts a new ingredient into the database when editing a.
+   * Inserts a new ingredient into the database when editing a recipe.
    *
    * @param recipeId        the id of the recipe
    * @param name            the name of the ingredient
    * @param quantity        the quantity of the ingredient
    * @param measurementUnit the measurement unit of the ingredient
-   * @return the id of the inserted ingredient, or -1 if the ingredient could not
-   *         be inserted
    */
-  private int insertIngredient(int recipeId, String name,
-      float quantity, String measurementUnit) {
+  private void insertIngredient(int recipeId, String name,
+                                float quantity, String measurementUnit) {
     String query = "INSERT INTO ingredients (name, recipe_id, quantity, measurementUnit) "
         + "VALUES (?, ?, ?, ?)";
     try (PreparedStatement statement = connection.prepareStatement(query,
@@ -286,14 +276,11 @@ public class Database {
       statement.executeUpdate();
       try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
         if (generatedKeys.next()) {
-          return generatedKeys.getInt(1);
-        } else {
-          return -1;
-        }
+          generatedKeys.getInt(1);
+        } 
       }
     } catch (SQLException e) {
       System.out.println("Error while inserting ingredient: " + e.getMessage());
-      return -1;
     }
   }
 
@@ -309,7 +296,7 @@ public class Database {
             + "FROM recipes r JOIN users u ON r.user_id = u.id")) {
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        Integer recipeId = rs.getInt(1);
+        int recipeId = rs.getInt(1);
         String name = rs.getString(2);
         String description = rs.getString(3);
         String instructions = rs.getString(4);
@@ -435,9 +422,9 @@ public class Database {
       ArrayList<String> oldTags = loadTagsForRecipe(recipeId, userName);
       // Determine which tags have been removed and which have been added
       List<String> removedTags = oldTags.stream().filter(
-          tag -> !newTags.contains(tag)).collect(Collectors.toList());
+          tag -> !newTags.contains(tag)).toList();
       List<String> addedTags = newTags.stream().filter(
-          tag -> !oldTags.contains(tag)).collect(Collectors.toList());
+          tag -> !oldTags.contains(tag)).toList();
       List<String> predefinedTags = Arrays.asList("vegan", "vegetarian", "lactose free",
           "gluten free", "starter", "main course", "dessert and sweets");
       // Delete removed tags from the database
@@ -504,7 +491,7 @@ public class Database {
   }
 
   // Get the tag id from the database
-  private int getTagId(String tagName) throws SQLException {
+  private int getTagId(String tagName) {
     String query = "SELECT id FROM tags WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, tagName);
@@ -540,7 +527,6 @@ public class Database {
    * @param userId   id of the user
    * @param recipeId id of the recipe
    * @param tagId    id of the tag
-   * @throws SQLException if there is an error while deleting the personal tag
    */
   private void deletePersonalTag(int userId, int recipeId, int tagId) {
     String query = "DELETE FROM PersonalTags WHERE user_id = ? AND recipe_id = ? AND tag_id = ?";
@@ -728,11 +714,9 @@ public class Database {
    * @param username   is the username of the user
    * @param dayDate    is the date of the dinner
    * @param recipeName is the name of the recipe to remove
-   * @return true if the remove was successful, false otherwise
    */
-  public boolean removeRecipeFromWeeklyDinnerInDatabase(String username,
-      LocalDate dayDate, String recipeName) {
-    boolean deleteSuccessful = false;
+  public void removeRecipeFromWeeklyDinnerInDatabase(String username,
+                                                     LocalDate dayDate, String recipeName) {
     try {
       // Get the user ID from the username
       int userId = getUserId(username);
@@ -745,15 +729,11 @@ public class Database {
       statement.setInt(1, userId);
       statement.setInt(2, recipeId);
       statement.setDate(3, java.sql.Date.valueOf(dayDate));
-      int rowsAffected = statement.executeUpdate();
-      if (rowsAffected > 0) {
-        deleteSuccessful = true;
-      }
+
       statement.close();
     } catch (SQLException e) {
       System.out.println("Error removing recipe from weekly dinner in database: " + e.getMessage());
     }
-    return deleteSuccessful;
   }
 
   /**
@@ -773,7 +753,7 @@ public class Database {
       stmt.setInt(1, userId);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        Integer recipeId = rs.getInt(1);
+        int recipeId = rs.getInt(1);
         String name = rs.getString(2);
         String description = rs.getString(3);
         String instructions = rs.getString(4);
@@ -796,13 +776,12 @@ public class Database {
    *
    * @param userName   the user's username
    * @param recipeName the name of recipe to add
-   * @return true if the recipe was added successfully, false otherwise
    */
-  public boolean addRecipeToFavorites(String userName, String recipeName) {
+  public void addRecipeToFavorites(String userName, String recipeName) {
     int userId = getUserId(userName);
     int recipeId = getRecipeId(recipeName);
     if (userId == -1 || recipeId == -1) {
-      return false;
+      return;
     }
     try (
         PreparedStatement stmt = connection.prepareStatement(
@@ -810,11 +789,9 @@ public class Database {
       stmt.setInt(1, userId);
       stmt.setInt(2, recipeId);
       stmt.executeUpdate();
-      return true;
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-    return false;
   }
 
   /**
@@ -822,13 +799,12 @@ public class Database {
    *
    * @param userName   the user's username
    * @param recipeName the name of recipe to remove
-   * @return true if the recipe was removed successfully, false otherwise
    */
-  public boolean removeRecipeFromFavorites(String userName, String recipeName) {
+  public void removeRecipeFromFavorites(String userName, String recipeName) {
     int userId = getUserId(userName);
     int recipeId = getRecipeId(recipeName);
     if (userId == -1 || recipeId == -1) {
-      return false;
+      return;
     }
     try (
         PreparedStatement stmt = connection.prepareStatement(
@@ -836,11 +812,9 @@ public class Database {
       stmt.setInt(1, userId);
       stmt.setInt(2, recipeId);
       stmt.executeUpdate();
-      return true;
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-    return false;
   }
 
   /**
@@ -1494,51 +1468,7 @@ public class Database {
     return comments;
   }
 
-  /**
-   * Add a message to the database.
-   *
-   * @param senderName the username of the sender
-   * @param recipeName the name of the recipe being sent
-   * @param text the text of the message
-   * @param receiverName the username of the receiver
-   * @param isRead whether or not the message has been read
-   */
-  public void addMessageToDatabase(String senderName, String recipeName,
-      String text, String receiverName, boolean isRead) {
-    int recipeId = getRecipeId(recipeName);
-    int senderId = getUserId(senderName);
-    int receiverId = getUserId(receiverName);
-    String sql = "INSERT INTO messages (text, sender_id, recipient_id, recipe_id, is_read) "
-        + "VALUES (?, ?, ?, ?, ?)";
-    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-      pstmt.setString(1, text);
-      pstmt.setInt(2, senderId);
-      pstmt.setInt(3, receiverId);
-      pstmt.setInt(4, recipeId);
-      pstmt.setBoolean(5, isRead);
 
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-  }
-
-  /**
-   * Mark a message as read in the database.
-   *
-   * @param messageId the unique id of the message
-   */
-  public void markMessageAsRead(int messageId) {
-    String sql = "UPDATE messages SET is_read = ? WHERE id = ?";
-    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-      pstmt.setBoolean(1, true);
-      pstmt.setInt(2, messageId);
-
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-  }
 
   /**
    * Add a sent message to the database.

@@ -64,8 +64,8 @@ public class SignUpView {
     // Create the ImageView for the image
     Image image = new Image("https://i.imgur.com/bsyAZZc.png");
     ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(600); // Adjust the width of the image view
-    imageView.setFitHeight(150); // Adjust the height of the image view
+    imageView.setFitWidth(600);
+    imageView.setFitHeight(150);
 
     // Create the fade animation
     FadeTransition fadeTransition = new FadeTransition(Duration.millis(1500), imageView);

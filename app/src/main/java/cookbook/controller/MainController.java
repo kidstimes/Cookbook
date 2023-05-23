@@ -20,17 +20,6 @@ public class MainController {
   private CookbookFacade model;
   private LoginController loginController;
   private SignUpController signUpController;
-  private HomePageController homePageController;
-  private BrowserController browserController;
-  private RecipeController recipeController;
-  private AddRecipeController addRecipeController;
-  private WeeklyDinnerController weeklyDinnerController;
-  private ShoppingListController shoppingListController;
-  private FavoriteController favoriteController;
-  private AdminController adminController;
-  private HelpPageController helpPageController;
-  private MessagesController messagesController;
-  private AccountController accountController;
 
   /**
    * Controller Constructor.
@@ -46,7 +35,6 @@ public class MainController {
     // Initialize login and sign up controllers
     this.loginController = new LoginController(model, this);
     this.signUpController = new SignUpController(model, this);
-
   }
 
 
@@ -90,7 +78,7 @@ public class MainController {
    * Go to the home page.
    */
   public void goToHomePage() {
-    this.homePageController = new HomePageController(model, this); 
+    HomePageController homePageController = new HomePageController(model, this);
     root.setCenter(homePageController.getView());
   }
 
@@ -98,7 +86,7 @@ public class MainController {
    * Go to the browser.
    */
   public void goToBrowser() {
-    this.browserController = new BrowserController(model, this);
+    BrowserController browserController = new BrowserController(model, this);
     root.setCenter(browserController.getView());
   }
 
@@ -108,7 +96,7 @@ public class MainController {
    * @param recipe the chosen recipe
    */
   public void goToRecipe(Recipe recipe) {
-    recipeController = new RecipeController(model, this, recipe);
+    RecipeController recipeController = new RecipeController(model, this, recipe);
     root.setCenter(recipeController.getView());
   }
 
@@ -116,7 +104,7 @@ public class MainController {
    * Go to add recipe.
    */
   public void goToAddRecipe() {
-    this.addRecipeController = new AddRecipeController(model, this); 
+    AddRecipeController addRecipeController = new AddRecipeController(model, this);
     root.setCenter(addRecipeController.getView());
   }
 
@@ -124,7 +112,7 @@ public class MainController {
    * Go to my favorite recipes.
    */
   public void goToMyFavorite() {
-    this.favoriteController = new FavoriteController(model, this);
+    FavoriteController favoriteController = new FavoriteController(model, this);
     root.setCenter(favoriteController.getView());
   }
 
@@ -132,7 +120,7 @@ public class MainController {
    * Go to weekly dinner lists.
    */
   public void goToWeeklyDinner() {
-    this.weeklyDinnerController = new WeeklyDinnerController(model, this);
+    WeeklyDinnerController weeklyDinnerController = new WeeklyDinnerController(model, this);
     root.setCenter(weeklyDinnerController.getView());
   }
 
@@ -141,7 +129,7 @@ public class MainController {
    * Go to shopping list.
    */
   public void goToShoppingList() {
-    this.shoppingListController = new ShoppingListController(model, this);
+    ShoppingListController shoppingListController = new ShoppingListController(model, this);
     root.setCenter(shoppingListController.getView());
   }
 
@@ -150,7 +138,7 @@ public class MainController {
    * Go to my messsages.
    */
   public void goToMessages() {
-    this.messagesController = new MessagesController(model, this);
+    MessagesController messagesController = new MessagesController(model, this);
     root.setCenter(messagesController.getView());
   }
 
@@ -159,7 +147,7 @@ public class MainController {
    * Go to admin.
    */
   public void goToAdmin() {
-    this.adminController = new AdminController(model, this);
+    AdminController adminController = new AdminController(model, this);
     root.setCenter(adminController.getView());
   }
 
@@ -167,7 +155,7 @@ public class MainController {
    * Go to account settings.
    */
   public void goToAccount() {
-    this.accountController = new AccountController(model, this);
+    AccountController accountController = new AccountController(model, this);
     root.setCenter(accountController.getView());
   }
 
@@ -175,7 +163,7 @@ public class MainController {
    * Go to help page.
    */
   public void goToHelp() {
-    this.helpPageController = new HelpPageController(model, this);
+    HelpPageController helpPageController = new HelpPageController(model, this);
     root.setCenter(helpPageController.getView());
   }
 
@@ -188,14 +176,6 @@ public class MainController {
     goToLogin();
   }
 
-  /**
-   * Quit the cookbook.
-   */
-  public void quitCookbook() {
 
-    // Close the primary stage of the view.
-    stage.close();
-    System.exit(0);
-  }
 
 }

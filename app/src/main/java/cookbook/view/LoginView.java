@@ -522,9 +522,7 @@ public class LoginView {
     Hyperlink signUpLink = new Hyperlink("Click here to sign up");
     //set sign up link font and size
     signUpLink.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
-    signUpLink.setOnAction(event -> {
-      observer.goToSignUp();
-    });
+    signUpLink.setOnAction(event -> observer.goToSignUp());
 
     HBox signUpContainer = new HBox(5);
     signUpContainer.setAlignment(Pos.CENTER);

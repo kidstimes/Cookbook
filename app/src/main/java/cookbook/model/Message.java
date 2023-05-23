@@ -63,12 +63,7 @@ public class Message implements Comparable<LocalDateTime> {
     isRead = true;
   }
 
-  /**
-   * Mark the message as read.
-   */
-  public void read() {
-    isRead = true;
-  }
+
   
   public LocalDateTime getDateTime() {
     return dateTime;

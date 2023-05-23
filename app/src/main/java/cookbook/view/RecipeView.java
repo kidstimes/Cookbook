@@ -56,7 +56,6 @@ public class RecipeView {
   private VBox vbox;
   private GridPane ingredientsGrid;
   private HBox tagsHbox;
-  private Spinner<Integer> servingSpinner;
   private int initialServings;
   private Button saveButton;
   private String displayName;
@@ -217,7 +216,7 @@ public class RecipeView {
       public void updateItem(LocalDate date, boolean empty) {
         super.updateItem(date, empty);
         LocalDate today = LocalDate.now();
-        setDisable(empty || date.compareTo(today) < 0);
+        setDisable(empty || date.isBefore(today));
       }
     });
     // Add button to add the recipe to the weekly dinner list
@@ -234,11 +233,11 @@ public class RecipeView {
         if (observer.addRecipeToWeeklyDinner(selectedDate, recipe, weekNumber)) {
           showInlineStyledAlert(Alert.AlertType.INFORMATION, "Success",
               String.format("%s added successfully to date %s, week %d dinner list.",
-                  recipe.getName(), selectedDate.toString(), weekNumber));
+                  recipe.getName(), selectedDate, weekNumber));
         } else {
           showInlineStyledAlert(Alert.AlertType.WARNING, "Warning",
               String.format("%s already exists on %s of week %d dinner list.",
-                  recipe.getName(), selectedDate.toString(), weekNumber));
+                  recipe.getName(), selectedDate, weekNumber));
         }
         // clear the date picker
         datePicker.setValue(null);
@@ -381,9 +380,7 @@ public class RecipeView {
                 + " -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
         HBox tagContainer = new HBox(tagText, deleteTagButton);
         tagContainer.setSpacing(5);
-        deleteTagButton.setOnAction(ev -> {
-          tagsHbox.getChildren().remove(tagContainer);
-        });
+        deleteTagButton.setOnAction(ev -> tagsHbox.getChildren().remove(tagContainer));
         tagsHbox.getChildren().add(tagContainer);
         newTagField.clear();
       }
@@ -409,9 +406,7 @@ public class RecipeView {
               " -fx-background-color: #3D405B; -fx-text-fill: white;"
                   + " -fx-background-radius: 20; -fx-effect: null;-fx-cursor: hand;"
                   + " -fx-padding: 0 5 0 5; -fx-margin: 0 0 0 10;");
-          deleteTagButton.setOnAction(event -> {
-            tagsHbox.getChildren().remove(tagContainer);
-          });
+          deleteTagButton.setOnAction(event -> tagsHbox.getChildren().remove(tagContainer));
           tagContainer.getChildren().add(deleteTagButton);
         }
       }
@@ -496,19 +491,19 @@ public class RecipeView {
     }
 
     userSelectionComboBox.getSelectionModel().select(defaultUser);
-    userSelectionComboBox.setPromptText("Select a user");
+    userSelectionComboBox.setPromptText("Select a username");
     Button sendButton = new Button("Send");
 
-    userSelectionComboBox.setConverter(new StringConverter<User>() {
+    userSelectionComboBox.setConverter(new StringConverter<>() {
       @Override
       public String toString(User user) {
-          return user.getUsername();
+        return user.getUsername();
       }
-  
+
       @Override
       public User fromString(String string) {
-          // Not needed
-          return null;
+        // Not needed
+        return null;
       }
     });
   
@@ -525,19 +520,15 @@ public class RecipeView {
         return;
       }
       String message = messageInputField.getText();
-      if (selectedUser != null) {
-        if (observer.sendMessageToUser(selectedUser.getUsername(), recipe, message)) {
-          showInlineStyledAlert(Alert.AlertType.INFORMATION,
-              "Success", "Message sent successfully.");
-        } else {
-          showInlineStyledAlert(Alert.AlertType.ERROR, "Error", "Message failed to send.");
-        }
-        messageInputField.clear();
-        userSelectionComboBox.getSelectionModel().clearSelection();
-        userSelectionComboBox.getSelectionModel().select(defaultUser);
+      if (observer.sendMessageToUser(selectedUser.getUsername(), recipe, message)) {
+        showInlineStyledAlert(Alert.AlertType.INFORMATION,
+            "Success", "Message sent successfully.");
       } else {
-        showInlineStyledAlert(Alert.AlertType.WARNING, "Warning", "Please select a user.");
+        showInlineStyledAlert(Alert.AlertType.ERROR, "Error", "Message failed to send.");
       }
+      messageInputField.clear();
+      userSelectionComboBox.getSelectionModel().clearSelection();
+      userSelectionComboBox.getSelectionModel().select(defaultUser);
     });
 
     VBox messageBox = new VBox();
@@ -641,7 +632,7 @@ public class RecipeView {
    * Creates a spinner for selecting the number of servings.
    */
   private void createServingSpinner() {
-    servingSpinner = new Spinner<>();
+    Spinner<Integer> servingSpinner = new Spinner<>();
     SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory
         .IntegerSpinnerValueFactory(2, 10, initialServings, 2);
     servingSpinner.setValueFactory(valueFactory);
@@ -650,9 +641,7 @@ public class RecipeView {
     servingSpinner.setPrefWidth(100);
     servingSpinner.setMaxWidth(100);
     servingSpinner.setPadding(new Insets(10));
-    servingSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
-      updateIngredientQuantities(newValue);
-    });
+    servingSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateIngredientQuantities(newValue));
     HBox servingSpinnerContainer = new HBox();
     servingSpinnerContainer.setSpacing(5);
     servingSpinnerContainer.setStyle("-fx-spacing: 5; -fx-font: 16px \"Roboto\";");
@@ -704,8 +693,7 @@ public class RecipeView {
    */
   private boolean tagAlreadyExists(String newTag) {
     for (Node node : tagsHbox.getChildren()) {
-      if (node instanceof HBox) {
-        HBox tagContainer = (HBox) node;
+      if (node instanceof HBox tagContainer) {
         String tag = ((Text) tagContainer.getChildren().get(0)).getText().substring(2);
         if (tag.equalsIgnoreCase(newTag)) {
           return true;
@@ -719,10 +707,9 @@ public class RecipeView {
    * Get a list of updated tags.
    */
   public ArrayList<String> getUpdatedTags() {
-    ArrayList<String> updatedTags = new ArrayList<String>();
+    ArrayList<String> updatedTags = new ArrayList<>();
     for (Node node : tagsHbox.getChildren()) {
-      if (node instanceof HBox) {
-        HBox tagContainer = (HBox) node;
+      if (node instanceof HBox tagContainer) {
         String tag = ((Text) tagContainer.getChildren().get(0)).getText().substring(2);
         updatedTags.add(tag);
       }
@@ -746,10 +733,8 @@ public class RecipeView {
             + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B;"
-          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
@@ -821,9 +806,7 @@ public class RecipeView {
       deleteIngredientButton.setStyle(
           "-fx-font: 12px \"Roboto\"; -fx-background-color:"
               + " white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
-      deleteIngredientButton.setOnAction(deleteEvent -> {
-        recipeIngredientsVbox.getChildren().remove(ingredientHbox);
-      });
+      deleteIngredientButton.setOnAction(deleteEvent -> recipeIngredientsVbox.getChildren().remove(ingredientHbox));
       ingredientHbox.getChildren().addAll(ingredientQuantity,
           ingredientUnit, ingredientName, deleteIngredientButton);
       recipeIngredientsVbox.getChildren().add(ingredientHbox);
@@ -861,9 +844,7 @@ public class RecipeView {
           Button deleteIngredientButton = new Button("Delete");
           deleteIngredientButton.setStyle("-fx-background-color: white;"
               + " -fx-text-fill:#3D405B ; -fx-padding: 5 10 5 10;");
-          deleteIngredientButton.setOnAction(deleteEvent -> {
-            recipeIngredientsVbox.getChildren().remove(ingredientHbox);
-          });
+          deleteIngredientButton.setOnAction(deleteEvent -> recipeIngredientsVbox.getChildren().remove(ingredientHbox));
           ingredientHbox.getChildren().addAll(ingredientQuantity, ingredientUnit, ingredientName,
               deleteIngredientButton);
           recipeIngredientsVbox.getChildren().add(ingredientHbox);
@@ -888,7 +869,7 @@ public class RecipeView {
     recipeInstructionsvBox.setAlignment(Pos.CENTER_LEFT);
     Text recipeInstructionsLabel = new Text("Instructions:");
     recipeInstructionsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
-    ListView<Label> directionsListView = new ListView<Label>();
+    ListView<Label> directionsListView = new ListView<>();
     ObservableList<Label> directionsList = FXCollections.observableArrayList();
     for (String direction : recipe.getDirections().split("\n")) {
       directionsList.add(new Label(direction.trim()));
@@ -948,8 +929,7 @@ public class RecipeView {
       }
       ArrayList<String[]> newIngredients = new ArrayList<>();
       for (Node ingredientHbox : recipeIngredientsVbox.getChildren()) {
-        if (ingredientHbox instanceof HBox) {
-          HBox hbox = (HBox) ingredientHbox;
+        if (ingredientHbox instanceof HBox hbox) {
           try {
             float quantity = Float.parseFloat(((TextField) hbox.getChildren()
                 .get(0)).getText().replace(",", "."));

@@ -59,11 +59,6 @@ public class LoginController implements LoginViewObserver {
 
 
   @Override
-  public void goToHomePage() {
-    mainController.goToHomePage();
-  }
-
-  @Override
   public void goToSignUp() {
     mainController.goToSignUp();
   }

@@ -36,19 +36,7 @@ public class User {
     this.sentMessages = new ArrayList<>();
   }
 
-  public User(String username, String displayName) {
-    this.username = username;
-    this.displayName = displayName;
-  }
 
-  /**
-   * Modify the username of the user.
-   *
-   * @param username the new username
-   */
-  public void modifyUsername(String username) {
-    this.username = username;
-  }
 
   /**
    * Modify the display name of the user.
@@ -84,18 +72,16 @@ public class User {
   /**
    * Remove a recipe from a dinner on a specific date.
    *
-   * @param date the date of the dinner
+   * @param date   the date of the dinner
    * @param recipe the recipe to remove from the dinner
-   * @return false if the recipe is not in the dinner on the given date, otherwise true
    */
-  public boolean removeRecipeFromWeeklyDinner(LocalDate date, Recipe recipe) {
+  public void removeRecipeFromWeeklyDinner(LocalDate date, Recipe recipe) {
     for (Dinner dinner : weeklyDinners) {
       if (dinner.getDate().isEqual(date)) {
         dinner.getRecipes().remove(recipe);
-        return true;
+        return;
       }
     }
-    return false;
   }
 
   /** Get user id.
@@ -137,20 +123,7 @@ public class User {
     return copyDinners;
   }
 
-  /**
-   * Delete the user.
-   */
-  public void deleteUser() {
-    // delete user from the db
-  }
-  
-  /**Set the weekly dinners of the user.
-   *
-   * @param dinnerList the weekly dinner list of the user 
-   */
-  public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
-    this.weeklyDinners = dinnerList;
-  }
+
 
   /**
    * Check if a user has a weekly dinner on current week.
@@ -268,7 +241,7 @@ public class User {
       }
     }
     // if there is no shopping list with the given week number return an empty ararylist
-    return new ArrayList<Ingredient>();
+    return new ArrayList<>();
   }
 
   /**
@@ -301,7 +274,6 @@ public class User {
     }
   }
 
-  //set shoppinglist
   /**
    * Set the shopping list of the user.
    *
@@ -338,30 +310,6 @@ public class User {
     return sentMessages;
   }
 
-
-  /**
-   * Add a message to the received messages of the user.
-   *
-   * @param messageId the unique id of the message
-   * @param recipe the recipe of the received message
-   * @param text the text of the received message
-   * @param sender the user that sent the message
-   */
-  /*public void receiveMessage(int messageId, Recipe recipe, String text, String senderName, boolean is_read) {
-    this.receivedMessages.add(new Message(messageId, recipe, text, senderName, username, is_read ));
-  }
-
-  /**
-   * Add a message to the sent messages of the user.
-   *
-   * @param messageId the unique id of the message
-   * @param recipe the recipe being sent with the message
-   * @param text the text being sent with the message
-   * @param receiver the user that received the message
-   */
-  /*public void sendMessage(int messageId, Recipe recipe, String text, User receiver, boolean is_read) {
-    this.sentMessages.add(new Message(messageId, recipe, text, username, receiver.getUsername(), is_read));
-  }*/
 
 
 }

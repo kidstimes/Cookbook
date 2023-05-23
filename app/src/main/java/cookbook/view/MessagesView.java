@@ -40,7 +40,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 /**
  * The messages view class for the application.
@@ -51,13 +50,11 @@ public class MessagesView {
   private ListView<VBox> usersView;
   private ListView<VBox> messagesView;
   private VBox messageBox;
-  private SplitPane splitPane;
   private Conversation selectedConversation;
   private TextArea replyField;
   private Image open;
   private Image close;
   private VBox selectedUserBox;
-  private Label messageLabel;
 
   /**
    * Constructor for the messages view.
@@ -107,7 +104,7 @@ public class MessagesView {
     sidebar.setActiveButton("Messages");
     sidebar.finalizeLayout();
     view.setLeft(sidebar);
-    splitPane = new SplitPane();
+    SplitPane splitPane = new SplitPane();
     splitPane.getItems().addAll(usersView, messagesView);
     splitPane.setPrefSize(1300, 600);
     splitPane.setDividerPositions(0.25f);
@@ -155,13 +152,19 @@ public class MessagesView {
     otherUser.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
     unreadCount.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
 
-    // Add the read dot if there are unread received messages
+    // Create an HBox to hold the otherUser text and the red dot
+    HBox userRow = new HBox();
+    userRow.setAlignment(Pos.CENTER_LEFT);
+
+    // Add the red dot if there are unread received messages
     if (conversation.countUnreadReceivedMessages(observer.getUsername()) > 0) {
-      Circle readDot = new Circle(5);
-      readDot.setFill(Color.RED);
-      HBox readDotBox = new HBox(readDot);
-      readDotBox.setAlignment(Pos.TOP_RIGHT);
-      userBox.getChildren().add(readDotBox);
+      Circle redDot = new Circle(8);
+      redDot.setFill(Color.RED);
+      HBox dotContainer = new HBox(otherUser, redDot);
+      dotContainer.setAlignment(Pos.TOP_RIGHT);
+      userBox.getChildren().addAll(dotContainer, unreadCount);
+    } else {
+      userBox.getChildren().addAll(otherUser, unreadCount);
     }
 
     ImageView envelopeIcon;
@@ -308,7 +311,7 @@ public class MessagesView {
       innerMessageBox.setBackground(new Background(new BackgroundFill(Color.web("#d6e6de"),
           CornerRadii.EMPTY, Insets.EMPTY)));
     }
-    messageLabel = new Label();
+    Label messageLabel = new Label();
     messageLabel.setMaxWidth(400);
     messageLabel.setWrapText(true);
     messageLabel.setPrefWidth(400);
@@ -396,15 +399,13 @@ public class MessagesView {
       if (!message.isRead()) {
         Tooltip tooltip = new Tooltip("Click to mark as read");
         tooltip.setFont(Font.font("Roboto", 16));
-        tooltip.setShowDuration(Duration.millis(200));
+        tooltip.setStyle("-fx-text-fill: white; -fx-background-color: #d6e6de;");
         Tooltip.install(messageBox, tooltip);
         return messageBox;
       }
     }
     if (message.getSenderUsername().equals(observer.getUsername())) {
-      messageBox.setOnMouseClicked(e -> {
-        refreshView();
-      });
+      messageBox.setOnMouseClicked(e -> refreshView());
     }
     return messageBox;
   }
@@ -438,10 +439,8 @@ public class MessagesView {
     dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
         + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B;"
-          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();

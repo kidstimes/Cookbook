@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class Cookbook extends Application {
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage primaryStage) {
     // Init controller manager to manage the user interface
     Database database = new Database();
     CookbookFacade model = new CookbookFacade(database);
@@ -22,9 +22,7 @@ public class Cookbook extends Application {
     mainController.runCookbook();
 
     // Set the onCloseRequest event handler when user closes the program window
-    primaryStage.setOnCloseRequest(event -> {
-      database.disconnect();
-    });
+    primaryStage.setOnCloseRequest(event -> database.disconnect());
 
   }
 

@@ -255,7 +255,8 @@ public class AddRecipeView {
 
     root.getChildren().add(directionsGrid);
     // add top margin to directionsGrid
-    root.setMargin(directionsGrid, new Insets(15, 0, 0, 0));
+    
+    VBox.setMargin(directionsGrid, new Insets(15, 0, 0, 0));
 
     // Ingredients
     GridPane ingredientsInput = new GridPane();
@@ -360,7 +361,7 @@ public class AddRecipeView {
     HBox.setHgrow(ingredientsTable, Priority.ALWAYS);
 
     root.getChildren().addAll(ingredientsLabel, ingredientsInput, ingredientsContainer);
-    root.setMargin(ingredientsLabel, new Insets(15, 0, 5, 0));
+    VBox.setMargin(ingredientsLabel, new Insets(15, 0, 5, 0));
 
     // Tags
     Label tagsLabel = new Label("Tags");
@@ -470,7 +471,7 @@ public class AddRecipeView {
       }
     });
     root.getChildren().add(saveButton);
-    root.setMargin(saveButton, new Insets(15, 0, 0, 0));
+    VBox.setMargin(saveButton, new Insets(15, 0, 0, 0));
 
     // Wrap the rootVBox in a ScrollPane so that the content can be scrolled
     ScrollPane scrollPane = new ScrollPane(root);
@@ -508,10 +509,8 @@ public class AddRecipeView {
         + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B;"
-          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");

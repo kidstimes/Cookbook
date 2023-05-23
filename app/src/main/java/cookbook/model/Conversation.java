@@ -23,14 +23,7 @@ public class Conversation {
     this.messages.add(message);
   }
 
-  public Message getMostRecentUnreadMessage() {
-    return messages.stream().filter(message -> !message.isRead())
-              .max(Comparator.comparing(Message::getDateTime)).orElse(null);
-  }
 
-  public Message getMostRecentMessage() {
-  	return messages.stream().max(Comparator.comparing(Message::getDateTime)).orElse(null);
-  }
 
   public boolean hasUnreadReceivedMessages(String username) {
     return this.messages.stream()

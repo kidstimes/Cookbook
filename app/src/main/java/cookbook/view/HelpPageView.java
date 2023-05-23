@@ -85,7 +85,7 @@ public class HelpPageView {
     HBox searchFieldBox = new HBox();
     searchFieldBox.getChildren().addAll(searchField, searchButton);
     searchFieldBox.setSpacing(10);
-    searchFieldBox.setPadding(new Insets(10, 10, 10, 10));
+    searchFieldBox.setPadding(new Insets(10, 30, 10, 30));
     searchFieldBox.setPrefWidth(700);
     searchField.setPrefWidth(600);
     searchFieldBox.setAlignment(Pos.CENTER_LEFT);
@@ -155,6 +155,8 @@ public class HelpPageView {
       }
 
       searchResultsLabel.setText("Total results: " + storedSearchResults.size());
+      searchResultsLabel.setStyle(" -fx-padding: 20 0 20 50; -fx-text-fill: #3D405B;"
+              + "-fx-font-weight: bold;-fx-font-size: 16px;-fx-font-family: Roboto;");
     }
   }
 
@@ -172,6 +174,7 @@ public class HelpPageView {
     text.setStyle("-fx-padding: 0 0 0 50;");
     text.setFont(Font.font("Roboto", 16));
     text.setWrapText(true);
+    text.setPrefWidth(900);
 
     VBox subsectionBox = new VBox(10);
     subsectionBox.getChildren().addAll(backButton, title, text);
@@ -218,6 +221,8 @@ public class HelpPageView {
           + "-fx-font-weight: bold;-fx-font-size: 16px;-fx-font-family: Roboto;");
       searchResultsLabel.setText("Total results: " + matchedSubsections.size());
     } else {
+      searchResultsLabel.setStyle(" -fx-padding: 20 0 20 50; -fx-text-fill: #3D405B;"
+              + "-fx-font-weight: bold;-fx-font-size: 16px;-fx-font-family: Roboto;");
       searchResultsLabel.setText("No results found");
     }
   }

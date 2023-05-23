@@ -118,3 +118,16 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+.gitignore
+app/build.gradle
+gradle/wrapper/gradle-wrapper.properties
+.gradle/buildOutputCleanup/cache.properties
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+app/build/tmp/compileTestJava/previous-compilation-data.bin
+app/build/scripts/app.bat
+app/build/scripts/app
+.gitignore
+app/build/distributions/app.zip
+app/build/distributions/app.tar
+

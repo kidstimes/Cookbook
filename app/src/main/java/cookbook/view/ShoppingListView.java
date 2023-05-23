@@ -21,8 +21,6 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,7 +29,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -44,7 +41,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 
@@ -56,7 +52,6 @@ public class ShoppingListView {
   private ShoppingListViewObserver observer;
   private String displayName;
   private VBox centerView;
-  private LocalDate currentDate;
   private LocalDate currentWeekStart;
   private Label weekNumberLabel;
   private Label yearNumberLabel;
@@ -73,7 +68,7 @@ public class ShoppingListView {
     this.view = new BorderPane();
     this.displayName = displayName;
     this.shoppingLists = shoppingLists;
-    currentDate = LocalDate.now();
+    LocalDate currentDate = LocalDate.now();
     currentWeekStart = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     initLayout();
   }
@@ -165,8 +160,8 @@ public class ShoppingListView {
       try {
         generatePdf();
       } catch (Exception e) {
-        showInlineStyledAlert(AlertType.ERROR,
-            "PDF Generation Failed", e.getMessage());
+        showInlineStyledAlert(
+                "PDF Generation Failed", e.getMessage());
       }
     });
     generatePdfButton.setStyle("-fx-font: 18px \"Roboto\";");
@@ -224,8 +219,8 @@ public class ShoppingListView {
         int weekNumber = Integer.parseInt(weekNumberInput.getText());
         goToWeekNumber(weekNumber);
       } catch (NumberFormatException e) {
-        showInlineStyledAlert(AlertType.ERROR,
-            "Invalid Week Number", "Please enter a valid week number for the current year.");
+        showInlineStyledAlert(
+                "Invalid Week Number", "Please enter a valid week number for the current year.");
       }
     });
     
@@ -348,7 +343,7 @@ public class ShoppingListView {
                   quantityLabel.setText(String.valueOf(parsedQuantity));
                   observer.updateShoppingList();
                 } catch (NumberFormatException ex) {
-                  showInlineStyledAlert(AlertType.ERROR, "Invalid Input",
+                  showInlineStyledAlert("Invalid Input",
                       "Please enter a valid number for the ingredient quantity.");
                 }
               });
@@ -420,8 +415,8 @@ public class ShoppingListView {
       updateWeekLayout(currentWeekStart);
     } else {
       // Handle invalid input with an alert
-      showInlineStyledAlert(AlertType.ERROR,
-          "Invalid Week Number", "Please enter a valid week number for the current year.");
+      showInlineStyledAlert(
+              "Invalid Week Number", "Please enter a valid week number for the current year.");
     }
   }
 
@@ -429,8 +424,8 @@ public class ShoppingListView {
   /**
    * Show an alert with the given alert type, title, and message.
    */
-  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
-    Alert alert = new Alert(alertType);
+  private void showInlineStyledAlert(String title, String message) {
+    Alert alert = new Alert(AlertType.ERROR);
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(message);
@@ -440,10 +435,9 @@ public class ShoppingListView {
         + "-fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
-          + "-fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle(
+            "-fx-background-color: #3D405B; -fx-text-fill: white; "
+        + "-fx-padding: 5 10 5 10;"));
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");

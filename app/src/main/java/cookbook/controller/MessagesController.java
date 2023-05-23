@@ -45,10 +45,6 @@ public class MessagesController extends BaseController implements MessagesViewOb
   }
 
 
-  @Override
-  public void goToAccount() {
-    mainController.goToAccount();
-  }
 
   @Override
   public void updateMessageIsRead(int messageId) {

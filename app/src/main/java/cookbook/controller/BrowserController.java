@@ -60,13 +60,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
     browserView.displayRecipes(model.getRecipesWithFilters(keywords, ingredients, tags));
   }
 
-  /**
-   * Update recipes with the new filters.
-   */
-  public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
-    this.browserView.displayRecipes(filteredResults);
-  }
-
 
 
   @Override

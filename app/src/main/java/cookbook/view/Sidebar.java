@@ -20,8 +20,6 @@ public class Sidebar extends VBox {
   private HashMap<String, Button> buttons = new HashMap<>();
   private HashMap<String, Hyperlink> hyperlinks = new HashMap<>();
   private VBox hyperlinkBox = new VBox(10);
-  private Label title;
-  private Label subtitle;
 
   /**
    * Constructor for the sidebar.
@@ -31,8 +29,8 @@ public class Sidebar extends VBox {
     setMaxWidth(250);
     setStyle("-fx-padding: 20px 0px 20px 0px;-fx-background-color: #F9F8F3;");
     this.setFillWidth(true);
-    title = new Label("Welcome,");
-    subtitle = new Label(displayName);
+    Label title = new Label("Welcome,");
+    Label subtitle = new Label(displayName);
 
     title.setPrefWidth(250);
     title.setWrapText(true);

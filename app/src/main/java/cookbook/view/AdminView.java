@@ -146,17 +146,12 @@ public class AdminView {
         Button editButton = new Button("Edit username and/or display name");
         editButton.setStyle("-fx-background-color: white;"
             + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
-        editButton.setOnAction(e -> {
-          editUser(user);
-
-        });
+        editButton.setOnAction(e -> editUser(user));
     
         Button editPasswordButton = new Button("Edit Password");
         editPasswordButton.setStyle("-fx-background-color: white;"
             + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
-        editPasswordButton.setOnAction(e -> {
-          editUserPassword(user);       
-        });
+        editPasswordButton.setOnAction(e -> editUserPassword(user));
     
         Button deleteButton = new Button("Delete");
         deleteButton.setStyle("-fx-font: 12px \"Roboto\";"
@@ -175,9 +170,7 @@ public class AdminView {
     Button addUserButton = new Button("Add User");
     addUserButton.setStyle("-fx-background-color: #69a486;"
             + " -fx-text-fill: #F4F1DE; -fx-font: 18px \"Roboto\";");
-    addUserButton.setOnAction(e -> {
-      addUser();
-    });
+    addUserButton.setOnAction(e -> addUser());
     userListContainer.getChildren().add(addUserButton);
     
   }
@@ -298,18 +291,17 @@ public class AdminView {
    * @param string the error message
    */
   public void showError(String string) {
-    showInlineStyledAlert(AlertType.ERROR, "Error", string);
+    showInlineStyledAlert(string);
   }
 
-  /** Show an alert.
+  /**
+   * Show an alert.
    *
-   * @param alertType the type of alert
-   * @param title the title of the alert
    * @param message the message of the alert
    */
-  private void showInlineStyledAlert(AlertType alertType, String title, String message) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
+  private void showInlineStyledAlert(String message) {
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle("Error");
     alert.setHeaderText(null);
     alert.setContentText(message);
     DialogPane dialogPane = alert.getDialogPane();

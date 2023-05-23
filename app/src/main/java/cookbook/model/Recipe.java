@@ -35,14 +35,14 @@ public class Recipe {
     this.directions = directions;
 
     // Create ingredient objects and add them to the recipe
-    this.ingredients = new ArrayList<Ingredient>();
+    this.ingredients = new ArrayList<>();
     for (String[] ingredient : ingredients) {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
-    this.tags = new ArrayList<String>();
+    this.tags = new ArrayList<>();
     for (String tag : tags) {
       this.tags.add(tag);
     }
@@ -68,14 +68,14 @@ public class Recipe {
     this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
-    this.ingredients = new ArrayList<Ingredient>();
+    this.ingredients = new ArrayList<>();
     for (String[] ingredient : ingredients) {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
-    this.tags = new ArrayList<String>();
+    this.tags = new ArrayList<>();
     for (String tag : tags) {
       this.tags.add(tag);
     }
@@ -122,7 +122,7 @@ public class Recipe {
    * @return an arraylist with the tags
    */
   public ArrayList<String> getTags() {
-    ArrayList<String> copyTags = new ArrayList<String>();
+    ArrayList<String> copyTags = new ArrayList<>();
     for (String tag : tags) {
       copyTags.add(tag);
     }
@@ -149,37 +149,11 @@ public class Recipe {
    * @return an arraylist with the ingredients
    */
   public ArrayList<Ingredient> getIngredients() {
-    ArrayList<Ingredient> copyIngredients = new ArrayList<Ingredient>();
+    ArrayList<Ingredient> copyIngredients = new ArrayList<>();
     for (Ingredient ingredient : ingredients) {
       copyIngredients.add(ingredient);
     }
     return copyIngredients;
-  }
-
-  /**
-   * Get the comments of the recipe.
-   *
-   * @return an arraylist with the comments
-   */
-  public ArrayList<Comment> getComments() {
-    ArrayList<Comment> copyComments = new ArrayList<>();
-    if (comments == null) {
-      return copyComments;
-    }
-    for (Comment comment : comments) {
-      copyComments.add(comment);
-    }
-    return copyComments;
-  }
-
-  /**
-   * Add a new comment to the recipe.
-   *
-   * @param user the user who wrote the comment
-   * @param text the text of the comment
-   */
-  public void addComment(User user, String text, int id, int recipeId, String displayName) {
-    comments.add(new Comment(id, text, recipeId, user.getId(), displayName));
   }
 
 
@@ -211,34 +185,13 @@ public class Recipe {
    * @return an arraylist with the edit records.
    */
   public ArrayList<RecipeEditRecord> getEditRecords() {
-    ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<RecipeEditRecord>();
+    ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<>();
     for (RecipeEditRecord record : editRecords) {
       copyEditRecords.add(record);
     }
     return copyEditRecords;
 
   }
-
-  
-  /**
-   * Edit the text of the given comment.
-   *
-   * @param comment the comment to edit
-   * @param updatedText the updated text for the comment
-   */
-  public void editComment(Comment comment, String updatedText) {
-    comment.setText(updatedText);
-  }
-
-  /**
-   * Delete the comment under the recipe.
-   *
-   * @param comment the comment to delete
-   */
-  public void deleteComment(Comment comment) {
-    comments.remove(comment);
-  }
-
 
 
   /** Set the ingredients of the recipe.

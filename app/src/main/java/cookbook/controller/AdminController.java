@@ -40,17 +40,15 @@ public class AdminController extends BaseController implements AdminViewObserver
     }
   }
 
-  public void deleteUser(String username) {
-    
-  }
 
   @Override
   public void deleteUser(int userId) {
     model.deleteUser(userId);
   }
 
+
   public void userLogout() {
-    mainController.userLogout();
+    super.userLogout();
   }
 
   public void goToAdmin() {

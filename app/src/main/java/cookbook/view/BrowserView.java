@@ -72,12 +72,6 @@ public class BrowserView {
     return view;
   }
 
-  /**
-   * Display the recipes in the browser view.
-   */
-  public void updateRecipes(ArrayList<Recipe> recipeList) {
-    initLayout(recipeList);
-  }
 
   /**
    * Initialize the view for the recipe browser.
@@ -140,7 +134,7 @@ public class BrowserView {
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
         + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     searchButton.setFont(Font.font("ROBOTO", 16));
-    rootVbox.setMargin(searchButton, new Insets(0, 0, 20, 0));
+    VBox.setMargin(searchButton, new Insets(0, 0, 20, 0));
 
     searchButton.setOnAction(e -> {
       if (observer != null) {
@@ -158,7 +152,7 @@ public class BrowserView {
     searchInputHbox.getChildren().addAll(searchByNameLabel, 
           searchByNameField, searchByIngredientLabel, searchByIngredientField, searchButton);
     rootVbox.getChildren().add(searchInputHbox);
-    rootVbox.setMargin(searchInputHbox, new Insets(0, 0, 10, 0));
+    VBox.setMargin(searchInputHbox, new Insets(0, 0, 10, 0));
 
     // Add tags View
     tagsFlowPane.setHgap(5);
@@ -180,7 +174,7 @@ public class BrowserView {
     }
 
     rootVbox.getChildren().add(tagsFlowPane);
-    rootVbox.setMargin(tagsFlowPane, new Insets(0, 0, 10, 0));
+    VBox.setMargin(tagsFlowPane, new Insets(0, 0, 10, 0));
 
     // Wrap the rootVBox in a ScrollPane so that the content can be scrolled
     ScrollPane scrollPane = new ScrollPane(rootVbox);
@@ -204,8 +198,7 @@ public class BrowserView {
   public ObservableList<String> getSelectedTags() {
     ObservableList<String> selectedTags = FXCollections.observableArrayList();
     for (Node node : tagsFlowPane.getChildren()) {
-      if (node instanceof CheckBox) {
-        CheckBox checkBox = (CheckBox) node;
+      if (node instanceof CheckBox checkBox) {
         if (checkBox.isSelected()) {
           selectedTags.add(checkBox.getText());
         }
@@ -235,14 +228,13 @@ public class BrowserView {
     recipeCount.setId("recipeCount"); 
     searchResultsVbox.getChildren().add(recipeCount);
     // add margin to the recipeCount
-    searchResultsVbox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
+    VBox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
 
     // Add a separator line before the recipe buttons
     Separator separator = new Separator(Orientation.HORIZONTAL);
     searchResultsVbox.getChildren().add(separator);
 
-    for (int i = 0; i < recipeList.size(); i++) {
-      Recipe recipe = recipeList.get(i);
+    for (Recipe recipe : recipeList) {
       String recipeTagsString = "";
       for (int j = 0; j < recipe.getTags().size(); j++) {
         if (j == 0) {
@@ -293,9 +285,9 @@ public class BrowserView {
       Text recipeTags = new Text(recipeTagsString);
       recipeTags.setFont(Font.font("ROBOTO", 18));
 
-      HBox recipeBox = new HBox(10); 
+      HBox recipeBox = new HBox(10);
       recipeBox.setAlignment(Pos.CENTER_LEFT);
-      recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags); 
+      recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags);
       FlowPane flowPane = new FlowPane();
       flowPane.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
       flowPane.getChildren().add(recipeBox);
@@ -307,24 +299,10 @@ public class BrowserView {
       Tooltip.install(flowPane, tooltip);
 
       searchResultsVbox.getChildren().add(flowPane);
-      searchResultsVbox.setMargin(flowPane, new Insets(0, 0, 10, 0));
+      VBox.setMargin(flowPane, new Insets(0, 0, 10, 0));
 
     }
   }
 
-  /**
-   * Reset the search inputs.
-   */
-  public void resetSearchInputs() {
-    searchResultsVbox.getChildren().clear();
-    searchByIngredientField.clear();
-    searchByNameField.clear();
-    for (Node node : tagsFlowPane.getChildren()) {
-      if (node instanceof CheckBox) {
-        CheckBox checkBox = (CheckBox) node;
-        checkBox.setSelected(false);
-      }
-    }
-  }
 
 }

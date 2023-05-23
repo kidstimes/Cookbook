@@ -139,17 +139,6 @@ public class HomePageView {
     return date.get(weekFields.weekOfWeekBasedYear());
   }
 
-    
-  /**
-   * Show error message for the user if anything is wrong.
-   */
-  public void showError(String message) {
-    // Show the error message using an alert or any other way you prefer.
-    Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle("Error");
-    alert.setHeaderText(null);
-    alert.setContentText(message);
-    alert.showAndWait();
-  }
+  
 
 }

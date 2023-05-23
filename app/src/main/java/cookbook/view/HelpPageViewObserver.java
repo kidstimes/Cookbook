@@ -28,9 +28,7 @@ public interface HelpPageViewObserver {
 
   void goToAccount();
 
-  ArrayList<HelpSubsection> searchHelpContent(String query);
 
- 
   
   
 }

@@ -30,15 +30,6 @@ public class Ingredient {
     return quantity;
   }
 
-  /**
-   * Get the quantity of the ingredient for the given serving.
-   *
-   * @param serving the number indicating serving
-   * @return the quantity of the ingredient
-   */
-  public float getQuantity(int serving) {
-    return quantity * serving;
-  }
 
   public String getMeasurementUnit() {
     return measurementUnit;

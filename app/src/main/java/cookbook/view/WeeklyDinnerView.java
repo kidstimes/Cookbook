@@ -38,7 +38,6 @@ public class WeeklyDinnerView {
   private BorderPane view;
   private GridPane daysGrid;
   private VBox centerView;
-  private LocalDate currentDate;
   private LocalDate currentWeekStart;
   private Label weekNumberLabel;
   private Label yearNumberLabel;
@@ -53,7 +52,7 @@ public class WeeklyDinnerView {
     this.view = new BorderPane();
     this.displayName = displayName;
     this.dinnerList = dinnerList;
-    currentDate = LocalDate.now();
+    LocalDate currentDate = LocalDate.now();
     currentWeekStart = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     initLayout();
   }
@@ -156,8 +155,8 @@ public class WeeklyDinnerView {
         goToWeekNumber(weekNumber);
       } catch (NumberFormatException e) {
         // Handle invalid input
-        showInlineStyledAlert(AlertType.ERROR,
-            "Invalid Week Number", "Please enter a valid week number for the current year.");
+        showInlineStyledAlert(
+        );
       }
     });
     
@@ -198,8 +197,8 @@ public class WeeklyDinnerView {
       updateWeekLayout(currentWeekStart);
     } else {
       // Handle invalid input with an alert
-      showInlineStyledAlert(AlertType.ERROR,
-          "Invalid Week Number", "Please enter a valid week number for the current year.");
+      showInlineStyledAlert(
+      );
     }
   }
 
@@ -228,7 +227,7 @@ public class WeeklyDinnerView {
     centerView.getChildren().add(daysGrid);
 
     int year = weekStart.getYear();
-    yearNumberLabel.setText(", Year " + Integer.toString(year));
+    yearNumberLabel.setText(", Year " + year);
     yearNumberLabel.setStyle("-fx-font: 20px \"Roboto\";");
     int weekNumber = getWeekNumber(weekStart);
     weekNumberLabel.setText(" Week " + weekNumber);
@@ -357,19 +356,17 @@ public class WeeklyDinnerView {
   /**
    * Show an alert with the given alert type, title, and message.
    */
-  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
+  private void showInlineStyledAlert() {
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle("Invalid Week Number");
     alert.setHeaderText(null);
-    alert.setContentText(message);
+    alert.setContentText("Please enter a valid week number for the current year.");
     DialogPane dialogPane = alert.getDialogPane();
     dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
         + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B;"
-          + " -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();

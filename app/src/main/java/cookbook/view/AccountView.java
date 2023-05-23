@@ -85,16 +85,12 @@ public class AccountView {
     changePasswordLink.setFont(Font.font("Roboto", 20));
     changePasswordLink.setStyle("-fx-background-color: #FFFFFF; "
         + "-fx-effect: null;-fx-cursor: hand;");
-    changePasswordLink.setOnAction(e -> {
-      showChangePasswordForm();
-    });
+    changePasswordLink.setOnAction(e -> showChangePasswordForm());
     Hyperlink changeDisplayNameLink = new Hyperlink("Change Display Name");
     changeDisplayNameLink.setFont(Font.font("Roboto", 20));
     changeDisplayNameLink.setStyle("-fx-background-color: #FFFFFF; "
         + "-fx-effect: null;-fx-cursor: hand;");
-    changeDisplayNameLink.setOnAction(e -> {
-      showChangeDisplayNameForm();
-    });
+    changeDisplayNameLink.setOnAction(e -> showChangeDisplayNameForm());
 
     centerBox.getChildren().addAll(accountTitle, userNameText, accountSettingsTitle,
         changePasswordLink, changeDisplayNameLink);
@@ -190,7 +186,7 @@ public class AccountView {
   
 
   /**
-   * set this view as a admin view by adding admin button.
+   * set this view as an admin view by adding admin button.
    */
   public void setAdmin() {
     Text adminTitle = new Text("Admin Account");
@@ -198,9 +194,7 @@ public class AccountView {
     Hyperlink adminButton = new Hyperlink("Admin Page");
     adminButton.setFont(Font.font("Roboto", 20));
     adminButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    adminButton.setOnAction(e -> {
-      observer.goToAdmin();
-    });
+    adminButton.setOnAction(e -> observer.goToAdmin());
 
     centerBox.getChildren().addAll(adminTitle, adminButton);
   }

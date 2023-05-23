@@ -14,9 +14,7 @@ public class HelpSubsection {
     this.text = text;
   }
 
-  public int getId() {
-    return id;
-  }
+
 
   public String getTitle() {
     return title;

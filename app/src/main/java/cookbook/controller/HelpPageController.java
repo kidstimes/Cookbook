@@ -27,11 +27,7 @@ public class HelpPageController extends BaseController implements HelpPageViewOb
     return this.helpPageView.getView();
   }
 
-  @Override
-  public ArrayList<HelpSubsection> searchHelpContent(String keyword) {
-    return model.searchHelpContent(keyword);
 
-  }
 
 
 
