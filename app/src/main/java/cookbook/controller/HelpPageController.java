@@ -1,15 +1,15 @@
 package cookbook.controller;
 
 
-import java.util.ArrayList;
 
 import cookbook.model.CookbookFacade;
-import cookbook.model.HelpSubsection;
 import cookbook.view.HelpPageView;
 import cookbook.view.HelpPageViewObserver;
 import javafx.scene.Node;
 
-
+/**
+ * The controller for the help page.
+ */
 public class HelpPageController extends BaseController implements HelpPageViewObserver {
   private HelpPageView helpPageView;  
 

@@ -5,7 +5,6 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;

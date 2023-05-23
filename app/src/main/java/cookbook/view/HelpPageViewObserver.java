@@ -1,7 +1,5 @@
 package cookbook.view;
 
-import cookbook.model.HelpSubsection;
-import java.util.ArrayList;
 
 /**
  * Interface for the HelpPageView observer.

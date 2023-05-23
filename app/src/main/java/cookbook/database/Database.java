@@ -993,7 +993,9 @@ public class Database {
         float quantity = rs.getFloat(3);
         String measurementUnit = rs.getString(4);
         Ingredient ingredient = new Ingredient(ingredientName, quantity, measurementUnit);
-        currentShoppingList.addIngredient(ingredient);
+        if (currentShoppingList != null) {
+          currentShoppingList.addIngredient(ingredient);
+        }
       }
       rs.close();
     } catch (SQLException e) {

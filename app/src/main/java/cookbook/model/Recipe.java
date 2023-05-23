@@ -58,7 +58,8 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags, String createrUsername, Date date, ArrayList<RecipeEditRecord> editRecords) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, 
+      String createrUsername, Date date, ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
