@@ -18,10 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-
-
-
-
 /**
  * View class for the sign up page.
  */
@@ -68,8 +64,8 @@ public class SignUpView {
     // Create the ImageView for the image
     Image image = new Image("https://i.imgur.com/bsyAZZc.png");
     ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(600); // Adjust the width of the image view
-    imageView.setFitHeight(150); // Adjust the height of the image view
+    imageView.setFitWidth(600);
+    imageView.setFitHeight(150);
 
     // Create the fade animation
     FadeTransition fadeTransition = new FadeTransition(Duration.millis(1500), imageView);
@@ -118,7 +114,8 @@ public class SignUpView {
     signUpGrid.add(displayNameField, 1, 3);
     Button signUpButton = new Button("Sign Up");
     //set signup button style
-    signUpButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;");
+    signUpButton.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; "
+        + "-fx-font-weight: bold; -fx-font-size: 16;");
     signUpButton.setMaxWidth(Double.MAX_VALUE);
     signUpButton.setOnAction(event -> {
       String username = usernameField.getText();

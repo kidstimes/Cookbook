@@ -8,13 +8,16 @@ import java.util.ArrayList;
  * The User class.
  */
 public class User {
-
+  private int id;
   private String username;
   private String displayName;
   private ArrayList<Dinner> weeklyDinners;
   private ArrayList<Recipe> favorites;
   private ArrayList<ShoppingList> shoppingLists;
-  private int id;
+  private ArrayList<Message> receivedMessages;
+  private ArrayList<Message> sentMessages;
+
+  
 
   /**
    * User Constructor.
@@ -29,21 +32,11 @@ public class User {
     this.weeklyDinners = new ArrayList<>();
     this.favorites = new ArrayList<>(); 
     this.shoppingLists = new ArrayList<>();
+    this.receivedMessages = new ArrayList<>();
+    this.sentMessages = new ArrayList<>();
   }
 
-  public User(String username, String displayName) {
-    this.username = username;
-    this.displayName = displayName;
-  }
 
-  /**
-   * Modify the username of the user.
-   *
-   * @param username the new username
-   */
-  public void modifyUsername(String username) {
-    this.username = username;
-  }
 
   /**
    * Modify the display name of the user.
@@ -79,18 +72,16 @@ public class User {
   /**
    * Remove a recipe from a dinner on a specific date.
    *
-   * @param date the date of the dinner
+   * @param date   the date of the dinner
    * @param recipe the recipe to remove from the dinner
-   * @return false if the recipe is not in the dinner on the given date, otherwise true
    */
-  public boolean removeRecipeFromWeeklyDinner(LocalDate date, Recipe recipe) {
+  public void removeRecipeFromWeeklyDinner(LocalDate date, Recipe recipe) {
     for (Dinner dinner : weeklyDinners) {
       if (dinner.getDate().isEqual(date)) {
         dinner.getRecipes().remove(recipe);
-        return true;
+        return;
       }
     }
-    return false;
   }
 
   /** Get user id.
@@ -132,20 +123,7 @@ public class User {
     return copyDinners;
   }
 
-  /**
-   * Delete the user.
-   */
-  public void deleteUser() {
-    // delete user from the db
-  }
-  
-  /**Set the weekly dinners of the user.
-   *
-   * @param dinnerList the weekly dinner list of the user 
-   */
-  public void setWeeklyDinners(ArrayList<Dinner> dinnerList) {
-    this.weeklyDinners = dinnerList;
-  }
+
 
   /**
    * Check if a user has a weekly dinner on current week.
@@ -263,7 +241,7 @@ public class User {
       }
     }
     // if there is no shopping list with the given week number return an empty ararylist
-    return new ArrayList<Ingredient>();
+    return new ArrayList<>();
   }
 
   /**
@@ -296,7 +274,6 @@ public class User {
     }
   }
 
-  //set shoppinglist
   /**
    * Set the shopping list of the user.
    *
@@ -314,6 +291,25 @@ public class User {
   public ArrayList<ShoppingList> getShoppingLists() {
     return shoppingLists;
   }
-  
-  
+
+  /**
+   * Get the messages that have been received by the user (sent by other users).
+   *
+   * @return the received messages of the user
+   */
+  public ArrayList<Message> getReceivedMessages() {
+    return receivedMessages;
+  }
+
+  /**
+   * Get the messages that have been sent by the user (received by other users).
+   *
+   * @return the messages sent by the user to other users
+   */
+  public ArrayList<Message> getSentMessages() {
+    return sentMessages;
+  }
+
+
+
 }

@@ -4,8 +4,6 @@ import cookbook.model.Recipe;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -24,16 +22,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
-
-
 
 
 /**
@@ -79,12 +72,6 @@ public class BrowserView {
     return view;
   }
 
-  /**
-   * Display the recipes in the browser view.
-   */
-  public void updateRecipes(ArrayList<Recipe> recipeList) {
-    initLayout(recipeList);
-  }
 
   /**
    * Initialize the view for the recipe browser.
@@ -93,40 +80,25 @@ public class BrowserView {
    */
   private void initLayout(ArrayList<Recipe> recipeList) {
     
-    rootVbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text welcomeTitle = new Text(displayName + ", welcome!");
-    welcomeTitle.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(welcomeTitle);
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> observer.goToHomePage()),
-      createButton("Browse Recipes", e -> observer.goToBrowser()),
-      createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-      createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-      createButton("My Favorites", e -> observer.goToMyFavorite()),
-      createButton("My Shopping List", e -> observer.goToShoppingList()),
-      createButton("Messages", e -> observer.goToMessages()),
-      };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 18));
-    logoutButton.setStyle(
-        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
-      observer.userLogout();
-    });
-    sidebar.getChildren().add(logoutButton);
+    sidebar.setActiveButton("Browse Recipes");
+    sidebar.finalizeLayout();
+        
+    // Add the sidebar to the view
     view.setLeft(sidebar);
 
+    rootVbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
     // clear any existing children from the vbox
     rootVbox.getChildren().clear();
     // clear tagsFlowPane and searchResultsVBox
@@ -134,8 +106,9 @@ public class BrowserView {
     searchResultsVbox.getChildren().clear();
 
     // Add a title to the homepage
-    Text title = new Text("Recipe Browser");
-    title.setFont(Font.font("ROBOTO", FontWeight.BOLD, 32));
+    Label title = new Label("Recipe Browser");
+    title.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32px;-fx-font-weight: bold;");
+    title.setFont(Font.font("ROBOTO"));
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     rootVbox.getChildren().add(title);
 
@@ -161,7 +134,7 @@ public class BrowserView {
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
         + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     searchButton.setFont(Font.font("ROBOTO", 16));
-    rootVbox.setMargin(searchButton, new Insets(0, 0, 20, 0));
+    VBox.setMargin(searchButton, new Insets(0, 0, 20, 0));
 
     searchButton.setOnAction(e -> {
       if (observer != null) {
@@ -179,7 +152,7 @@ public class BrowserView {
     searchInputHbox.getChildren().addAll(searchByNameLabel, 
           searchByNameField, searchByIngredientLabel, searchByIngredientField, searchButton);
     rootVbox.getChildren().add(searchInputHbox);
-    rootVbox.setMargin(searchInputHbox, new Insets(0, 0, 10, 0));
+    VBox.setMargin(searchInputHbox, new Insets(0, 0, 10, 0));
 
     // Add tags View
     tagsFlowPane.setHgap(5);
@@ -201,7 +174,7 @@ public class BrowserView {
     }
 
     rootVbox.getChildren().add(tagsFlowPane);
-    rootVbox.setMargin(tagsFlowPane, new Insets(0, 0, 10, 0));
+    VBox.setMargin(tagsFlowPane, new Insets(0, 0, 10, 0));
 
     // Wrap the rootVBox in a ScrollPane so that the content can be scrolled
     ScrollPane scrollPane = new ScrollPane(rootVbox);
@@ -225,8 +198,7 @@ public class BrowserView {
   public ObservableList<String> getSelectedTags() {
     ObservableList<String> selectedTags = FXCollections.observableArrayList();
     for (Node node : tagsFlowPane.getChildren()) {
-      if (node instanceof CheckBox) {
-        CheckBox checkBox = (CheckBox) node;
+      if (node instanceof CheckBox checkBox) {
         if (checkBox.isSelected()) {
           selectedTags.add(checkBox.getText());
         }
@@ -256,14 +228,13 @@ public class BrowserView {
     recipeCount.setId("recipeCount"); 
     searchResultsVbox.getChildren().add(recipeCount);
     // add margin to the recipeCount
-    searchResultsVbox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
+    VBox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
 
     // Add a separator line before the recipe buttons
     Separator separator = new Separator(Orientation.HORIZONTAL);
     searchResultsVbox.getChildren().add(separator);
 
-    for (int i = 0; i < recipeList.size(); i++) {
-      Recipe recipe = recipeList.get(i);
+    for (Recipe recipe : recipeList) {
       String recipeTagsString = "";
       for (int j = 0; j < recipe.getTags().size(); j++) {
         if (j == 0) {
@@ -314,9 +285,9 @@ public class BrowserView {
       Text recipeTags = new Text(recipeTagsString);
       recipeTags.setFont(Font.font("ROBOTO", 18));
 
-      HBox recipeBox = new HBox(10); 
+      HBox recipeBox = new HBox(10);
       recipeBox.setAlignment(Pos.CENTER_LEFT);
-      recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags); 
+      recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags);
       FlowPane flowPane = new FlowPane();
       flowPane.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
       flowPane.getChildren().add(recipeBox);
@@ -328,33 +299,10 @@ public class BrowserView {
       Tooltip.install(flowPane, tooltip);
 
       searchResultsVbox.getChildren().add(flowPane);
-      searchResultsVbox.setMargin(flowPane, new Insets(0, 0, 10, 0));
+      VBox.setMargin(flowPane, new Insets(0, 0, 10, 0));
 
     }
   }
 
-  /**
-   * Reset the search inputs.
-   */
-  public void resetSearchInputs() {
-    searchResultsVbox.getChildren().clear();
-    searchByIngredientField.clear();
-    searchByNameField.clear();
-    for (Node node : tagsFlowPane.getChildren()) {
-      if (node instanceof CheckBox) {
-        CheckBox checkBox = (CheckBox) node;
-        checkBox.setSelected(false);
-      }
-    }
-  }
 
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(100); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
-    button.setOnAction(eventHandler);
-    return button;
-  }
 }

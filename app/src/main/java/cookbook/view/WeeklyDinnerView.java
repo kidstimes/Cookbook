@@ -2,15 +2,12 @@ package cookbook.view;
 
 import cookbook.model.Dinner;
 import cookbook.model.Recipe;
-import cookbook.view.WeeklyDinnerViewObserver;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,7 +29,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 /**
  * The view for the weekly dinner page.
@@ -42,7 +38,6 @@ public class WeeklyDinnerView {
   private BorderPane view;
   private GridPane daysGrid;
   private VBox centerView;
-  private LocalDate currentDate;
   private LocalDate currentWeekStart;
   private Label weekNumberLabel;
   private Label yearNumberLabel;
@@ -57,7 +52,7 @@ public class WeeklyDinnerView {
     this.view = new BorderPane();
     this.displayName = displayName;
     this.dinnerList = dinnerList;
-    currentDate = LocalDate.now();
+    LocalDate currentDate = LocalDate.now();
     currentWeekStart = currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     initLayout();
   }
@@ -81,34 +76,21 @@ public class WeeklyDinnerView {
 
   // Create the side bar menu
   private void createSidebar() {
-    VBox sidebar = new VBox(30);
-    sidebar.setMaxWidth(100);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text title = new Text(displayName + ", welcome!");
-    title.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(title);
-
-    Button[] sidebarButtons = {
-        createButton("Home Page", e -> observer.goToHomePage()),
-        createButton("Browse Recipes", e -> observer.goToBrowser()),
-        createButton("Add a Recipe", e -> observer.goToAddRecipe()),
-        createButton("Weekly Dinner List", e -> observer.goToWeeklyDinner()),
-        createButton("My Favorites", e -> observer.goToMyFavorite()),
-        createButton("My Shopping List", e -> observer.goToShoppingList()),
-        createButton("Messages", e -> observer.goToMessages()),
-    };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 18));
-    logoutButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> observer.userLogout());
-    sidebar.getChildren().add(logoutButton);
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> observer.goToHomePage());
+    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
+    sidebar.addButton("Messages", e -> observer.goToMessages());
+    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addHyperlink("Help", e -> observer.goToHelp());
+    sidebar.addHyperlink("Log Out", e -> observer.userLogout());
+    
+    sidebar.setActiveButton("Weekly Dinner List");
+    sidebar.finalizeLayout();
+    // Add the sidebar to the view
     view.setLeft(sidebar);
   }
 
@@ -126,7 +108,7 @@ public class WeeklyDinnerView {
 
     // Add title above the weekly menu
     Label titleLabel = new Label("Weekly Dinner List");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
     centerView.getChildren().add(titleLabel);
 
     VBox weekNavigation = createWeekNavigation();
@@ -173,8 +155,8 @@ public class WeeklyDinnerView {
         goToWeekNumber(weekNumber);
       } catch (NumberFormatException e) {
         // Handle invalid input
-        showInlineStyledAlert(AlertType.ERROR,
-            "Invalid Week Number", "Please enter a valid week number for the current year.");
+        showInlineStyledAlert(
+        );
       }
     });
     
@@ -215,8 +197,8 @@ public class WeeklyDinnerView {
       updateWeekLayout(currentWeekStart);
     } else {
       // Handle invalid input with an alert
-      showInlineStyledAlert(AlertType.ERROR,
-          "Invalid Week Number", "Please enter a valid week number for the current year.");
+      showInlineStyledAlert(
+      );
     }
   }
 
@@ -245,7 +227,7 @@ public class WeeklyDinnerView {
     centerView.getChildren().add(daysGrid);
 
     int year = weekStart.getYear();
-    yearNumberLabel.setText(", Year " + Integer.toString(year));
+    yearNumberLabel.setText(", Year " + year);
     yearNumberLabel.setStyle("-fx-font: 20px \"Roboto\";");
     int weekNumber = getWeekNumber(weekStart);
     weekNumberLabel.setText(" Week " + weekNumber);
@@ -345,7 +327,8 @@ public class WeeklyDinnerView {
           recipeLink.setStyle("-fx-font: 18px \"Roboto\";");
           // Add a delete button for the recipe
           Button deleteButton = new Button("Delete");
-          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
+          deleteButton.setStyle("-fx-font: 12px \"Roboto\"; -fx-background-color:"
+              + " white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
           deleteButton.setMinWidth(50);
           deleteButton.setMaxWidth(50);
           deleteButton.setMinHeight(20);
@@ -365,21 +348,6 @@ public class WeeklyDinnerView {
     }
   }
   
-  /** Create a button with the given text and event handler.
-   *
-   * @param text the text to display on the button
-   * @param eventHandler the event handler to handle the button click
-   * @return the button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setMaxWidth(Double.MAX_VALUE);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setOnAction(eventHandler);
-    return button;
-  }
-  
   private int getWeekNumber(LocalDate date) {
     WeekFields weekFields = WeekFields.of(Locale.getDefault());
     return date.get(weekFields.weekOfWeekBasedYear());
@@ -388,20 +356,17 @@ public class WeeklyDinnerView {
   /**
    * Show an alert with the given alert type, title, and message.
    */
-  private void showInlineStyledAlert(Alert.AlertType alertType, String title, String message) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
+  private void showInlineStyledAlert() {
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle("Invalid Week Number");
     alert.setHeaderText(null);
-    alert.setContentText(message);
-    // Set custom styles for the alert
+    alert.setContentText("Please enter a valid week number for the current year.");
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
-    // Set custom styles for the buttons
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
+        + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
-    // Set custom styles for the content label
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();

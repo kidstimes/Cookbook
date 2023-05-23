@@ -50,5 +50,13 @@ public interface RecipeViewObserver {
 
   void deleteComment(int commentId);
 
+  void goToHelp();
+
+  void goToAccount();
+
+  boolean sendMessageToUser(String selectedUser, Recipe recipe, String message);
+
+  String getDisplayNameByUsername(String createrUsername);
+
 
 }

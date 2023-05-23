@@ -20,7 +20,7 @@ public class HomePageController extends BaseController implements HomePageViewOb
   public HomePageController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
     this.homePageView = new HomePageView(model.getUserDisplayName(),
-       model.checkWeeklyDinner(), model.checkNextWeekDinner());
+       model.checkWeeklyDinner(), model.checkNextWeekDinner(), model.getNumberUnreadMessages());
     this.homePageView.setObserver(this);
     
   }
@@ -33,25 +33,5 @@ public class HomePageController extends BaseController implements HomePageViewOb
   }
 
   
-  @Override
-  public void handlePasswordChange(String oldPassword, String newPassword) {
-    if (model.checkPasswordForUser(oldPassword)) {
-      if (model.changePasswordForUser(newPassword)) {
-        mainController.goToHomePage();
-      } else {
-        homePageView.showError("Password change failed");
-      }
-    } else {
-      homePageView.showError("Old password is incorrect");
-    }
-  }
 
-  @Override
-  public void changeDisplayName(String newDisplayName) {
-    if (model.changeDisplayNameForUser(newDisplayName)) {
-      mainController.goToHomePage();
-    } else {
-      homePageView.showError("Display name change failed");
-    }
-  }
 }

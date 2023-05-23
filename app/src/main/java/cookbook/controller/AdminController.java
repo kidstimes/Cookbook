@@ -8,9 +8,8 @@ import javafx.scene.Node;
 /**
  * Controller for managing the admin view.
  */
-public class AdminController implements AdminViewObserver {
-  private CookbookFacade model;
-  private MainController mainController;
+public class AdminController extends BaseController implements AdminViewObserver {
+
   private AdminView adminView;
 
   /** Constructor for the admin controller.
@@ -19,9 +18,8 @@ public class AdminController implements AdminViewObserver {
    * @param mainController the main controller
    */
   public AdminController(CookbookFacade model, MainController mainController) {
-    this.model = model;
-    this.mainController = mainController;
-    this.adminView = new AdminView(model.loadAllUsers());
+    super(model, mainController);
+    this.adminView = new AdminView(model.loadAllUsers(), model.getUserDisplayName());
     this.adminView.setObserver(this);
   }
 
@@ -42,17 +40,15 @@ public class AdminController implements AdminViewObserver {
     }
   }
 
-  public void deleteUser(String username) {
-    
-  }
 
   @Override
   public void deleteUser(int userId) {
     model.deleteUser(userId);
   }
 
+
   public void userLogout() {
-    mainController.userLogout();
+    super.userLogout();
   }
 
   public void goToAdmin() {

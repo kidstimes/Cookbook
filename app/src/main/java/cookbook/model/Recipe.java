@@ -1,6 +1,7 @@
 package cookbook.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * The Recipe class.
@@ -15,6 +16,9 @@ public class Recipe {
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
   private ArrayList<Comment> comments;
+  private String createrUsername;
+  private ArrayList<RecipeEditRecord> editRecords;
+  private Date date;
 
   /**
    * Recipe Constructor.
@@ -31,15 +35,14 @@ public class Recipe {
     this.directions = directions;
 
     // Create ingredient objects and add them to the recipe
-    this.ingredients = new ArrayList<Ingredient>();
+    this.ingredients = new ArrayList<>();
     for (String[] ingredient : ingredients) {
       this.ingredients.add(new Ingredient(ingredient[0],
-         
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
-    this.tags = new ArrayList<String>();
+    this.tags = new ArrayList<>();
     for (String tag : tags) {
       this.tags.add(tag);
     }
@@ -55,21 +58,25 @@ public class Recipe {
    * @param ingredients the ingredients of the recipe in a 2-dimentional string array
    */
   public Recipe(int id, String name, String shortDesc, String directions,
-      ArrayList<String[]> ingredients, ArrayList<String> tags) {
+      ArrayList<String[]> ingredients, ArrayList<String> tags, 
+      String createrUsername, Date date, ArrayList<RecipeEditRecord> editRecords) {
     this.id = id;
     this.name = name;
     this.shortDesc = shortDesc;
     this.directions = directions;
+    this.createrUsername = createrUsername;
+    this.date = date;
+    this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
-    this.ingredients = new ArrayList<Ingredient>();
+    this.ingredients = new ArrayList<>();
     for (String[] ingredient : ingredients) {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
 
     // Initialize tags arraylist
-    this.tags = new ArrayList<String>();
+    this.tags = new ArrayList<>();
     for (String tag : tags) {
       this.tags.add(tag);
     }
@@ -98,6 +105,10 @@ public class Recipe {
     this.shortDesc = shortDesc;
   }
 
+  public String getCreaterUsername() {
+    return createrUsername;
+  }
+
   public String getDirections() {
     return directions;
   }
@@ -112,7 +123,7 @@ public class Recipe {
    * @return an arraylist with the tags
    */
   public ArrayList<String> getTags() {
-    ArrayList<String> copyTags = new ArrayList<String>();
+    ArrayList<String> copyTags = new ArrayList<>();
     for (String tag : tags) {
       copyTags.add(tag);
     }
@@ -139,37 +150,11 @@ public class Recipe {
    * @return an arraylist with the ingredients
    */
   public ArrayList<Ingredient> getIngredients() {
-    ArrayList<Ingredient> copyIngredients = new ArrayList<Ingredient>();
+    ArrayList<Ingredient> copyIngredients = new ArrayList<>();
     for (Ingredient ingredient : ingredients) {
       copyIngredients.add(ingredient);
     }
     return copyIngredients;
-  }
-
-  /**
-   * Get the comments of the recipe.
-   *
-   * @return an arraylist with the comments
-   */
-  public ArrayList<Comment> getComments() {
-    ArrayList<Comment> copyComments = new ArrayList<>();
-    if (comments == null) {
-      return copyComments;
-    }
-    for (Comment comment : comments) {
-      copyComments.add(comment);
-    }
-    return copyComments;
-  }
-
-  /**
-   * Add a new comment to the recipe.
-   *
-   * @param user the user who wrote the comment
-   * @param text the text of the comment
-   */
-  public void addComment(User user, String text, int id, int recipeId, String displayName) {
-    comments.add(new Comment(id, text, recipeId, user.getId(), displayName));
   }
 
 
@@ -196,26 +181,18 @@ public class Recipe {
     return starred;
   }
 
-  
-  /**
-   * Edit the text of the given comment.
+  /** Get a copy of the edit records.
    *
-   * @param comment the comment to edit
-   * @param updatedText the updated text for the comment
+   * @return an arraylist with the edit records.
    */
-  public void editComment(Comment comment, String updatedText) {
-    comment.setText(updatedText);
-  }
+  public ArrayList<RecipeEditRecord> getEditRecords() {
+    ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<>();
+    for (RecipeEditRecord record : editRecords) {
+      copyEditRecords.add(record);
+    }
+    return copyEditRecords;
 
-  /**
-   * Delete the comment under the recipe.
-   *
-   * @param comment the comment to delete
-   */
-  public void deleteComment(Comment comment) {
-    comments.remove(comment);
   }
-
 
 
   /** Set the ingredients of the recipe.
@@ -228,6 +205,14 @@ public class Recipe {
       this.ingredients.add(new Ingredient(ingredient[0],
           Float.parseFloat(ingredient[1]), ingredient[2]));
     }
+  }
+
+  /** Get the creation date of the recipe.
+   *
+   * @return the creation date of the recipe
+   */
+  public Date getCreationDate() {
+    return date;
   }
 
 }

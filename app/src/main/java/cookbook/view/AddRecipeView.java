@@ -6,8 +6,6 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -30,13 +27,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-
-
 
 /**
  * View for adding a recipe.
@@ -85,68 +78,65 @@ public class AddRecipeView {
    * Initialize the add recipe view.
    */
   private void initLayout() {
-
-    // create a vbox to hold the menu buttons
-    VBox sidebar = new VBox(30);
-    sidebar.setMaxWidth(120);
-    sidebar.setStyle("-fx-padding: 50px 20px 20px 20px;");
-    Text title = new Text(displayName + ", welcome!");
-    title.setFont(Font.font("Roboto", 28));
-    sidebar.getChildren().add(title);
-
-    // Add five options to the homepage, one per row
-    Button[] sidebarButtons = {
-      createButton("Home Page", e -> {
-        clearAllInput();
-        observer.goToHomePage();
-      }),
-      createButton("Browse Recipes", e -> {
-        clearAllInput();
-        observer.goToBrowser();
-      }),
-      createButton("Add a Recipe", e -> {
-        observer.goToAddRecipe();
-      }),
-      createButton("Weekly Dinner List", e -> {
-        clearAllInput();
-        observer.goToWeeklyDinner();
-      }),
-      createButton("My Favorites", e -> {
-        clearAllInput();
-        observer.goToMyFavorite();
-      }),
-      createButton("My Shopping List", e -> {
-        clearAllInput();
-        observer.goToShoppingList();
-      }),
-      createButton("Messages", e -> { 
-        clearAllInput();
-        observer.goToMessages();
-      })
-    };
-    for (Button button : sidebarButtons) {
-      sidebar.getChildren().add(button);
-    }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    sidebar.getChildren().add(spacer);
-    Hyperlink logoutButton = new Hyperlink("Logout");
-    logoutButton.setFont(Font.font("Roboto", 18));
-    logoutButton.setStyle(
-        "-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");
-    logoutButton.setOnAction(e -> {
+    Sidebar sidebar = new Sidebar(displayName);
+    sidebar.addButton("Home Page", e -> {
+      clearAllInput();
+      observer.goToHomePage();
+    });
+    sidebar.addButton("Browse Recipes", e -> {
+      clearAllInput();
+      observer.goToBrowser();
+    });
+    sidebar.addButton("Add a Recipe", e -> {
+      clearAllInput();
+      observer.goToAddRecipe();
+    });
+    sidebar.addButton("Weekly Dinner List", e -> {
+      clearAllInput();
+      observer.goToWeeklyDinner();
+    });
+    sidebar.addButton("My Favorites", e -> {
+      clearAllInput();
+      observer.goToMyFavorite();
+    });
+    sidebar.addButton("My Shopping List", e -> {
+      clearAllInput();
+      observer.goToShoppingList();
+    });
+    sidebar.addButton("Messages", e -> {
+      clearAllInput();
+      observer.goToMessages();
+    });
+    sidebar.addButton("My Account", e -> {
+      clearAllInput();
+      observer.goToAccount();
+    });
+    sidebar.addHyperlink("Help", e -> {
+      clearAllInput();
+      observer.goToHelp();
+    });
+    sidebar.addHyperlink("Log Out", e -> {
+      clearAllInput();
       observer.userLogout();
     });
-    sidebar.getChildren().add(logoutButton);
+
+    sidebar.setActiveButton("Add a Recipe");
+        
+    // Add the sidebar to the view
+    sidebar.finalizeLayout();
     view.setLeft(sidebar);
 
+
     VBox root = new VBox();
-    root.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    root.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3;");
+
 
 
     // Add Recipe title
     Label titleLabel = new Label("Add a Recipe");
-    titleLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 32));
+
+    titleLabel.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32;-fx-font-weight: bold;");
+    titleLabel.setFont(Font.font("Roboto"));
     root.getChildren().add(titleLabel);
 
     // Error label
@@ -187,7 +177,8 @@ public class AddRecipeView {
     // Button to add a new direction line
     Button addDirectionLineButton = new Button("Add Direction");
     addDirectionLineButton.setStyle(
-        "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
+          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addDirectionLineButton.setFont(Font.font("Roboto", 14));
 
     // ListView for displaying added direction lines and delete the selected
@@ -264,7 +255,8 @@ public class AddRecipeView {
 
     root.getChildren().add(directionsGrid);
     // add top margin to directionsGrid
-    root.setMargin(directionsGrid, new Insets(15, 0, 0, 0));
+    
+    VBox.setMargin(directionsGrid, new Insets(15, 0, 0, 0));
 
     // Ingredients
     GridPane ingredientsInput = new GridPane();
@@ -369,7 +361,7 @@ public class AddRecipeView {
     HBox.setHgrow(ingredientsTable, Priority.ALWAYS);
 
     root.getChildren().addAll(ingredientsLabel, ingredientsInput, ingredientsContainer);
-    root.setMargin(ingredientsLabel, new Insets(15, 0, 5, 0));
+    VBox.setMargin(ingredientsLabel, new Insets(15, 0, 5, 0));
 
     // Tags
     Label tagsLabel = new Label("Tags");
@@ -389,7 +381,8 @@ public class AddRecipeView {
 
     Button addTagButton = new Button("Add Tag");
     addTagButton.setStyle(
-        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
+          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addTagButton.setFont(Font.font("Roboto", 14));
 
     // Define tagslist
@@ -478,7 +471,7 @@ public class AddRecipeView {
       }
     });
     root.getChildren().add(saveButton);
-    root.setMargin(saveButton, new Insets(15, 0, 0, 0));
+    VBox.setMargin(saveButton, new Insets(15, 0, 0, 0));
 
     // Wrap the rootVBox in a ScrollPane so that the content can be scrolled
     ScrollPane scrollPane = new ScrollPane(root);
@@ -487,22 +480,6 @@ public class AddRecipeView {
 
     // Set view
     view.setCenter(scrollPane);
-  }
-
-  /** Create styled button with the given text and event handler.
-   *
-   * @param text is the text to display on the button
-   * @param eventHandler is the event handler to execute when the button is clicked.
-   * @return the created button
-   */
-  private Button createButton(String text, EventHandler<ActionEvent> eventHandler) {
-    Button button = new Button(text);
-    button.setStyle("-fx-background-color: #F2CC8F; -fx-text-fill: black;-fx-cursor: hand;");
-    button.setFont(Font.font("Roboto", 18));
-    button.setMinWidth(120); // Set the fixed width for each button
-    button.setMaxWidth(Double.MAX_VALUE); // Ensure the button text is fully visible
-    button.setOnAction(eventHandler);
-    return button;
   }
 
   // Clear all input fields
@@ -528,12 +505,12 @@ public class AddRecipeView {
     alert.setContentText(message);
     // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px; -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
+    dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
+        + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
     // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
-    buttonBar.getButtons().forEach(button -> {
-      button.setStyle("-fx-background-color: #3D405B; -fx-text-fill: white; -fx-padding: 5 10 5 10;");
-    });
+    buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
+        + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
     // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");

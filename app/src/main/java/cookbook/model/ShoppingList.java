@@ -2,7 +2,7 @@ package cookbook.model;
 
 
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 
 /**
@@ -46,7 +46,7 @@ public class ShoppingList {
    */
   public void addIngredient(Ingredient newIngredient) {
     for (Ingredient ingredient : this.ingredients) {
-      if (newIngredient.getName() == ingredient.getName()) {
+      if (Objects.equals(newIngredient.getName(), ingredient.getName())) {
         ingredient.setQuantity(ingredient.getQuantity() + newIngredient.getQuantity());
         return;
       }
@@ -74,7 +74,7 @@ public class ShoppingList {
    */
   public void editIngredientQuantity(String ingredientName, float newQuantity) {
     for (Ingredient ingredient : this.ingredients) {
-      if (ingredient.getName() == ingredientName) {
+      if (Objects.equals(ingredient.getName(), ingredientName)) {
         ingredient.setQuantity(newQuantity);
       }
     }
@@ -87,7 +87,7 @@ public class ShoppingList {
    */
   public void deleteIngredient(String ingredientName) {
     for (Ingredient ingredient : ingredients) {
-      if (ingredient.getName() == ingredientName) {
+      if (Objects.equals(ingredient.getName(), ingredientName)) {
         ingredients.remove(ingredient);
       }
     }

@@ -1,6 +1,10 @@
 package cookbook.model;
 
+/**
+ * The Comment class.
+ */
 public class Comment {
+
   private int id;
   private String text;
   private int recipeId;
@@ -22,9 +26,6 @@ public class Comment {
     return id;
   }
 
-  public void setId(int id) {
-    this.id = id;
-  }
 
   public String getText() {
     return text;
@@ -34,21 +35,11 @@ public class Comment {
     this.text = text;
   }
 
-  public int getRecipeId() {
-    return recipeId;
-  }
-
-  public void setRecipeId(int recipeId) {
-    this.recipeId = recipeId;
-  }
 
   public int getUserId() {
     return userId;
   }
 
-  public void setUserId(int userId) {
-    this.userId = userId;
-  }
 
   public String getDisplayName() {
     return displayName;

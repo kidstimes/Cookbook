@@ -21,8 +21,8 @@ public class Dinner {
    */
   public Dinner(LocalDate date, Recipe recipe) {
     this.date = date;
-    this.dinnerRecipes = new ArrayList<Recipe>(
-      Arrays.asList(recipe)
+    this.dinnerRecipes = new ArrayList<>(
+            Arrays.asList(recipe)
     );
   }
 
@@ -53,18 +53,9 @@ public class Dinner {
   public LocalDate getDate() {
     return date;
   }
-  
-  /**
-   * Remove a recipe from the dinner.
-   *
-   * @param recipe the recipe to remove
-   */
-  public void removeRecipe(Recipe recipe) {
-    dinnerRecipes.remove(recipe);
-  }
+
 
   public int getWeekNumber() {
-    int weekNumber = date.get(WeekFields.ISO.weekOfWeekBasedYear());
-    return weekNumber;
+    return date.get(WeekFields.ISO.weekOfWeekBasedYear());
   }
 }

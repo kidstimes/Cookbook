@@ -32,7 +32,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
    * Get the browser view.
    */
   public Node getView() {
-    //browserView.updateRecipes(model.getRecipes());
     return this.browserView.getView();
   }
 
@@ -59,13 +58,6 @@ public class BrowserController extends BaseController implements BrowserViewObse
 
     // Apply the filters and display the filtered recipes
     browserView.displayRecipes(model.getRecipesWithFilters(keywords, ingredients, tags));
-  }
-
-  /**
-   * Update recipes with the new filters.
-   */
-  public void updateDisplayedRecipes(ArrayList<Recipe> filteredResults) {
-    this.browserView.displayRecipes(filteredResults);
   }
 
 

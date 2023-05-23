@@ -2,7 +2,6 @@ package cookbook.controller;
 
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
-import cookbook.model.User;
 import cookbook.view.RecipeView;
 import cookbook.view.RecipeViewObserver;
 import java.time.LocalDate;
@@ -24,14 +23,12 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public RecipeController(CookbookFacade model, MainController mainController,
       Recipe recipe) {
     super(model, mainController);
-    
-    this.recipeView = new RecipeView(model.getUserDisplayName(), model.getUserId());
+    this.recipeView = new RecipeView(model.getUserDisplayName(),
+         model.getUserId(), model.getLoggedOutUsers());
+    this.recipeView.setObserver(this);
     this.recipeView.setRecipe(recipe);
     this.recipeView.setComments(model.getComments(recipe.getId()));
-    this.recipeView.setObserver(this);
-    this.mainController = mainController;
   }
-
 
   /**
    * Get the recipe view.
@@ -39,13 +36,6 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public Node getView() {
     return this.recipeView.getView();
   }
-
-
-
-  public void goToBrowser() {
-    mainController.goToBrowser();
-  }
-
 
   /**
    * Handle the save tags event.
@@ -101,6 +91,16 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   @Override
   public void deleteComment(int commentId) {
     model.deleteComment(commentId);
+  }
+
+  @Override
+  public boolean sendMessageToUser(String selectedUser, Recipe recipe, String message) {
+    return model.sendMessageToUser(selectedUser, recipe, message);
+  }
+
+  @Override
+  public String getDisplayNameByUsername(String createrUsername) {
+    return model.getDisplayNameByUsername(createrUsername);
   }
 
 }

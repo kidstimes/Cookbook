@@ -15,11 +15,6 @@ public interface LoginViewObserver {
 
 
   /**
-   * Go to the home page from the login view.
-   */
-  void goToHomePage();
-
-  /**
    * Go to sign up from the login view.
    */
   void goToSignUp();

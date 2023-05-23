@@ -51,4 +51,12 @@ public abstract class BaseController {
   public void goToMessages() {
     mainController.goToMessages();
   }
+
+  public void goToHelp() {
+    mainController.goToHelp();
+  }
+
+  public void goToAccount() {
+    mainController.goToAccount();
+  }
 }

@@ -28,6 +28,10 @@ public interface WeeklyDinnerViewObserver {
   void removeRecipeFromWeeklyDinner(LocalDate dayDate, Recipe recipe);
 
   void goToMessages();
+
+  void goToHelp();
+
+  void goToAccount();
   
   
 }
