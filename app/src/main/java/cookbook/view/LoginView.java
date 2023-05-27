@@ -468,7 +468,8 @@ public class LoginView {
 
     // Welcome message
     Label welcomeMessage = new Label("Welcome to Cookbook");
-    welcomeMessage.setStyle("-fx-font-size: 28; -fx-font-weight: bold;");
+    welcomeMessage.setStyle("-fx-font-size: 28; -fx-font-weight: bold;"
+        + "-fx-font-family: \"ROBOTO\";");
 
     // Login section
     GridPane loginGrid = new GridPane();
@@ -508,13 +509,7 @@ public class LoginView {
     });
     loginGrid.add(loginButton, 0, 3, 2, 1);
 
-    /*
-    Hyperlink forgotPasswordLink = new Hyperlink("Forgot Password");
-    forgotPasswordLink.setOnAction(event -> {
-    });
-    loginGrid.add(forgotPasswordLink, 1, 2);
-    GridPane.setHalignment(forgotPasswordLink, HPos.RIGHT);
-    */
+
 
     Label dontHaveAccountLabel = new Label("Don't have an account?");
     //set dont have account label font and size

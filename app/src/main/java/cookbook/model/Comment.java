@@ -7,7 +7,6 @@ public class Comment {
 
   private int id;
   private String text;
-  private int recipeId;
   private int userId;
   private String displayName;
 
@@ -17,7 +16,6 @@ public class Comment {
   public Comment(int id, String text, int recipeId, int userId, String displayName) {
     this.id = id;
     this.text = text;
-    this.recipeId = recipeId;
     this.userId = userId;
     this.displayName = displayName;
   }

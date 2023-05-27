@@ -28,7 +28,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
 /**
  * The view for the recipe browser.
  */
@@ -43,11 +42,10 @@ public class BrowserView {
   private ArrayList<String> privateTags;
   private String displayName;
 
-
   /**
    * Browser View Constructor.
    */
-  public BrowserView(ArrayList<Recipe> recipeList, 
+  public BrowserView(ArrayList<Recipe> recipeList,
       ArrayList<String> privateTags, String displayName) {
     view = new BorderPane();
     rootVbox = new VBox();
@@ -72,29 +70,29 @@ public class BrowserView {
     return view;
   }
 
-
   /**
    * Initialize the view for the recipe browser.
    *
    * @param recipeList the recipes of the cookbook
    */
   private void initLayout(ArrayList<Recipe> recipeList) {
-    
+
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
-    
-    sidebar.setActiveButton("Browse Recipes");
+
+    sidebar.setActiveButton("All Recipes");
     sidebar.finalizeLayout();
-        
+
     // Add the sidebar to the view
     view.setLeft(sidebar);
 
@@ -106,10 +104,10 @@ public class BrowserView {
     searchResultsVbox.getChildren().clear();
 
     // Add a title to the homepage
-    Label title = new Label("Recipe Browser");
-    title.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32px;-fx-font-weight: bold;");
-    title.setFont(Font.font("ROBOTO"));
-    VBox.setMargin(title, new Insets(0, 0, 20, 0));
+    Label title = new Label("All Recipes");
+    title.setStyle("-fx-text-fill: #3F6250;-fx-font-size: 32px;-fx-font-weight: bold;"
+        + "-fx-font-family: 'Roboto';");
+    VBox.setMargin(title, new Insets(0, 0, 30, 0));
     rootVbox.getChildren().add(title);
 
     // Add search input fields for name and ingredients
@@ -132,9 +130,9 @@ public class BrowserView {
     Button searchButton = new Button("Search");
     searchButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-        + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+            + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     searchButton.setFont(Font.font("ROBOTO", 16));
-    VBox.setMargin(searchButton, new Insets(0, 0, 20, 0));
+    VBox.setMargin(searchButton, new Insets(0, 0, 30, 10));
 
     searchButton.setOnAction(e -> {
       if (observer != null) {
@@ -149,10 +147,10 @@ public class BrowserView {
     // make a bar for recipe name and ingredients search fields
     HBox searchInputHbox = new HBox(20);
     searchInputHbox.setAlignment(Pos.BOTTOM_LEFT);
-    searchInputHbox.getChildren().addAll(searchByNameLabel, 
-          searchByNameField, searchByIngredientLabel, searchByIngredientField, searchButton);
+    searchInputHbox.getChildren().addAll(searchByNameLabel,
+        searchByNameField, searchByIngredientLabel, searchByIngredientField, searchButton);
     rootVbox.getChildren().add(searchInputHbox);
-    VBox.setMargin(searchInputHbox, new Insets(0, 0, 10, 0));
+    VBox.setMargin(searchInputHbox, new Insets(10, 0, 20, 0));
 
     // Add tags View
     tagsFlowPane.setHgap(5);
@@ -160,10 +158,9 @@ public class BrowserView {
     // Set the preferred width before wrapping to the next row
     tagsFlowPane.setPrefWrapLength(800);
 
-    ObservableList<String> tags = 
-          FXCollections.observableArrayList("vegan", "vegetarian", "lactose free",
-        "gluten free", "starter", "main course", "dessert and sweets");
-      
+    ObservableList<String> tags = FXCollections.observableArrayList("vegan", "vegetarian",
+        "lactose free", "gluten free", "starter", "main course", "dessert and sweets");
+
     tags.addAll(privateTags);
 
     for (String tag : tags) {
@@ -174,7 +171,7 @@ public class BrowserView {
     }
 
     rootVbox.getChildren().add(tagsFlowPane);
-    VBox.setMargin(tagsFlowPane, new Insets(0, 0, 10, 0));
+    VBox.setMargin(tagsFlowPane, new Insets(0, 0, 20, 0));
 
     // Wrap the rootVBox in a ScrollPane so that the content can be scrolled
     ScrollPane scrollPane = new ScrollPane(rootVbox);
@@ -207,7 +204,6 @@ public class BrowserView {
     return selectedTags;
   }
 
-
   /**
    * Display the recipes in the searchResultsVBox.
    *
@@ -225,10 +221,10 @@ public class BrowserView {
     }
     Text recipeCount = new Text(recipeCountText);
     recipeCount.setFont(Font.font("ROBOTO", 16));
-    recipeCount.setId("recipeCount"); 
+    recipeCount.setId("recipeCount");
     searchResultsVbox.getChildren().add(recipeCount);
     // add margin to the recipeCount
-    VBox.setMargin(recipeCount, new Insets(15, 0, 10, 0));
+    VBox.setMargin(recipeCount, new Insets(15, 0, 20, 0));
 
     // Add a separator line before the recipe buttons
     Separator separator = new Separator(Orientation.HORIZONTAL);
@@ -247,10 +243,8 @@ public class BrowserView {
       // Create star and unstar icons using ImageViews
       Image star = new Image(getClass().getResourceAsStream("/images/star.png"));
       ImageView starIcon = new ImageView(star);
-      starIcon.setStyle("-fx-background-color: #F9F8F3;");
       Image unstar = new Image(getClass().getResourceAsStream("/images/unstar.png"));
       ImageView unstarIcon = new ImageView(unstar);
-      unstarIcon.setStyle("-fx-background-color: #F9F8F3;");
       starIcon.setFitWidth(20);
       starIcon.setFitHeight(20);
       unstarIcon.setFitWidth(20);
@@ -258,6 +252,7 @@ public class BrowserView {
 
       // Create a ToggleButton with the unstar icon as default
       ToggleButton starButton = new ToggleButton("", unstarIcon);
+      starButton.setStyle("-fx-background-color: #F9F8F3; -fx-cursor: hand;");
       starButton.setSelected(recipe.isStarred());
       if (recipe.isStarred()) {
         starButton.setGraphic(starIcon);
@@ -274,8 +269,17 @@ public class BrowserView {
         }
       });
 
+      Image recipeIcon = new Image(getClass()
+          .getResourceAsStream("/images/serving.png"));
+      ImageView recipeIconImage = new ImageView(recipeIcon);
+      recipeIconImage.setFitWidth(40);
+      recipeIconImage.setFitHeight(40);
+
       Hyperlink recipeButton = new Hyperlink(recipe.getName());
       recipeButton.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
+      recipeButton.setGraphic(recipeIconImage);
+      recipeButton.setGraphicTextGap(20.0);
+
       recipeButton.setOnAction(e -> {
         if (observer != null) {
           observer.goToRecipe(recipe);
@@ -289,8 +293,11 @@ public class BrowserView {
       recipeBox.setAlignment(Pos.CENTER_LEFT);
       recipeBox.getChildren().addAll(starButton, recipeButton, recipeTags);
       FlowPane flowPane = new FlowPane();
-      flowPane.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
+      flowPane.setStyle("-fx-padding: 5 10 5 10;");
       flowPane.getChildren().add(recipeBox);
+
+      Separator recipeSeparator = new Separator();
+      recipeSeparator.setOrientation(Orientation.HORIZONTAL);
 
       // Add a tooltip with the short description for hovering effect
       Tooltip tooltip = new Tooltip(recipe.getShortDesc());
@@ -299,10 +306,10 @@ public class BrowserView {
       Tooltip.install(flowPane, tooltip);
 
       searchResultsVbox.getChildren().add(flowPane);
-      VBox.setMargin(flowPane, new Insets(0, 0, 10, 0));
+      VBox.setMargin(flowPane, new Insets(10, 0, 10, 0));
+      searchResultsVbox.getChildren().add(recipeSeparator);
 
     }
   }
-
 
 }

@@ -49,14 +49,15 @@ public class AccountView {
   private void initLayout() {
 
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
@@ -67,17 +68,20 @@ public class AccountView {
     view.setLeft(sidebar);
 
     centerBox = new VBox(30);
-    centerBox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    centerBox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;"
+        + "-fx-border-color: lightgrey;-fx-border-width: 1px;");
     centerBox.setAlignment(Pos.TOP_LEFT);
 
     Label accountTitle = new Label("My Account");
-    accountTitle.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486;");
+    accountTitle.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #3F6250;"
+        + "-fx-font-weight: bold;");
 
     Text userNameText = new Text("Your username is: " + userName);
     userNameText.setFont(Font.font("Roboto", 20));
 
     Text accountSettingsTitle = new Text("Account Setting");
-    accountSettingsTitle.setFont(Font.font("Roboto", 28));
+    accountSettingsTitle.setStyle("-fx-font: 24px \"Roboto\";-fx-font-weight: bold;");
+
 
 
 
@@ -98,7 +102,6 @@ public class AccountView {
     view.setCenter(centerBox);
   }
     
-  
 
 
   private void showChangeDisplayNameForm() {
@@ -191,6 +194,7 @@ public class AccountView {
   public void setAdmin() {
     Text adminTitle = new Text("Admin Account");
     adminTitle.setFont(Font.font("Roboto", 28));
+    adminTitle.setStyle("-fx-font: 24px \"Roboto\";-fx-font-weight: bold;");
     Hyperlink adminButton = new Hyperlink("Admin Page");
     adminButton.setFont(Font.font("Roboto", 20));
     adminButton.setStyle("-fx-background-color: #FFFFFF; -fx-effect: null;-fx-cursor: hand;");

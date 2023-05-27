@@ -71,6 +71,7 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   public void editRecipe(Recipe recipe, String newName, String newDescription,
       String newInstructions, ArrayList<String[]> newIngredients) {
     model.editRecipe(recipe, newName, newDescription, newInstructions, newIngredients);
+    goToRecipe(recipe);
   }
 
   @Override

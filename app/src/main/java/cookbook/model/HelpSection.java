@@ -10,7 +10,13 @@ public class HelpSection {
   String title;
   ArrayList<HelpSubsection> subsections;
 
-  //construcor
+  /**
+   * Help Section Constructor.
+   *
+   * @param id the id of the section
+   * @param title the title of the section
+   * @param subsections the subsections of the section
+   */
   public HelpSection(int id, String title, ArrayList<HelpSubsection> subsections) {
     this.id = id;
     this.title = title;

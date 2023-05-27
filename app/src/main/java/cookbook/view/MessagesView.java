@@ -32,7 +32,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -55,6 +54,7 @@ public class MessagesView {
   private Image open;
   private Image close;
   private VBox selectedUserBox;
+  private SplitPane splitPane;
 
   /**
    * Constructor for the messages view.
@@ -91,31 +91,40 @@ public class MessagesView {
    */
   public void initLayout(String displayName) {
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     sidebar.setActiveButton("Messages");
     sidebar.finalizeLayout();
     view.setLeft(sidebar);
-    SplitPane splitPane = new SplitPane();
+    this.splitPane = new SplitPane();
     splitPane.getItems().addAll(usersView, messagesView);
-    splitPane.setPrefSize(1300, 600);
+    splitPane.setPrefWidth(1300);
+    splitPane.setMinHeight(550);
+    splitPane.setPadding(new Insets(10, 10, 10, 10));
+    splitPane.prefHeightProperty().bind(view.heightProperty());
     splitPane.setDividerPositions(0.25f);
+    VBox.setVgrow(splitPane, Priority.ALWAYS);
     view.setCenter(splitPane);
     Label title = new Label("Messages");
-    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486; -fx-padding: 50 20 20 40;");
+    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #3F6250; "
+        + "-fx-padding: 30 20 20 40;-fx-font-weight: bold;");
     VBox titleBox = new VBox();
     titleBox.getChildren().addAll(title, splitPane);
     titleBox.setAlignment(Pos.TOP_LEFT);
-    titleBox.setPadding(new Insets(20, 20, 0, 20));
     titleBox.setSpacing(10);
+    titleBox.setFillWidth(true);
+    titleBox.setPadding(new Insets(20));
+    titleBox.setStyle("-fx-background-color: #F9F8F3; "
+        + "-fx-border-color: lightgrey; -fx-border-width: 1px;");
     view.setCenter(titleBox);
     usersView.setStyle("-fx-background-color: #3D405B;");
     messagesView.setStyle("-fx-background-color: #3D405B;");
@@ -166,7 +175,6 @@ public class MessagesView {
     } else {
       userBox.getChildren().addAll(otherUser, unreadCount);
     }
-
     ImageView envelopeIcon;
     if (conversation.allMessagesSentByUser(observer.getUsername())) {
       if (allSentMessagesRead(conversation, observer.getUsername())) {
@@ -210,32 +218,20 @@ public class MessagesView {
    */
   private void showMessages(ArrayList<Message> messages) {
     messagesView.getItems().clear();
-    messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
-    if (messages.isEmpty()) {
-      Label noMessagesLabel = new Label("No messages to display.");
-      noMessagesLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
-      noMessagesLabel.setTextFill(Color.web("#FFFFFF"));
-      noMessagesLabel.setPadding(new Insets(20, 20, 20, 20));
-      VBox noMessagesBox = new VBox(noMessagesLabel);
-      messagesView.getItems().add(noMessagesBox);
-      return;
-    }
-
     messagesView.setStyle("-fx-background-color: #F9F8F3;");
+    messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
     messages.sort(Comparator.comparing(Message::getDateTime));
     for (Message message : messages) {
       messagesView.getItems().add(createMessageBox(message));
     }
-    Region spacer = new Region();
-    VBox.setVgrow(spacer, Priority.ALWAYS);
-    spacer.setMinHeight(50);
     VBox replyBox = createReplyBox();
-    replyBox.setAlignment(Pos.BOTTOM_RIGHT);
-    VBox.setVgrow(replyBox, Priority.NEVER);
-    VBox spacerBox = new VBox();
-    spacerBox.getChildren().add(spacer);
-    messagesView.getItems().add(spacerBox);
-    messagesView.getItems().add(replyBox);
+    //replyBox.setAlignment(Pos.BOTTOM_RIGHT);
+
+    BorderPane borderPane = new BorderPane();
+    borderPane.setCenter(messagesView);
+    borderPane.setBottom(replyBox);
+    splitPane.getItems().set(1, borderPane);
+    
   }
 
   private VBox createReplyBox() {
@@ -278,9 +274,10 @@ public class MessagesView {
     messagesView.setStyle("-fx-selection-bar: #ffffff; -fx-selection-bar-non-focused: #ffffff;");
     messagesView.setStyle("-fx-cell-text-fill: #000000;");
     messageBox = new VBox();
+    messageBox.setStyle("-fx-background-color: #ffffff;");
     if (message.getSenderUsername().equals(observer.getUsername())) {
       messageBox.setAlignment(Pos.CENTER_RIGHT);
-    } else {
+    } else if (message.getSenderUsername().equals(selectedConversation.getOtherUsername())) {
       messageBox.setAlignment(Pos.CENTER_LEFT);
     }
     messageBox.setPadding(new Insets(10, 10, 20, 10));
@@ -289,14 +286,14 @@ public class MessagesView {
     if (message.getSenderUsername().equals(observer.getUsername())) {
       senderNameAndDate = new Label(
           "You   " + message.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-    } else {
+    } else  {
       senderNameAndDate = new Label(
-          observer.getDisplayNameByUsername(message.getSenderUsername()) + "("
+          observer.getDisplayNameByUsername(message.getSenderUsername()) + " (username: "
           + message.getSenderUsername() + ")" + "   "
           + message.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
     }
     senderNameAndDate.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
-    senderNameAndDate.setTextFill(Color.web("#69a486")); // Set color to #81B29A
+    senderNameAndDate.setTextFill(Color.web("#3F6250"));
     senderNameAndDate.setPadding(new Insets(2, 2, 2, 2));
     VBox innerMessageBox = new VBox();
     if (message.getSenderUsername().equals(observer.getUsername())) {
@@ -312,11 +309,12 @@ public class MessagesView {
           CornerRadii.EMPTY, Insets.EMPTY)));
     }
     Label messageLabel = new Label();
-    messageLabel.setMaxWidth(400);
+    messageLabel.setMaxWidth(500);
     messageLabel.setWrapText(true);
-    messageLabel.setPrefWidth(400);
+    messageLabel.setPrefWidth(500);
     messageLabel.setFont(Font.font("Roboto", 20));
     messageLabel.setPadding(new Insets(10, 10, 10, 10));
+    messageLabel.setTextFill(Color.web("#000000"));
     // Check if message has text, if not, show recipe link instead
     if (message.getText().trim().isEmpty()) {
       messageLabel.setText("No text message");
@@ -351,7 +349,7 @@ public class MessagesView {
     HBox readUnreadBox = new HBox(readUnreadIcon);
     readUnreadBox.setAlignment(Pos.CENTER_RIGHT);
     innerMessageBox.getChildren().add(readUnreadBox);
-    innerMessageBox.setMaxWidth(400);
+    innerMessageBox.setMaxWidth(500);
     messageBox.getChildren().addAll(senderNameAndDate, innerMessageBox);
     if (message.getRecipe() != null) {
       Text recipText = new Text("Recipe: ");
@@ -365,6 +363,7 @@ public class MessagesView {
       unstarIcon.setFitWidth(25);
       unstarIcon.setFitHeight(25);
       ToggleButton starButton = new ToggleButton("", unstarIcon);
+      starButton.setStyle("-fx-background-color: white; -fx-cursor:hand;");
       starButton.setSelected(message.getRecipe().isStarred());
       if (message.getRecipe().isStarred()) {
         starButton.setGraphic(starIcon);
@@ -397,9 +396,9 @@ public class MessagesView {
       });
 
       if (!message.isRead()) {
-        Tooltip tooltip = new Tooltip("Click to mark as read");
-        tooltip.setFont(Font.font("Roboto", 16));
-        tooltip.setStyle("-fx-text-fill: white; -fx-background-color: #d6e6de;");
+        Tooltip tooltip = new Tooltip("Click to mark the message as read");
+        tooltip.setFont(Font.font("Roboto", 18));
+        tooltip.setStyle("-fx-text-fill: Black; -fx-background-color: #F2CC8F;");
         Tooltip.install(messageBox, tooltip);
         return messageBox;
       }

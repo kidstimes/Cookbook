@@ -53,7 +53,7 @@ public class MainController {
   public void initMainLayout() {
     // Initialize the root pane
     this.root = new BorderPane();
-    Scene scene = new Scene(this.root, 1440, 960);
+    Scene scene = new Scene(this.root, 1800, 1020);
     // Initialize the stage
     this.stage.setTitle("Cookbook");
     this.stage.setScene(scene);

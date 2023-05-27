@@ -46,8 +46,9 @@ public class AddRecipeController extends BaseController implements AddRecipeView
               + "Please check and enter again.", recipeData[0]));
       return false;
     }
-    model.addRecipe(recipeData, ingredients, tags);
+    
     if (model.saveRecipeToDatabase(recipeData, ingredients, tags)) {
+      model.addRecipe(recipeData, ingredients, tags);
       mainController.goToBrowser();
       return true;
     } else {

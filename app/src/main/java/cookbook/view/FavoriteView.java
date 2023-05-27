@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -29,10 +31,11 @@ public class FavoriteView {
   private BorderPane view;
   private ArrayList<Recipe> favoriteRecipes;
 
-  /** Constructor for the favorite view.
+  /**
+   * Constructor for the favorite view.
    *
    * @param favoriteRecipes the list of favorite recipes
-   * @param displayName the display name of the user
+   * @param displayName     the display name of the user
    */
   public FavoriteView(ArrayList<Recipe> favoriteRecipes, String displayName) {
     this.favoriteRecipes = favoriteRecipes;
@@ -49,32 +52,34 @@ public class FavoriteView {
   }
 
   private void initLayout(String displayName) {
-    
+
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
-    
+
     sidebar.setActiveButton("My Favorites");
     sidebar.finalizeLayout();
     view.setLeft(sidebar);
-    
+
     VBox recipeListVbox = new VBox(10);
-    recipeListVbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    recipeListVbox.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3; "
+        + "-fx-border-color: lightgrey; -fx-border-width: 1px;");
 
     ScrollPane scrollPane = new ScrollPane(recipeListVbox);
-    scrollPane.setFitToWidth(true); 
+    scrollPane.setFitToWidth(true);
     scrollPane.setStyle("-fx-background-color: #F9F8F3;");
     // Add title
     Label title = new Label("My Favorite Recipes");
-    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #69a486;");
+    title.setStyle("-fx-font: 32px \"Roboto\"; -fx-text-fill: #3F6250;-fx-font-weight: bold;");
     VBox.setMargin(title, new Insets(0, 0, 20, 0));
     recipeListVbox.getChildren().add(title);
 
@@ -92,11 +97,18 @@ public class FavoriteView {
     VBox.setMargin(numFavoriteRecipes, new Insets(0, 0, 20, 0));
     recipeListVbox.getChildren().add(numFavoriteRecipes);
 
-    // Add a separator line 
+    // Add a separator line
     Separator separator = new Separator(Orientation.HORIZONTAL);
     recipeListVbox.getChildren().add(separator);
 
     for (Recipe recipe : favoriteRecipes) {
+
+      Image recipeIcon = new Image(getClass()
+          .getResourceAsStream("/images/serving.png"));
+      ImageView recipeIconImage = new ImageView(recipeIcon);
+      recipeIconImage.setFitWidth(40);
+      recipeIconImage.setFitHeight(40);
+
       Hyperlink recipeLink = new Hyperlink(recipe.getName());
       recipeLink.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
       recipeLink.setOnAction(e -> {
@@ -104,7 +116,9 @@ public class FavoriteView {
           observer.goToRecipe(recipe);
         }
       });
-      
+      recipeLink.setGraphic(recipeIconImage);
+      recipeLink.setGraphicTextGap(20.0);
+
       // Add recipe tags
       String recipeTagsString = "";
       for (int j = 0; j < recipe.getTags().size(); j++) {
@@ -126,9 +140,9 @@ public class FavoriteView {
       HBox recipeHbox = new HBox(20);
       recipeHbox.setAlignment(Pos.CENTER_LEFT);
       HBox.setHgrow(recipeHbox, Priority.ALWAYS);
-    
+
       Button deleteButton = new Button("Delete");
-      deleteButton.setStyle("-fx-font: 12px \"Roboto\";"
+      deleteButton.setStyle("-fx-font: 14px \"Roboto\";"
           + " -fx-background-color: white; -fx-text-fill: #E07A5F; -fx-cursor: hand; ");
       deleteButton.setOnAction(e -> {
         if (observer != null) {
@@ -138,20 +152,21 @@ public class FavoriteView {
       });
       Region spacer2 = new Region();
       HBox.setHgrow(spacer2, Priority.ALWAYS);
-    
-      recipeHbox.getChildren().addAll(recipeLink, recipeTags, spacer2, deleteButton); 
-      recipeHbox.setStyle("-fx-padding: 5 10 5 10;-fx-background-color: white;");
-      recipeListVbox.getChildren().add(recipeHbox);
 
+      recipeHbox.getChildren().addAll(recipeLink, recipeTags, spacer2, deleteButton);
+      recipeHbox.setStyle("-fx-padding: 5 10 5 10;");
+
+      Separator recipeSeparator = new Separator();
+      recipeSeparator.setOrientation(Orientation.HORIZONTAL);
+
+      recipeListVbox.getChildren().addAll(recipeHbox, recipeSeparator);
 
     }
+    recipeListVbox.setFillWidth(true);
+    scrollPane.setFitToHeight(true);
+    scrollPane.setFitToWidth(true);
     view.setCenter(scrollPane);
 
   }
 
 }
-
-
-
-  
-

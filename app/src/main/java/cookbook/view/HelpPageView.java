@@ -63,14 +63,15 @@ public class HelpPageView {
 
   private void initLayout() {
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     sidebar.setActiveButton("Help");
@@ -80,8 +81,10 @@ public class HelpPageView {
 
     Hyperlink backButton = new Hyperlink("All help topics");
     backButton.setOnAction(e -> observer.goToHelp());
-    backButton.setStyle(" -fx-font: 20px \"Roboto\"; -fx-padding: 10 20 10 50; -fx-cursor: hand;");
+    backButton.setStyle(" -fx-font: 24px \"Roboto\"; -fx-padding: 10 30 10 50; "
+        + "-fx-cursor: hand;-fx-font-weight: bold;");
     searchField.setPromptText("Type keyword(s) here, separated by space");
+    searchField.setStyle("-fx-font: 18px \"Roboto\"; -fx-padding: 10 10 10 10;");
     HBox searchFieldBox = new HBox();
     searchFieldBox.getChildren().addAll(searchField, searchButton);
     searchFieldBox.setSpacing(10);
@@ -94,11 +97,13 @@ public class HelpPageView {
     VBox titleBox = new VBox(10);
     Label titleLabel = new Label("Help");
     titleLabel.setStyle("-fx-font: 32px \"Roboto\"; "
-        + "-fx-text-fill: #69a486; -fx-padding: 50 50 20 50;");
+        + "-fx-text-fill: #3F6250; -fx-padding: 50 50 20 50;-fx-font-weight: bold;");
     titleBox.getChildren().addAll(titleLabel, searchFieldBox, backButton, searchResultsLabel);
 
     // Create a VBox to contain the help sections
     VBox contentBox = new VBox(10, titleBox, helpSectionsPane);
+    contentBox.setPadding(new Insets(0, 50, 50, 50));
+    contentBox.setStyle("-fx-background-color: #F9F8F3;");
 
     // Create a ScrollPane for the help sections pane
     ScrollPane helpSectionsScrollPane = new ScrollPane(contentBox);
@@ -111,7 +116,7 @@ public class HelpPageView {
     // Add event listener for search button
     searchButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-            + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        + "-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;-fx-font-size: 18px;");
     searchButton.setOnAction(e -> performSearch());
 
     // Populate the help sections
@@ -127,18 +132,18 @@ public class HelpPageView {
       for (HelpSection section : helpSections) {
         VBox sectionBox = new VBox(10);
         Label sectionLabel = new Label(section.getTitle());
-        sectionLabel.setStyle("-fx-padding: 0 0 0 30;");
+        sectionLabel.setStyle("-fx-padding: 0 20 0 30;");
 
-        sectionLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
+        sectionLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 24));
 
         sectionBox.getChildren().add(sectionLabel);
 
         for (HelpSubsection subsection : section.getSubsections()) {
           Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
-          subsectionLink.setStyle("-fx-padding: 0 0 0 50;");
+          subsectionLink.setStyle("-fx-padding: 0 20 0 50;");
           subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
 
-          subsectionLink.setFont(Font.font("Roboto", 16));
+          subsectionLink.setFont(Font.font("Roboto", 20));
           sectionBox.getChildren().add(subsectionLink);
         }
 
@@ -147,9 +152,9 @@ public class HelpPageView {
     } else {
       for (HelpSubsection subsection : storedSearchResults) {
         Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
-        subsectionLink.setStyle("-fx-padding: 0 0 0 50;");
+        subsectionLink.setStyle("-fx-padding: 0 20 0 50;");
         subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
-        subsectionLink.setFont(Font.font("Roboto", 16));
+        subsectionLink.setFont(Font.font("Roboto", 20));
 
         helpSectionsPane.getChildren().add(subsectionLink);
       }
@@ -163,16 +168,16 @@ public class HelpPageView {
   private void showHelpSubsection(HelpSubsection subsection) {
     Hyperlink backButton = new Hyperlink("Back to Previous");
     backButton.setOnAction(e -> populateHelpSections());
-    backButton.setStyle("-fx-padding: 0 0 0 50;");
+    backButton.setStyle("-fx-padding: 0 20 0 50;");
 
     Label title = new Label(subsection.getTitle());
-    title.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
-    title.setStyle("-fx-padding: 0 0 0 50;");
+    title.setFont(Font.font("Roboto", FontWeight.BOLD, 20));
+    title.setStyle("-fx-padding: 0 20 0 50;");
     title.setUnderline(true);
 
     Label text = new Label(subsection.getText());
-    text.setStyle("-fx-padding: 0 0 0 50;");
-    text.setFont(Font.font("Roboto", 16));
+    text.setStyle("-fx-padding: 0 20 0 50;");
+    text.setFont(Font.font("Roboto", 20));
     text.setWrapText(true);
     text.setPrefWidth(900);
 
@@ -187,15 +192,11 @@ public class HelpPageView {
     if (!keywords.isEmpty()) {
       matchedSubsections.clear();
       storedSearchResults.clear();
-
-      for (HelpSection section : helpSections) {
-        for (HelpSubsection subsection : section.getSubsections()) {
-          if (subsection.getTitle().toLowerCase().contains(keywords.toLowerCase())
-              || subsection.getText().toLowerCase().contains(keywords.toLowerCase())) {
-            matchedSubsections.add(subsection);
-          }
-        }
+      ArrayList<HelpSubsection> resultSubsections = observer.search(keywords);
+      for (HelpSubsection subsection : resultSubsections) {
+        matchedSubsections.add(subsection);
       }
+    
       updateSearchResults(matchedSubsections);
     } else {
       updateSearchResults(new ArrayList<>());
@@ -212,17 +213,17 @@ public class HelpPageView {
       for (HelpSubsection subsection : matchedSubsections) {
         Hyperlink subsectionLink = new Hyperlink(subsection.getTitle());
         subsectionLink.setOnAction(e -> showHelpSubsection(subsection));
-        subsectionLink.setFont(Font.font("Roboto", FontWeight.BOLD, 16));
-        subsectionLink.setStyle("-fx-padding: 10 0 0 50;");
+        subsectionLink.setFont(Font.font("Roboto", FontWeight.BOLD, 20));
+        subsectionLink.setStyle("-fx-padding: 10 20 0 50;");
 
         helpSectionsPane.getChildren().add(subsectionLink);
       }
-      searchResultsLabel.setStyle(" -fx-padding: 20 0 20 50; -fx-text-fill: #3D405B;"
-          + "-fx-font-weight: bold;-fx-font-size: 16px;-fx-font-family: Roboto;");
+      searchResultsLabel.setStyle(" -fx-padding: 20 20 20 50; -fx-text-fill: #3D405B;"
+          + "-fx-font-weight: bold;-fx-font-size: 20px;-fx-font-family: Roboto;");
       searchResultsLabel.setText("Total results: " + matchedSubsections.size());
     } else {
-      searchResultsLabel.setStyle(" -fx-padding: 20 0 20 50; -fx-text-fill: #3D405B;"
-              + "-fx-font-weight: bold;-fx-font-size: 16px;-fx-font-family: Roboto;");
+      searchResultsLabel.setStyle(" -fx-padding: 20 20 20 50; -fx-text-fill: #3D405B;"
+              + "-fx-font-weight: bold;-fx-font-size: 20px;-fx-font-family: Roboto;");
       searchResultsLabel.setText("No results found");
     }
   }

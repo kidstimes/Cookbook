@@ -3,6 +3,7 @@ package cookbook.view;
 import cookbook.model.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,38 +80,38 @@ public class AddRecipeView {
    */
   private void initLayout() {
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> {
+    sidebar.addButton("Home", e -> {
       clearAllInput();
       observer.goToHomePage();
-    });
-    sidebar.addButton("Browse Recipes", e -> {
+    }, "/images/home.png");
+    sidebar.addButton("All Recipes", e -> {
       clearAllInput();
       observer.goToBrowser();
-    });
+    }, "/images/recipe.png");
     sidebar.addButton("Add a Recipe", e -> {
       clearAllInput();
       observer.goToAddRecipe();
-    });
+    }, "/images/add.png");
     sidebar.addButton("Weekly Dinner List", e -> {
       clearAllInput();
       observer.goToWeeklyDinner();
-    });
+    }, "/images/weekly.png");
     sidebar.addButton("My Favorites", e -> {
       clearAllInput();
       observer.goToMyFavorite();
-    });
+    }, "/images/favorite.png");
     sidebar.addButton("My Shopping List", e -> {
       clearAllInput();
       observer.goToShoppingList();
-    });
+    }, "/images/shoppinglist.png");
     sidebar.addButton("Messages", e -> {
       clearAllInput();
       observer.goToMessages();
-    });
+    }, "/images/messages.png");
     sidebar.addButton("My Account", e -> {
       clearAllInput();
       observer.goToAccount();
-    });
+    }, "/images/account.png");
     sidebar.addHyperlink("Help", e -> {
       clearAllInput();
       observer.goToHelp();
@@ -135,62 +136,67 @@ public class AddRecipeView {
     // Add Recipe title
     Label titleLabel = new Label("Add a Recipe");
 
-    titleLabel.setStyle("-fx-text-fill: #69a486;-fx-font-size: 32;-fx-font-weight: bold;");
-    titleLabel.setFont(Font.font("Roboto"));
+    titleLabel.setStyle("-fx-text-fill: #3F6250;-fx-font-size: 32;-fx-font-weight: bold;"
+        + "-fx-font-family: \"Roboto\";");
     root.getChildren().add(titleLabel);
 
     // Error label
     errorLabel = new Label("");
-    errorLabel.setStyle("-fx-text-fill: red;");
-    errorLabel.setFont(Font.font("Roboto", FontWeight.NORMAL, 18));
+    errorLabel.setPadding(new Insets(5, 0, 0, 0));
+    errorLabel.setStyle("-fx-text-fill: #E07A5F; -fx-font-size: 18;-fx-font-family: \"Roboto\";");
     root.getChildren().add(errorLabel);
 
     // Recipe name
     Label nameLabel = new Label("Recipe Name");
     nameLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
+    nameLabel.setPadding(new Insets(10, 0, 10, 0));
     nameField = new TextField();
-    nameField.setStyle("-fx-font-size: 18;");
-    nameField.setMinHeight(30);
+    nameField.setStyle("-fx-font-size: 18;-fx-font-family: \"Roboto\";");
+    nameField.setMinHeight(35);
+    nameField.setPadding(new Insets(5, 5, 5, 5));
     root.getChildren().addAll(nameLabel, nameField);
 
     // Short description
     Label descLabel = new Label("Short Description");
+    descLabel.setPadding(new Insets(10, 10, 10, 10));
     descLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
     descField = new TextField();
-    descField.setStyle("-fx-font-size: 18;");
-    descField.setMinHeight(30);
+    descField.setStyle("-fx-font-size: 18;-fx-font-family: \"Roboto\"");
+    descField.setMinHeight(35);
+    descField.setPadding(new Insets(5, 5, 5, 5));
     root.getChildren().addAll(descLabel, descField);
 
     Label directionsLabel = new Label("Directions");
+    directionsLabel.setPadding(new Insets(10, 0, 10, 0));
     directionsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 22));
 
     // Input for a single direction line
     directionLineField = new TextArea();
-    directionLineField.setFont(Font.font("Roboto", 14));
+    directionLineField.setStyle("-fx-font: 18px \"Roboto\"");
     directionLineField.setWrapText(true);
-    directionLineField.setPrefRowCount(5);
+    directionLineField.setMinHeight(35);
     directionLineField
         .setPromptText("Add a step. Each step of direction must be in a separated new line.");
-    directionLineField.setStyle("-fx-border-color: transparent;-fx-border-style:none;");
-    directionLineField.setMinHeight(50);
-    directionLineField.setMinWidth(550);
+
+
     // Button to add a new direction line
     Button addDirectionLineButton = new Button("Add Direction");
+    addDirectionLineButton.setPadding(new Insets(5, 20, 5, 20));
     addDirectionLineButton.setStyle(
         "-fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
-          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+          + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 5 0 10;");
     addDirectionLineButton.setFont(Font.font("Roboto", 14));
 
     // ListView for displaying added direction lines and delete the selected
     // direction line
 
-
-    Label directionsListLabel = new Label("Added directions");
-    directionsListLabel.setFont(Font.font("Roboto", 14));
     directionsList = new ListView<>();
-    directionsList.setMinHeight(60);
+    directionsList.setMinHeight(120);
+    directionsList.setStyle("-fx-font-size: 18;-fx-font-family: \"Roboto\";");
+    directionsList.setPlaceholder(new Label("No direction added yet."));
 
     Button deleteDirectionButton = new Button("Delete Direction");
+    deleteDirectionButton.setPadding(new Insets(5, 0, 5, 5));
     deleteDirectionButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
         + " 20;-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
@@ -211,11 +217,17 @@ public class AddRecipeView {
         errorLabel.setText("Please select a direction to delete.");
       }
     });
+    DoubleBinding listWidthBinding =
+        directionLineField.widthProperty().subtract(deleteDirectionButton.getWidth());
+    deleteDirectionButton.setMinWidth(130);
+    directionsList.prefWidthProperty().bind(listWidthBinding);
 
     // Create an HBox to hold the directionsList and deleteDirectionButton
+    HBox directionsBox = new HBox(5);
+    directionsBox.getChildren().addAll(directionsList, deleteDirectionButton);
     VBox directionsContainer = new VBox(10);
-    directionsContainer.getChildren().addAll(directionsListLabel);
-    directionsContainer.getChildren().addAll(directionsList, deleteDirectionButton);
+    directionsContainer.getChildren().addAll(directionsBox);
+    directionsContainer.setPadding(new Insets(10, 0, 10, 0));
 
 
     ObservableList<String> directionLines = FXCollections.observableArrayList();
@@ -256,7 +268,7 @@ public class AddRecipeView {
     root.getChildren().add(directionsGrid);
     // add top margin to directionsGrid
     
-    VBox.setMargin(directionsGrid, new Insets(15, 0, 0, 0));
+    VBox.setMargin(directionsGrid, new Insets(15, 0, 10, 0));
 
     // Ingredients
     GridPane ingredientsInput = new GridPane();
@@ -264,26 +276,37 @@ public class AddRecipeView {
     ingredientsInput.setVgap(10);
 
     Label ingredientsLabel = new Label("Ingredients");
+    ingredientsLabel.setPadding(new Insets(10, 0, 10, 0));
     ingredientsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 22));
 
     ingredientNameField = new TextField();
+    ingredientNameField.setFont(Font.font("Roboto", 18));
     ingredientNameField.setPromptText("Ingredient name");
+    ingredientNameField.setAlignment(Pos.CENTER_LEFT);
+
 
     quantityField = new TextField();
+    quantityField.setFont(Font.font("Roboto", 18)); 
     quantityField.setPromptText("Quantity");
+    quantityField.setAlignment(Pos.CENTER_LEFT);
+
 
     measureUnitField = new TextField();
+    measureUnitField.setFont(Font.font("Roboto", 18));
     measureUnitField.setPromptText("Measure unit");
+    measureUnitField.setAlignment(Pos.CENTER_LEFT);
+
 
     Button addIngredientButton = new Button("Add Ingredient");
     addIngredientButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
         + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
-        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
+        + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 5 0 10;");
     addIngredientButton.setFont(Font.font("Roboto", 14));
+    addDirectionLineButton.setPadding(new Insets(5, 10, 20, 10));
 
-    ColumnConstraints col1 = new ColumnConstraints(250);
-    ColumnConstraints col2 = new ColumnConstraints(70);
-    ColumnConstraints col3 = new ColumnConstraints(90);
+    ColumnConstraints col1 = new ColumnConstraints(400);
+    ColumnConstraints col2 = new ColumnConstraints(100);
+    ColumnConstraints col3 = new ColumnConstraints(150);
     ColumnConstraints col4 = new ColumnConstraints(150);
 
     ingredientsInput.getColumnConstraints().addAll(col1, col2, col3, col4);
@@ -320,7 +343,15 @@ public class AddRecipeView {
     });
 
     ingredientsTable = new TableView<>();
+    ingredientsTable.setEditable(true);
+    ingredientsTable.setPrefHeight(120);
+    ingredientsTable.setMinHeight(120);
+    ingredientsTable.setPrefWidth(700);
+
+    ingredientsTable.setPlaceholder(new Label("No ingredients added yet."));
+    ingredientsTable.setStyle("-fx-font-size:18px; -fx-font-family: 'Roboto';");
     Button deleteIngredientButton = new Button("Delete Ingredient");
+    deleteIngredientButton.setPadding(new Insets(5, 10, 5, 10));
     deleteIngredientButton.setStyle(" -fx-background-color: #3D405B; -fx-text-fill:"
              + " white; -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
              + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
@@ -346,6 +377,17 @@ public class AddRecipeView {
     measureUnitColumn
         .setCellValueFactory(cellData 
             -> new SimpleStringProperty(cellData.getValue().getMeasurementUnit()));
+
+    ingredientNameColumn.setStyle("-fx-font-size: 18px;-fx-text-fill: #3D405B;"
+        + "-fx-alignment: CENTER;-fx-font-family: Roboto;");
+    ingredientNameColumn.setPrefWidth(400);
+    quantityColumn.setStyle("-fx-font-size: 18px;-fx-text-fill: #3D405B;"
+        + "-fx-alignment: CENTER;-fx-font-family: Roboto;");
+    quantityColumn.setPrefWidth(120);
+    measureUnitColumn.setStyle("-fx-font-size: 18px;-fx-text-fill: #3D405B;"
+        + "-fx-alignment: CENTER;-fx-font-family: Roboto;");
+    measureUnitColumn.setPrefWidth(180);
+
     List<TableColumn<Ingredient, ?>> columns = new ArrayList<>();
     columns.add(ingredientNameColumn);
     columns.add(quantityColumn);
@@ -354,26 +396,34 @@ public class AddRecipeView {
 
     ObservableList<Ingredient> ingredients = FXCollections.observableArrayList();
     ingredientsTable.setItems(ingredients);
+    ingredientsTable.setMaxWidth(850);
 
-    HBox ingredientsContainer = new HBox(10);
-    ingredientsContainer.getChildren().addAll(ingredientsTable, deleteIngredientButton);
-    ingredientsTable.setMaxWidth(Double.MAX_VALUE);
-    HBox.setHgrow(ingredientsTable, Priority.ALWAYS);
+    VBox ingredientsInputContainer = new VBox(10);
+    ingredientsInputContainer.getChildren().addAll(ingredientsInput);
+    ingredientsInputContainer.setPadding(new Insets(0, 0, 10, 0));
 
-    root.getChildren().addAll(ingredientsLabel, ingredientsInput, ingredientsContainer);
-    VBox.setMargin(ingredientsLabel, new Insets(15, 0, 5, 0));
+    HBox ingredientsTableContainer = new HBox(10);
+    ingredientsTableContainer.getChildren().addAll(ingredientsTable, deleteIngredientButton);
+    ingredientsTableContainer.setPadding(new Insets(10, 0, 0, 0));
+
+    root.setPadding(new Insets(20)); 
+    root.getChildren().addAll(ingredientsLabel,
+        ingredientsInputContainer, ingredientsTableContainer);
+    VBox.setMargin(ingredientsLabel, new Insets(0, 0, 5, 0));
 
     // Tags
     Label tagsLabel = new Label("Tags");
     tagsLabel.setAlignment(Pos.CENTER_LEFT);
+    tagsLabel.setPadding(new Insets(20, 0, 20, 0));
     tagsLabel.setFont(Font.font("ROBOTO", FontWeight.BOLD, 22));
     
 
     ComboBox<String> tagComboBox = new ComboBox<>();
     tagComboBox.setEditable(true);
     tagComboBox.setPromptText("Enter or Choose a Tag");
+    tagComboBox.setPrefWidth(300);
+    tagComboBox.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
 
-    // You can add existing tags to the combo box here
     ObservableList<String> existingTags 
         = FXCollections.observableArrayList("vegan", "vegetarian", "lactose free",
         "gluten free", "starter", "main course", "dessert and sweets");
@@ -384,11 +434,15 @@ public class AddRecipeView {
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius: 20;"
           + "-fx-effect: null;-fx-cursor: hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addTagButton.setFont(Font.font("Roboto", 14));
+    addTagButton.setPadding(new Insets(5, 10, 5, 10));
 
     // Define tagslist
     tagsList = new ListView<>();
     ObservableList<String> tags = FXCollections.observableArrayList();
     tagsList.setItems(tags);
+    tagsList.setMinHeight(60);
+    tagsList.setPrefWidth(300);
+    tagsList.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
 
     // Add event handler for add tag button
     addTagButton.setOnAction(e -> {
@@ -417,6 +471,7 @@ public class AddRecipeView {
     });
     HBox tagsInput = new HBox(5);
     HBox tagsListContainer = new HBox(5);
+    tagsListContainer.setPadding(new Insets(5, 0, 5, 0));
     tagsListContainer.getChildren().addAll(tagsList, deleteTagButton);
     tagsInput.getChildren().addAll(tagComboBox, addTagButton);
     root.getChildren().addAll(tagsLabel, tagsInput, tagsListContainer);
@@ -427,6 +482,7 @@ public class AddRecipeView {
             + " -fx-background-radius: 20;-fx-effect: null;-fx-cursor:" 
             + " hand; -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     saveButton.setFont(Font.font("Roboto", 18));
+    saveButton.setPadding(new Insets(5, 0, 5, 0));
     saveButton.setOnAction(e -> {
       // Clear error label
       errorLabel.setText("");
@@ -503,15 +559,12 @@ public class AddRecipeView {
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(message);
-    // Set custom styles for the alert
     DialogPane dialogPane = alert.getDialogPane();
     dialogPane.setStyle("-fx-font-family: 'Roboto'; -fx-font-size: 18px;"
         + " -fx-background-color: #F9F8F3; -fx-border-color: #F9F8F3;");
-    // Set custom styles for the buttons
     ButtonBar buttonBar = (ButtonBar) dialogPane.lookup(".button-bar");
     buttonBar.getButtons().forEach(button -> button.setStyle("-fx-background-color: #3D405B;"
         + " -fx-text-fill: white; -fx-padding: 5 10 5 10;"));
-    // Set custom styles for the content label
     Label contentLabel = (Label) dialogPane.lookup(".content");
     contentLabel.setStyle("-fx-text-fill: #3D405B;");
     alert.showAndWait();

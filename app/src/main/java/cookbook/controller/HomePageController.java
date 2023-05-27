@@ -20,7 +20,8 @@ public class HomePageController extends BaseController implements HomePageViewOb
   public HomePageController(CookbookFacade model, MainController mainController) {
     super(model, mainController);
     this.homePageView = new HomePageView(model.getUserDisplayName(),
-       model.checkWeeklyDinner(), model.checkNextWeekDinner(), model.getNumberUnreadMessages());
+        model.checkWeeklyDinner(), model.checkNextWeekDinner(),
+        model.getNumberUnreadMessages(), model.getNumberOfFavoriteRecipes());
     this.homePageView.setObserver(this);
     
   }
@@ -32,6 +33,5 @@ public class HomePageController extends BaseController implements HomePageViewOb
     return this.homePageView.getView();
   }
 
-  
 
 }

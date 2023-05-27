@@ -1,10 +1,10 @@
 package cookbook.controller;
 
-
-
 import cookbook.model.CookbookFacade;
+import cookbook.model.HelpSubsection;
 import cookbook.view.HelpPageView;
 import cookbook.view.HelpPageViewObserver;
+import java.util.ArrayList;
 import javafx.scene.Node;
 
 /**
@@ -27,8 +27,10 @@ public class HelpPageController extends BaseController implements HelpPageViewOb
     return this.helpPageView.getView();
   }
 
-
-
+  @Override
+  public ArrayList<HelpSubsection> search(String searchText) {
+    return this.model.searchHelpContent(searchText);
+  }
 
 
 

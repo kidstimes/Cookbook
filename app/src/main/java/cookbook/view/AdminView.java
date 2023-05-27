@@ -53,14 +53,15 @@ public class AdminView {
     view.setStyle("-fx-background-color: #F9F8F3;");
     // create a vbox to hold the menu buttons
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
@@ -72,15 +73,16 @@ public class AdminView {
 
     // Add a title to the admin page
     userListContainer = new VBox();
-    userListContainer.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    userListContainer.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;"
+        + "-fx-border-color: lightgrey;-fx-border-width: 1px;");
     userListContainer.setSpacing(20);
 
     // Add the title to the userListContainer here
     Label titleLabel = new Label("Admin Page");
-    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #69a486;");
+    titleLabel.setStyle("-fx-font: 32px \"Roboto\";-fx-text-fill: #3F6250;-fx-font-weight: bold;");
     userListContainer.getChildren().add(titleLabel);
     Label userListLabel = new Label("All Users");
-    userListLabel.setStyle("-fx-font: 26px \"Roboto\";");
+    userListLabel.setStyle("-fx-font: 26px \"Roboto\";-fx-font-weight: bold;");
     userListContainer.getChildren().add(userListLabel);
     
     usersContainer = new VBox();
@@ -98,19 +100,19 @@ public class AdminView {
     HBox titleLine = new HBox(10);
     titleLine.setAlignment(Pos.CENTER_LEFT);
     Label userIdTitle = new Label("User ID");
-    userIdTitle.setStyle("-fx-font: 18px \"Roboto\";");
+    userIdTitle.setStyle("-fx-font: 18px \"Roboto\";-fx-font-weight: bold;");
     userIdTitle.setMinWidth(100);
     userIdTitle.setAlignment(Pos.CENTER_LEFT);
     Label userNameTitle = new Label("Username");
-    userNameTitle.setStyle("-fx-font: 18px \"Roboto\";");
-    userNameTitle.setMinWidth(150);
+    userNameTitle.setStyle("-fx-font: 18px \"Roboto\";-fx-font-weight: bold;");
+    userNameTitle.setMinWidth(200);
     userNameTitle.setAlignment(Pos.CENTER_LEFT);
     Label passwordTitle = new Label("Password");
-    passwordTitle.setStyle("-fx-font: 18px \"Roboto\";");
-    passwordTitle.setMinWidth(150);
+    passwordTitle.setStyle("-fx-font: 18px \"Roboto\";-fx-font-weight: bold;");
+    passwordTitle.setMinWidth(130);
     passwordTitle.setAlignment(Pos.CENTER_LEFT);
     Label displayNameTitle = new Label("Display Name");
-    displayNameTitle.setStyle("-fx-font: 18px \"Roboto\";");
+    displayNameTitle.setStyle("-fx-font: 18px \"Roboto\";-fx-font-weight: bold;");
     displayNameTitle.setMinWidth(150);
     displayNameTitle.setAlignment(Pos.CENTER_LEFT);
     titleLine.getChildren().addAll(userIdTitle, userNameTitle, passwordTitle, displayNameTitle);
@@ -127,12 +129,12 @@ public class AdminView {
 
       Label userNameLabel = new Label(user.getUsername());
       userNameLabel.setStyle("-fx-font: 18px \"Roboto\";");
-      userNameLabel.setMinWidth(150);
+      userNameLabel.setMinWidth(200);
       userNameLabel.setAlignment(Pos.CENTER_LEFT);
 
       Label passwordLabel = new Label("*****"); 
       passwordLabel.setStyle("-fx-font: 18px \"Roboto\";");
-      passwordLabel.setMinWidth(150);
+      passwordLabel.setMinWidth(130);
       passwordLabel.setAlignment(Pos.CENTER_LEFT);
 
       Label displayNameLabel = new Label(user.getDisplayName());
@@ -142,7 +144,7 @@ public class AdminView {
 
       userLine.getChildren().addAll(userIdLabel, userNameLabel, passwordLabel, displayNameLabel);
 
-      if (!user.getUsername().equalsIgnoreCase("admin")) {
+      if (!user.getUsername().equals("admin")) {
         Button editButton = new Button("Edit username and/or display name");
         editButton.setStyle("-fx-background-color: white;"
             + " -fx-text-fill: #2196F3; -fx-font: 12px \"Roboto\";");
@@ -168,7 +170,7 @@ public class AdminView {
     }
     // Add user button
     Button addUserButton = new Button("Add User");
-    addUserButton.setStyle("-fx-background-color: #69a486;"
+    addUserButton.setStyle("-fx-background-color: #3F6250;"
             + " -fx-text-fill: #F4F1DE; -fx-font: 18px \"Roboto\";");
     addUserButton.setOnAction(e -> addUser());
     userListContainer.getChildren().add(addUserButton);

@@ -1,13 +1,12 @@
 package cookbook.controller;
 
-import java.util.ArrayList;
-
 import cookbook.model.Conversation;
 import cookbook.model.CookbookFacade;
 import cookbook.model.Message;
 import cookbook.model.Recipe;
 import cookbook.view.MessagesView;
 import cookbook.view.MessagesViewObserver;
+import java.util.ArrayList;
 import javafx.scene.Node;
 
 /**
@@ -25,7 +24,7 @@ public class MessagesController extends BaseController implements MessagesViewOb
     super(model, mainController);
     this.messagesView = new MessagesView(model.getUserDisplayName(),
          model.getConversations(), this);
-
+    messagesView.setObserver(this);
   }
 
 

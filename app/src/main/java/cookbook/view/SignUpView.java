@@ -62,7 +62,7 @@ public class SignUpView {
     mainContainer.setPadding(new Insets(20));
 
     // Create the ImageView for the image
-    Image image = new Image("https://i.imgur.com/bsyAZZc.png");
+    Image image = new Image(getClass().getResourceAsStream("/images/bsyAZZc.png"));
     ImageView imageView = new ImageView(image);
     imageView.setFitWidth(600);
     imageView.setFitHeight(150);
@@ -161,8 +161,8 @@ public class SignUpView {
     // Create the ImageView for the GIF
     Image gifImage = new Image("https://i.imgur.com/EfVT7cL.gif");
     ImageView gifImageView = new ImageView(gifImage);
-    gifImageView.setFitWidth(200); // Adjust the width of the image view
-    gifImageView.setFitHeight(200); // Adjust the height of the image view
+    gifImageView.setFitWidth(200); 
+    gifImageView.setFitHeight(200);
 
     // Set alignment and layout constraints for the GIF ImageView
     BorderPane.setAlignment(gifImageView, Pos.BOTTOM_RIGHT);

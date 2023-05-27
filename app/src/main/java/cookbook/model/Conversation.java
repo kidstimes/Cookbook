@@ -1,7 +1,10 @@
 package cookbook.model;
 
-import java.util.*;
+import java.util.ArrayList;
 
+/**
+ * The Conversation class.
+ */
 public class Conversation {
   private String otherUsername;
   private ArrayList<Message> messages;
@@ -24,7 +27,9 @@ public class Conversation {
   }
 
 
-
+  /**
+   * Check if the conversation has unread messages.
+   */
   public boolean hasUnreadReceivedMessages(String username) {
     return this.messages.stream()
         .filter(message -> !message.getSenderUsername().equals(username))
@@ -37,7 +42,8 @@ public class Conversation {
   }
 
   public int countUnreadReceivedMessages(String username) {
-    return (int) messages.stream().filter(m -> m.getReceiverUsername().equals(username) && !m.isRead()).count();
+    return (int) messages.stream().filter(
+        m -> m.getReceiverUsername().equals(username) && !m.isRead()).count();
   }
     
 

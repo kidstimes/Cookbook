@@ -15,7 +15,6 @@ public class Recipe {
   private ArrayList<String> tags;
   private ArrayList<Ingredient> ingredients;
   private boolean starred;
-  private ArrayList<Comment> comments;
   private String createrUsername;
   private ArrayList<RecipeEditRecord> editRecords;
   private Date date;
@@ -66,7 +65,6 @@ public class Recipe {
     this.directions = directions;
     this.createrUsername = createrUsername;
     this.date = date;
-    this.editRecords = editRecords;
 
     // Create ingredient objects and add them to the recipe
     this.ingredients = new ArrayList<>();
@@ -79,6 +77,10 @@ public class Recipe {
     this.tags = new ArrayList<>();
     for (String tag : tags) {
       this.tags.add(tag);
+    }
+    this.editRecords = new ArrayList<>();
+    for (RecipeEditRecord record : editRecords) {
+      this.editRecords.add(record);
     }
 
     starred = false;
@@ -181,12 +183,19 @@ public class Recipe {
     return starred;
   }
 
+  public void addEditRecord(RecipeEditRecord record) {
+    editRecords.add(record);
+  }
+  
   /** Get a copy of the edit records.
    *
    * @return an arraylist with the edit records.
    */
   public ArrayList<RecipeEditRecord> getEditRecords() {
     ArrayList<RecipeEditRecord> copyEditRecords = new ArrayList<>();
+    if (editRecords == null) {
+      return copyEditRecords;
+    }
     for (RecipeEditRecord record : editRecords) {
       copyEditRecords.add(record);
     }

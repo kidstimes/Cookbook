@@ -3,10 +3,14 @@ package cookbook.view;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -21,24 +25,26 @@ public class HomePageView {
   boolean hasWeeklyDinner;
   boolean hasNextWeekShoppingList;
   private int numberUnreadMessages;
+  private int numberOfFavoriteRecipes;
   
   /**
-   * Home Page View Constructor.
+   * Home Page  View Constructor.
    */
   public HomePageView(String displayName,
-         boolean hasWeeklyDinner, boolean hasNextWeekShoppingList, int numberUnreadMessages) {
+         boolean hasWeeklyDinner, boolean hasNextWeekShoppingList,
+          int numberUnreadMessages, int numberOfFavoriteRecipes) {
     this.view = new BorderPane();
-    view.setStyle("-fx-background-color: #69a486;");
     this.displayName = displayName;
     this.hasWeeklyDinner = hasWeeklyDinner;
     this.hasNextWeekShoppingList = hasNextWeekShoppingList;
     this.numberUnreadMessages = numberUnreadMessages;
+    this.numberOfFavoriteRecipes = numberOfFavoriteRecipes;
     initLayout();
     
   }
 
   /**
-   * Set an observer of the home page view..
+   * Set an observer of the home page view.
    */
   public void setObserver(HomePageViewObserver observer) {
     this.observer = observer;
@@ -58,77 +64,80 @@ public class HomePageView {
   public void initLayout() {
     createSidebar();
     createCenterView();
-  
   }
-
-
 
   /**
    * Create a sidemenu for the home page.
    */
   public void createSidebar() {
     Sidebar sidebar = new Sidebar(displayName);
-    sidebar.addButton("Home Page", e -> observer.goToHomePage());
-    sidebar.addButton("Browse Recipes", e -> observer.goToBrowser());
-    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe());
-    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner());
-    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite());
-    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList());
-    sidebar.addButton("Messages", e -> observer.goToMessages());
-    sidebar.addButton("My Account", e -> observer.goToAccount());
+    sidebar.addButton("Home", e -> observer.goToHomePage(), "/images/home.png");
+    sidebar.addButton("All Recipes", e -> observer.goToBrowser(), "/images/recipe.png");
+    sidebar.addButton("Add a Recipe", e -> observer.goToAddRecipe(), "/images/add.png");
+    sidebar.addButton("Weekly Dinner List", e -> observer.goToWeeklyDinner(), "/images/weekly.png");
+    sidebar.addButton("My Favorites", e -> observer.goToMyFavorite(), "/images/favorite.png");
+    sidebar.addButton("My Shopping List", e -> observer.goToShoppingList(),
+        "/images/shoppinglist.png");
+    sidebar.addButton("Messages", e -> observer.goToMessages(), "/images/messages.png");
+    sidebar.addButton("My Account", e -> observer.goToAccount(), "/images/account.png");
     sidebar.addHyperlink("Help", e -> observer.goToHelp());
     sidebar.addHyperlink("Log Out", e -> observer.userLogout());
     
-    sidebar.setActiveButton("Home Page");
+    sidebar.setActiveButton("Home");
     sidebar.finalizeLayout();
     view.setLeft(sidebar);
+  }
 
+  private void createCenterView() {
+    VBox centerView = new VBox(30);
+    centerView.setAlignment(Pos.TOP_LEFT); 
+    centerView.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3;"
+        + "-fx-border-color: lightgrey;-fx-border-width: 1px;");
+    Label title = new Label("Welcome to Cookbook!");
+    title.setFont(Font.font("Roboto", 32));
+    title.setStyle("-fx-font-weight: bold;");
+    Label summary = new Label("Here is a summary of what is happening");
+    summary.setFont(Font.font("Roboto", 20));
+    summary.setStyle("-fx-font-weight: bold;");
+    centerView.getChildren().add(title);
+    centerView.getChildren().add(summary);
+    LocalDate currentDate = LocalDate.now();
+    int weekNumber = getWeekNumber(currentDate);
+  
+    centerView.getChildren().addAll(
+        createInfoHbox("Today is " + currentDate + " and current week number is "
+            + weekNumber + ".", "/images/date.png"),
+        createInfoHbox(hasWeeklyDinner ? "You have dinners planned for this week."
+            : "You do not have dinners planned for this week.", "/images/dinner.png"),
+        createInfoHbox(hasNextWeekShoppingList ? "You have a shopping list for next week."
+            : "You do not have a shopping list for next week.", "/images/shopping.png"),
+        createInfoHbox("You have " + numberOfFavoriteRecipes
+            + " favorite recipes in your cookbook.", "/images/fav.png"),
+        createInfoHbox("You have " + numberUnreadMessages + " unread messages.", "/images/mess.png")
+    );
+
+    // Set the center view of the BorderPane
+    view.setCenter(centerView);
   }
 
 
-  // Create the center view of the home page.
-  private void createCenterView() {
-    VBox centerView = new VBox(50);
-    centerView.setStyle("-fx-padding: 50px; -fx-background-color: #F9F8F3;");
-    centerView.setAlignment(Pos.TOP_LEFT);
-    Label title = new Label("Home Page");
-    title.setFont(Font.font("Roboto", 32));
-    title.setStyle("-fx-text-fill: #69a486;");
-    centerView.getChildren().add(title);
-    Label welcomLabel = new Label("Welcome to cookbook, " + displayName + "!");
-    welcomLabel.setFont(Font.font("Roboto", 24));
-    LocalDate currentDate = LocalDate.now();
-    int weekNumber = getWeekNumber(currentDate);
-    Label dateLabel = new Label("Today's Date: " + currentDate);
-    Label weekLabel = new Label("Current Week Number: " + weekNumber);
-    Label weeklyDinnerLabel;
-    if (hasWeeklyDinner) {
-      weeklyDinnerLabel = new Label("You have dinners planned for this week.");
-    } else {
-      weeklyDinnerLabel = new Label("You do not have dinners planned for this week.");
-    }
-    dateLabel.setFont(Font.font("Roboto", 22));
-    weekLabel.setFont(Font.font("Roboto", 22));
-    weeklyDinnerLabel.setFont(Font.font("Roboto", 22));
-    Label shoppingListLabel;
-    if (hasNextWeekShoppingList) {
-      shoppingListLabel = new Label("You have a shopping list for next week.");
-    } else {
-      shoppingListLabel =
-          new Label("You do not have a shopping list for next week.");
-    }
-    shoppingListLabel.setFont(Font.font("Roboto", 22));
+  private HBox createInfoHbox(String text, String imagePath) {
+    HBox hbox = new HBox();
+    hbox.setPrefSize(800, 90);
+    hbox.setAlignment(Pos.CENTER_LEFT);
+    hbox.setStyle("-fx-background-color:#F1EEE2; -fx-padding: 15px;");
 
-    Label messagesLabel = new Label("You have " + numberUnreadMessages + " unread messages.");
-    messagesLabel.setFont(Font.font("Roboto", 22));
-
-    centerView.getChildren().addAll(welcomLabel,
-           dateLabel, weekLabel, weeklyDinnerLabel, shoppingListLabel, messagesLabel);
-
-
-    view.setCenter(centerView);
-
-
+    Label label = new Label(text);
+    label.setPadding(new Insets(0, 0, 0, 20));
+    Image image = new Image(getClass().getResourceAsStream(imagePath));
+    ImageView icon = new ImageView(image);
+    icon.setFitHeight(50);
+    icon.setFitWidth(50);
+    label.setGraphic(icon);
+    label.setFont(Font.font("Roboto", 22));
+    label.setGraphicTextGap(20.0); 
+    hbox.getChildren().add(label);
+    return hbox;
   }
 
 
@@ -137,7 +146,4 @@ public class HomePageView {
     WeekFields weekFields = WeekFields.of(Locale.getDefault());
     return date.get(weekFields.weekOfWeekBasedYear());
   }
-
-  
-
 }

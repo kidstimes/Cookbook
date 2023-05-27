@@ -1,6 +1,5 @@
 package cookbook.model;
 
-
 import java.util.ArrayList;
 import java.util.Objects;
 

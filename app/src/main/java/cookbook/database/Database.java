@@ -478,7 +478,7 @@ public class Database {
    * @param recipeName is the name of the recipe
    * @return the id of the recipe
    */
-  private int getRecipeId(String recipeName) {
+  public int getRecipeId(String recipeName) {
     String query = "SELECT id FROM recipes WHERE name = ?";
     try (PreparedStatement statement = connection.prepareStatement(query)) {
       statement.setString(1, recipeName);
@@ -1390,11 +1390,13 @@ public class Database {
   /**
    * Add a comment to a recipe by a user to the database.
    *
-   * @param recipeId the unique id of the recipe
+   *
+   * @param recipeName the name of the recipe
    * @param userId   the unique id of the user
    * @param text     the text of the comment
    */
-  public void addComment(int recipeId, int userId, String text) {
+  public void addComment(String recipeName, int userId, String text) {
+    int recipeId = getRecipeId(recipeName);
     String sql = "INSERT INTO comments (text, recipe_id, user_id) VALUES (?, ?, ?)";
     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
       pstmt.setString(1, text);
@@ -1477,12 +1479,13 @@ public class Database {
    *
    * @param username the username of the sender
    * @param selectedUserName the username of the receiver
-   * @param recipeId the id of the recipe being sent
+   * @param recipeName the name of the recipe
    * @param message the text of the message
    * @return true if sent, otherwise false
    */
   public boolean sendMessageToUser(String username, String selectedUserName,
-      int recipeId, String message) {
+      String recipeName, String message) {
+    int recipeId = getRecipeId(recipeName);
     int senderId = getUserId(username);
     int receiverId = getUserId(selectedUserName);
     String sql = "INSERT INTO messages (text, sender_id, recipient_id, recipe_id, "
@@ -1500,7 +1503,6 @@ public class Database {
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-
     return false;
   }
 
@@ -1740,5 +1742,19 @@ public class Database {
       e.printStackTrace();
     }
     return helpSubsections;
+  }
+
+  /**
+   * Delete the user used in the unit tests from the database.
+   */
+  public void deleteTestUser() {
+    try (
+        PreparedStatement stmt = connection.prepareStatement(
+            "DELETE FROM users WHERE username = ?")) {
+      stmt.setString(1, "testUserName");
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

@@ -1,5 +1,7 @@
 package cookbook.view;
 
+import cookbook.model.HelpSubsection;
+import java.util.ArrayList;
 
 /**
  * Interface for the HelpPageView observer.
@@ -25,6 +27,8 @@ public interface HelpPageViewObserver {
   void goToHelp();
 
   void goToAccount();
+
+  ArrayList<HelpSubsection> search(String searchText);
 
 
   

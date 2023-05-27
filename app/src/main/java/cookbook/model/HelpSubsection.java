@@ -8,6 +8,13 @@ public class HelpSubsection {
   private String title;
   private String text;
 
+  /**
+   * Help Subsection constructor.
+   *
+   * @param id the id of the subsection
+   * @param title the title of the subsection
+   * @param text the text of the subsection
+   */
   public HelpSubsection(int id, String title, String text) {
     this.id = id;
     this.title = title;

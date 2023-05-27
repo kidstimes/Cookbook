@@ -1,6 +1,7 @@
 package cookbook.model;
 
 import cookbook.database.Database;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -149,7 +150,12 @@ public class CookbookFacade {
    * @param tags the tags of the recipe in a string array
    */
   public void addRecipe(String[] recipe, ArrayList<String[]> ingredients, ArrayList<String> tags) {
-    recipes.add(new Recipe(recipe[0], recipe[1], recipe[2], ingredients, tags));
+    int recipeId = database.getRecipeId(recipe[0]);
+    ArrayList<RecipeEditRecord> recipeEditRecords = new ArrayList<>();
+    LocalDate dateAdded = LocalDate.now();
+    recipes.add(new Recipe(recipeId, recipe[0], recipe[1], recipe[2], ingredients, tags,
+        user.getUsername(), Date.valueOf(dateAdded), recipeEditRecords));
+    
   }
 
 
@@ -433,6 +439,8 @@ public class CookbookFacade {
     recipe.setShortDesc(description);
     recipe.setDirection(instructions);
     recipe.setIngredients(ingredients);
+    RecipeEditRecord record = new RecipeEditRecord(user.getUsername(), LocalDate.now());
+    recipe.addEditRecord(record);
     database.editRecipeInDatabase(recipe.getId(), name, description,
         instructions, ingredients, user.getUsername());
   }
@@ -499,7 +507,7 @@ public class CookbookFacade {
 
 
   public void addComment(Recipe recipe, String commentText) {
-    database.addComment(recipe.getId(), user.getId(), commentText);
+    database.addComment(recipe.getName(), user.getId(), commentText);
   }
 
   public void updateComment(int commentId, String commentText) {
@@ -534,12 +542,11 @@ public class CookbookFacade {
 
 
   public boolean sendMessageToUser(String selectedUser, Recipe recipe, String message) {
-    return database.sendMessageToUser(user.getUsername(), selectedUser, recipe.getId(), message);
+    return database.sendMessageToUser(user.getUsername(), selectedUser, recipe.getName(), message);
   }
 
   public ArrayList<Message> loadReceivedMessagesFromDatabase() {
     return database.loadReceivedMessagesFromDatabase(user.getUsername(), recipes);
-
   }
 
 
@@ -584,6 +591,12 @@ public class CookbookFacade {
     }
     return helpSubsections;
   }
+
+  public int getNumberOfFavoriteRecipes() {
+    return getFavoriteRecipes().size();
+  }
+
+
 
 
   
