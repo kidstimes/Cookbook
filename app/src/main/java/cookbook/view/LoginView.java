@@ -376,12 +376,12 @@ public class LoginView {
       for (int i = 0; i < 5; i++) {
         double progress = (i + 1) / 5.0;
         timeline.getKeyFrames().add(
-          new KeyFrame(Duration.seconds((i + 1) * 2),
-              evt -> {
-                // Update the progress of the ProgressBar and the text of the Label
-                progressBar.setProgress(progress);
-                progressLabel.setText("Loading... " + (int) (progress * 100) + "%");
-              }
+            new KeyFrame(Duration.seconds((i + 1) * 2),
+                evt -> {
+                  // Update the progress of the ProgressBar and the text of the Label
+                  progressBar.setProgress(progress);
+                  progressLabel.setText("Loading... " + (int) (progress * 100) + "%");
+                }
           )
         );
       }

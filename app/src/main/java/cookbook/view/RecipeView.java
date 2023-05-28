@@ -899,7 +899,7 @@ public class RecipeView {
       Button deleteIngredientButton = new Button("Delete");
       deleteIngredientButton.setStyle(
           " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-          + " 20;-fx-effect: null;-fx-cursor: hand;"
+          + " 20;-fx-effect: null;-fx-cursor: hand;-fx-font-family: 'Roboto';-fx-font-size: 16px;"
           + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
       deleteIngredientButton.setOnAction(deleteEvent
           -> recipeIngredientsVbox.getChildren().remove(ingredientHbox));
@@ -916,21 +916,24 @@ public class RecipeView {
     newIngredientQuantity.setPrefWidth(100);
     newIngredientQuantity.setPrefHeight(30);
     newIngredientQuantity.setPadding(new Insets(0, 20, 0, 0));
+    newIngredientQuantity.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
     TextField newIngredientUnit = new TextField();
     newIngredientUnit.setPromptText("Unit");
     newIngredientUnit.setPrefWidth(100);
     newIngredientUnit.setPrefHeight(30);
     newIngredientUnit.setPadding(new Insets(0, 20, 0, 0));
+    newIngredientUnit.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
     TextField newIngredientName = new TextField();
     newIngredientName.setPromptText("Name");
     newIngredientName.setPadding(new Insets(0, 20, 0, 0));
     newIngredientName.setPrefWidth(250);
     newIngredientName.setPrefHeight(30);
+    newIngredientName.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
 
     Button addIngredientButton = new Button("Add Ingredient");
     addIngredientButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-        + " 20;-fx-effect: null;-fx-cursor: hand;"
+        + " 20;-fx-effect: null;-fx-cursor: hand;-fx-font-family: 'Roboto';-fx-font-size: 16px;"
         + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     addIngredientButton.setOnAction(e -> {
       if (!newIngredientQuantity.getText().isEmpty() && !newIngredientUnit.getText().isEmpty()
@@ -948,7 +951,8 @@ public class RecipeView {
           Button deleteIngredientButton = new Button("Delete");
           deleteIngredientButton.setStyle(
               " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-              + " 20;-fx-effect: null;-fx-cursor: hand;"
+              + " 20;-fx-effect: null;-fx-cursor: hand; -fx-font-family: 'Roboto'; " 
+              + "-fx-font-size: 16px;"
               + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
           deleteIngredientButton.setOnAction(deleteEvent
               -> recipeIngredientsVbox.getChildren().remove(ingredientHbox));
@@ -978,6 +982,8 @@ public class RecipeView {
     recipeInstructionsLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 18));
     ListView<Label> directionsListView = new ListView<>();
     ObservableList<Label> directionsList = FXCollections.observableArrayList();
+    directionsListView.setStyle("-fx-font-size: 18px;-fx-font-family: Roboto;");
+
     for (String direction : recipe.getDirections().split("\n")) {
       directionsList.add(new Label(direction.trim()));
     }
@@ -986,17 +992,17 @@ public class RecipeView {
     Button addDirectionButton = new Button("Add Direction");
     addDirectionButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-        + " 20;-fx-effect: null;-fx-cursor: hand;"
+        + " 20;-fx-effect: null;-fx-cursor: hand;-fx-font-size: 16px;-fx-font-family: Roboto;"
         + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     Button modifyDirectionButton = new Button("Modify Direction");
     modifyDirectionButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-        + " 20;-fx-effect: null;-fx-cursor: hand;"
+        + " 20;-fx-effect: null;-fx-cursor: hand;-fx-font-size: 16px;-fx-font-family: Roboto;"
         + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     Button deleteDirectionButton = new Button("Delete Direction");
     deleteDirectionButton.setStyle(
         " -fx-background-color: #3D405B; -fx-text-fill: white; -fx-background-radius:"
-        + " 20;-fx-effect: null;-fx-cursor: hand;"
+        + " 20;-fx-effect: null;-fx-cursor: hand;-fx-font-size: 16px;-fx-font-family: Roboto;"
         + " -fx-padding: 5 10 5 10; -fx-margin: 0 0 0 10;");
     TextField newDirectionField = new TextField();
     addDirectionButton.setOnAction(e -> {

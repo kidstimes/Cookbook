@@ -46,5 +46,14 @@ public class Conversation {
         m -> m.getReceiverUsername().equals(username) && !m.isRead()).count();
   }
     
+  /** Get the newest message in the conversation.
+   *
+   * @return the newest message
+   */
+  public Message getNewestMessage() {
+    //return the message with most recent datetime
+    return this.messages.stream().max((m1, m2) -> 
+      m1.getDateTime().compareTo(m2.getDateTime())).get();
+  }
 
 }

@@ -180,7 +180,6 @@ public class AccountView {
         showError("New password and confirm password do not match");
       } else {
         observer.handlePasswordChange(oldPassword, newPassword);
-        observer.goToAccount();
       }
     });
     centerBox.getChildren().add(grid);

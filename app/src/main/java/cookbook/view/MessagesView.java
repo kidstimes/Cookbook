@@ -140,6 +140,12 @@ public class MessagesView {
    * @param conversations the conversations to show
    */
   public void showConversations(ArrayList<Conversation> conversations) {
+    // Sort conversations based on the newest message time
+    conversations.sort(Comparator.comparing(c -> c.getNewestMessage().getDateTime(),
+             Comparator.reverseOrder()));
+
+
+
     usersView.getItems().clear();
     for (Conversation conversation : conversations) {
       usersView.getItems().add(createUserView(conversation));

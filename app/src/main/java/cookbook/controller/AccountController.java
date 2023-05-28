@@ -40,7 +40,7 @@ public class AccountController extends BaseController implements AccountViewObse
   public void handlePasswordChange(String oldPassword, String newPassword) {
     if (model.checkPasswordForUser(oldPassword)) {
       if (model.changePasswordForUser(newPassword)) {
-        mainController.goToHomePage();
+        mainController.goToAccount();
       } else {
         accountView.showError("Password change failed");
       }
