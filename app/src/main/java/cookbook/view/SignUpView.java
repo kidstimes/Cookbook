@@ -188,7 +188,7 @@ public class SignUpView {
   private boolean validateInput(String username, String password, String confirmedPassword, 
       String displayName) {
     if (username.trim().isEmpty() || password.trim().isEmpty() 
-        || confirmedPassword.trim().isEmpty() || displayName.isEmpty()) {
+        || confirmedPassword.trim().isEmpty() || displayName.trim().isEmpty()) {
       showError("All fields must be filled in.");
       return false;
     } 
@@ -239,6 +239,10 @@ public class SignUpView {
     alert.showAndWait();
   }
 
+  /** Show information message for the user.
+   *
+   * @param message the message to show
+   */
   public void showInfo(String message) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
     alert.setTitle("Information");
