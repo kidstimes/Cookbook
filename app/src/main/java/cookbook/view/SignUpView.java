@@ -98,12 +98,16 @@ public class SignUpView {
     //set the passwordLabel font and size
     passwordLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
     passwordField = new PasswordField();
+    //set prompt text for password field
+    passwordField.setPromptText("At least 5 characters");
     signUpGrid.add(passwordLabel, 0, 1);
     signUpGrid.add(passwordField, 1, 1);
     Label confirmedPasswordLabel = new Label("Confirm Password:");
     //set the confirmedPasswordLabel font and size
     confirmedPasswordLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
     confirmedPasswordField = new PasswordField();
+    //set prompt text for confirmed password field
+    confirmedPasswordField.setPromptText("Must match the password");
     signUpGrid.add(confirmedPasswordLabel, 0, 2);
     signUpGrid.add(confirmedPasswordField, 1, 2);
     Label displayNameLabel = new Label("Display Name:");
@@ -123,6 +127,10 @@ public class SignUpView {
       String confirmedPassword = confirmedPasswordField.getText();
       String displayName = displayNameField.getText();
       if (!validateInput(username, password, confirmedPassword, displayName)) {
+        return;
+      }
+      if (observer.checkUsernameAlreadyExists(username)) {
+        showError("The username " + username + " already exists!");
         return;
       }
       observer.handleSignUp(username, password, confirmedPassword, displayName);
@@ -225,7 +233,21 @@ public class SignUpView {
     alert.setTitle("Error");
     alert.setHeaderText(null);
     alert.setContentText(message);
+    //set size of text
+    alert.getDialogPane().lookup(".content.label").setStyle("-fx-font-size: 16;");
+
     alert.showAndWait();
   }
+
+  public void showInfo(String message) {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Information");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    //set size of text
+    alert.getDialogPane().lookup(".content.label").setStyle("-fx-font-size: 16;");
+    alert.showAndWait();
+  }
+
 
 }

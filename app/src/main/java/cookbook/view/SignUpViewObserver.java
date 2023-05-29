@@ -19,4 +19,6 @@ public interface SignUpViewObserver {
    */
   void goToLogin();
 
+  boolean checkUsernameAlreadyExists(String username);
+
 }

@@ -33,19 +33,20 @@ public class SignUpController implements SignUpViewObserver {
   @Override
   public void handleSignUp(String username, String password,
          String confirmedPassword, String displayname) {
-    // If the username and password are correct, sign up and go to the home page.
-    if (model.checkIfUserNameExists(username)) {
-      signUpView.showError("Username already exists.");
-    } else {
-      if (model.userSignUp(username, password, displayname)) {
-        goToLogin();
-      }
+    if (model.userSignUp(username, password, displayname)) {
+      signUpView.showInfo("You have successfully signed up! Please log in.");
+      goToLogin();
     }
   }
 
   @Override
   public void goToLogin() {
     mainController.goToLogin();
+  }
+
+  @Override
+  public boolean checkUsernameAlreadyExists(String username) {
+    return model.checkIfUserNameExists(username);
   }
   
 }
