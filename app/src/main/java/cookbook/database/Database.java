@@ -1065,14 +1065,6 @@ public class Database {
       PreparedStatement deleteStmt = connection
           .prepareStatement("DELETE FROM ShoppingList WHERE user_id = ?");
       deleteStmt.setInt(1, userId);
-      int rowsDeleted = deleteStmt.executeUpdate();
-      if (rowsDeleted > 0) {
-        System.out.println("All records in the shopping list for user "
-            + username + " have been deleted.");
-      } else {
-        System.out.println("No records found in the shopping list for user " + username);
-      }
-
       deleteStmt.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
@@ -1157,7 +1149,6 @@ public class Database {
         String displayName = rs.getString(3);
         User user = new User(id, username, displayName);
         users.add(user);
-        System.out.println(id + "User " + username + " loaded from database.");
       }
       rs.close();
     } catch (SQLException e) {
@@ -1187,7 +1178,6 @@ public class Database {
         String displayName = rs.getString(3);
         User user = new User(id, fetchedUsername, displayName);
         users.add(user);
-        System.out.println(id + "User " + fetchedUsername + " loaded from database.");
       }
       rs.close();
     } catch (SQLException e) {

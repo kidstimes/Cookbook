@@ -144,7 +144,6 @@ public class RecipeView {
 
     // Add a title (recipe name)
     Label title = new Label(recipe.getName());
-    System.out.println(recipe);
     title.setStyle("-fx-text-fill: #3F6250;-fx-font-weight: bold;"
         + "-fx-font-size: 36px;-fx-font-family: 'ROBOTO';");
     
