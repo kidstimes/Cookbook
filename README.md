@@ -1,7 +1,19 @@
 ![image](https://github.com/user-attachments/assets/cf2a15af-8759-49ec-aafd-db9dbc8d9cb7)
 # Overcooked Cookbook by group JAVA
 
-This is the project for the course 1DV508. A cookbook written by group Java called Overcooked cookbook. Our group has a memo(1DV508-Group Java-Memo&Plans.docx document)) with plans and agile process in the repo.
+## Overview
+
+Overcooked Cookbook is a comprehensive recipe management system developed by Group Java for the 1DV508 course. This desktop application allows users to:
+
+- Store and organize personal recipes
+- Search recipes by ingredients, categories, or difficulty
+- Plan weekly meals with an interactive calendar
+- Generate shopping lists based on meal plans
+- Share favorite recipes with other users
+- Send messages in the application and chat with other users
+- Track cooking history and favorites
+
+Built with JavaFX and MySQL, the application offers an intuitive interface for home cooks to digitize and organize their culinary collection.
 
 ## Running Instructions
 
