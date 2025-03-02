@@ -1,14 +1,21 @@
 package cookbook.controller;
 
+<<<<<<< HEAD
 import cookbook.model.CookbookFacade;
 import cookbook.view.HomePageView;
 import cookbook.view.HomePageViewObserver;
 import javafx.scene.Node;
 
+=======
+import javafx.scene.Node;
+import cookbook.view.HomePageView;
+import cookbook.view.HomePageViewObserver;
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 
 /**
  * Controller for managing the home page.
  */
+<<<<<<< HEAD
 public class HomePageController extends BaseController implements HomePageViewObserver {
   private HomePageView homePageView;
 
@@ -34,4 +41,36 @@ public class HomePageController extends BaseController implements HomePageViewOb
   }
 
 
+=======
+public class HomePageController implements HomePageViewObserver, BaseController {
+
+    private ControllerManager controllerManager;
+    private HomePageView homePageView;
+
+    /**
+     * Home Page Controller Constructor.
+     *
+     * @param controllerManager the main controller (used to navigate to other controllers)
+     */
+    public HomePageController(ControllerManager controllerManager) {
+        this.controllerManager = controllerManager;
+        this.homePageView = new HomePageView();
+        this.homePageView.setObserver(this);
+    }
+
+    @Override
+    public Node getView() {
+        return this.homePageView.getView();
+    }
+
+    @Override
+    public void handleBrowseRecipesClicked() {
+        this.controllerManager.showBrowserView();
+    }
+
+    @Override
+    public void handleAddRecipeClicked() {
+        this.controllerManager.showAddRecipeView();
+    }
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }

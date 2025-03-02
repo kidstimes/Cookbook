@@ -1,5 +1,6 @@
 package cookbook.controller;
 
+<<<<<<< HEAD
 import cookbook.model.CookbookFacade;
 import cookbook.model.Recipe;
 import cookbook.view.RecipeView;
@@ -33,10 +34,51 @@ public class RecipeController extends BaseController implements RecipeViewObserv
   /**
    * Get the recipe view.
    */
+=======
+import javafx.scene.Node;
+import cookbook.view.RecipeView;
+import cookbook.view.RecipeViewObserver;
+import cookbook.model.Recipe;
+
+/**
+ * Controller for managing the view of a recipe.
+ */
+public class RecipeController implements RecipeViewObserver, BaseController {
+
+  private ControllerManager controllerManager;
+  private RecipeView recipeView;
+  private Recipe recipe;
+  
+  /**
+   * Recipe Controller Constructor.
+   *
+   * @param controllerManager the main controller
+   * @param recipe the recipe to display
+   */
+  public RecipeController(ControllerManager controllerManager, Recipe recipe) {
+    this.controllerManager = controllerManager;
+    this.recipe = recipe;
+    this.recipeView = new RecipeView(recipe);
+    this.recipeView.setObserver(this);
+  }
+
+  /**
+   * Display the given recipe.
+   *
+   * @param recipe the recipe to display
+   */
+  public void setRecipe(Recipe recipe) {
+    this.recipe = recipe;
+    this.recipeView.setRecipe(recipe);
+  }
+
+  @Override
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
   public Node getView() {
     return this.recipeView.getView();
   }
 
+<<<<<<< HEAD
   /**
    * Handle the save tags event.
    */
@@ -106,3 +148,16 @@ public class RecipeController extends BaseController implements RecipeViewObserv
 
 }
 
+=======
+  @Override
+  public void handleBackToBrowserClicked() {
+    this.controllerManager.showBrowserView();
+  }
+
+  @Override
+  public void handleBackToHomeClicked() {
+    this.controllerManager.showHomePageView();
+  }
+
+}
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae

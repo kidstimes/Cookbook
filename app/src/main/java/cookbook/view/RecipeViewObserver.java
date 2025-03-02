@@ -1,5 +1,6 @@
 package cookbook.view;
 
+<<<<<<< HEAD
 import cookbook.model.Recipe;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -59,4 +60,9 @@ public interface RecipeViewObserver {
   String getDisplayNameByUsername(String createrUsername);
 
 
+=======
+public interface RecipeViewObserver {
+  void handleBackToHomeClicked();
+  void handleBackToBrowserClicked();
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }
