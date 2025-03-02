@@ -12,6 +12,7 @@ Overcooked Cookbook is a comprehensive recipe management system developed by Gro
 - Share favorite recipes with other users
 - Send messages in the application and chat with other users
 - Track recipe history
+- Admin feature to manage users
 
 Built with JavaFX and MySQL, the application offers an intuitive interface for home cooks to digitize and organize their culinary collection.
 
