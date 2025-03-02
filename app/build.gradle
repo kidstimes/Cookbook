@@ -13,7 +13,7 @@ plugins {
 }
 
 javafx {
-    version = "17.0.1"
+    version = '20.0.1'
     modules = [ 'javafx.controls' ]
 }
 
@@ -31,7 +31,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
-    
+
+    implementation 'org.openjfx:javafx-controls:20.0.1'
+    implementation 'org.openjfx:javafx-fxml:20.0.1'
+
     // iText 7 Core
     implementation 'com.itextpdf:itext7-core:7.1.16'
 
@@ -39,6 +42,7 @@ dependencies {
     implementation 'com.itextpdf:html2pdf:3.0.2'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
+
 }
 
 application {
@@ -51,4 +55,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-
+run {
+    doFirst {
+        def pathToFX = System.getenv("PATH_TO_FX") ?: "/Users/lianshi/javafx-sdk-20.0.1/lib"
+        jvmArgs = [
+            '--module-path', "/Users/lianshi/javafx-sdk-20.0.1/lib",
+            '--add-modules', 'javafx.controls,javafx.fxml'
+        ]
+    }
+}

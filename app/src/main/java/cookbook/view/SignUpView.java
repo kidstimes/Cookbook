@@ -64,8 +64,8 @@ public class SignUpView {
     // Create the ImageView for the image
     Image image = new Image(getClass().getResourceAsStream("/images/bsyAZZc.png"));
     ImageView imageView = new ImageView(image);
-    imageView.setFitWidth(600);
-    imageView.setFitHeight(150);
+    imageView.setFitWidth(800);
+    imageView.setFitHeight(200);
 
     // Create the fade animation
     FadeTransition fadeTransition = new FadeTransition(Duration.millis(1500), imageView);
@@ -169,8 +169,8 @@ public class SignUpView {
     // Create the ImageView for the GIF
     Image gifImage = new Image("https://i.imgur.com/EfVT7cL.gif");
     ImageView gifImageView = new ImageView(gifImage);
-    gifImageView.setFitWidth(200); 
-    gifImageView.setFitHeight(200);
+    gifImageView.setFitWidth(400); 
+    gifImageView.setFitHeight(400);
 
     // Set alignment and layout constraints for the GIF ImageView
     BorderPane.setAlignment(gifImageView, Pos.BOTTOM_RIGHT);
