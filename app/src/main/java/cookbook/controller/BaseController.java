@@ -1,5 +1,6 @@
 package cookbook.controller;
 
+<<<<<<< HEAD
 import cookbook.model.CookbookFacade;
 
 /**
@@ -59,4 +60,19 @@ public abstract class BaseController {
   public void goToAccount() {
     mainController.goToAccount();
   }
+=======
+import javafx.scene.Node;
+
+/**
+ * The interface for the controllers that handle various functionalities.
+ */
+public interface BaseController {
+
+  /**
+   * Get the view to display.
+   *
+   * @return the central Node of the view
+   */
+  Node getView();
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }

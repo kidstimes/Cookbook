@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 public interface BrowserViewObserver {
 
   /**
+<<<<<<< HEAD
    * Flow control for applying filters during search.
    */
   void handleSearch(String searchType, String searchText, ObservableList<String> selectedTags);
@@ -49,4 +50,20 @@ public interface BrowserViewObserver {
 
 
 
+=======
+   * Go back to the home page.
+   */
+  void handleBackToHomeClicked();
+
+  /**
+   * Display the recipe chosen by the user.
+   */
+  void handleGoToRecipeClicked(Recipe recipe);
+
+  /**
+   * Flow control for applying filters during search.
+   */
+  void handleSearch(String searchType, String searchText, ObservableList<String> selectedTags);
+  
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }

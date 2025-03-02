@@ -34,6 +34,7 @@ dependencies {
 
     implementation 'org.openjfx:javafx-controls:20.0.1'
     implementation 'org.openjfx:javafx-fxml:20.0.1'
+<<<<<<< HEAD
 
     // iText 7 Core
     implementation 'com.itextpdf:itext7-core:7.1.16'
@@ -43,6 +44,8 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
+=======
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }
 
 application {
@@ -59,7 +62,11 @@ run {
     doFirst {
         def pathToFX = System.getenv("PATH_TO_FX") ?: "/Users/lianshi/javafx-sdk-20.0.1/lib"
         jvmArgs = [
+<<<<<<< HEAD
             '--module-path', "/Users/lianshi/javafx-sdk-20.0.1/lib",
+=======
+            '--module-path', pathToFX,
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
             '--add-modules', 'javafx.controls,javafx.fxml'
         ]
     }

@@ -1,5 +1,6 @@
 package cookbook.view;
 
+<<<<<<< HEAD
 import cookbook.model.Comment;
 import cookbook.model.Ingredient;
 import cookbook.model.Recipe;
@@ -41,21 +42,40 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+=======
+import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+<<<<<<< HEAD
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
  * View class for the recipe page.
  */
+=======
+import cookbook.model.Ingredient;
+import cookbook.model.Recipe;
+
+// Class for a recipe view.
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 public class RecipeView {
   private RecipeViewObserver observer;
   private BorderPane view;
   private Recipe recipe;
   private VBox vbox;
+<<<<<<< HEAD
   private GridPane ingredientsGrid;
   private HBox tagsHbox;
   private int initialServings;
@@ -79,17 +99,31 @@ public class RecipeView {
   /**
    * Set an observer of the recipe view.
    */
+=======
+
+  //Constructor to construct a recipe view
+  public RecipeView(Recipe recipe) {
+    this.recipe = recipe;
+    this.view = new BorderPane();
+    initLayout();
+  }
+
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
   public void setObserver(RecipeViewObserver observer) {
     this.observer = observer;
   }
 
+<<<<<<< HEAD
   /**
    * Set the recipe of the recipe view.
    */
+=======
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
   public void setRecipe(Recipe recipe) {
     this.recipe = recipe;
   }
 
+<<<<<<< HEAD
   /**
    * Set the comments of the recipe view.
    */
@@ -134,6 +168,20 @@ public class RecipeView {
     vbox.setSpacing(10);
     view.setCenter(vbox);
     // Add a scroll pane
+=======
+  public Node getView() {
+    return view;
+  }
+  
+  public void initLayout() {
+    vbox = new VBox();
+    vbox.setStyle("-fx-padding: 50px;-fx-background-color: #F9F8F3;");
+    vbox.setSpacing(20); // Add spacing between sections in the VBox
+
+    view.setCenter(vbox); 
+
+    //Add a scroll pane
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(vbox);
     scrollPane.setFitToWidth(true);
@@ -142,6 +190,7 @@ public class RecipeView {
     view.setCenter(scrollPane);
 
 
+<<<<<<< HEAD
     // Add a title (recipe name)
     Label title = new Label(recipe.getName());
     title.setStyle("-fx-text-fill: #3F6250;-fx-font-weight: bold;"
@@ -188,10 +237,27 @@ public class RecipeView {
     // Add the title and star icon to the titleBox
     titleBox.setSpacing(10);
     titleBox.getChildren().addAll(starButton, title);
+=======
+    // Add a back to broswer button
+    Hyperlink backButton = new Hyperlink("← Back to Recipe Browser");
+    backButton.setFont(Font.font("Roboto",20));
+    backButton.setOnAction(e -> {
+      if (observer != null) {
+          observer.handleBackToBrowserClicked();
+      }
+    });
+    vbox.getChildren().add(backButton); 
+
+    // Add a title (recipe name)
+    Text title = new Text(recipe.getName());
+    title.setFont(Font.font("Arial", FontWeight.BOLD, 40));
+    VBox titleBox = new VBox(title);
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
     vbox.getChildren().add(titleBox);
 
     // Add short description with italics
     Text shortDescription = new Text(recipe.getShortDesc());
+<<<<<<< HEAD
 
     shortDescription.setStyle("-fx-text-fill: #3F6250;-fx-font-style: italic;"
         + "-fx-font-size: 28px;-fx-font-family: 'ROBOTO';");
@@ -1093,3 +1159,68 @@ public class RecipeView {
   }
 
 }
+=======
+    shortDescription.setFont(Font.font("Arial", FontPosture.ITALIC, 28));
+    shortDescription.setFill(Color.DARKSLATEGREY);
+    VBox shortDescriptionBox = new VBox(shortDescription);
+    shortDescriptionBox.setPadding(new Insets(0, 0, 20, 0));
+    vbox.getChildren().add(shortDescriptionBox);
+
+    // Add ingredients as a list
+    Text ingredientsTitle = new Text("Ingredients:");
+    ingredientsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+    VBox ingredientsTitleBox = new VBox(ingredientsTitle);
+    vbox.getChildren().add(ingredientsTitleBox);
+
+    // Add ingredients as a list with reduced spacing
+    VBox ingredientsVBox = new VBox();
+    ingredientsVBox.setSpacing(5); // Reduce the spacing between ingredients
+    for (Ingredient ingredient : recipe.getIngredients()) {
+      Text ingredientText = new Text(ingredient.toString());
+      ingredientText.setFont(Font.font("Arial", 20));
+      VBox ingredientBox = new VBox(ingredientText);
+      ingredientsVBox.getChildren().add(ingredientBox);
+    }
+    vbox.getChildren().add(ingredientsVBox);
+    
+ 
+    // Display directions
+    Text directionsTitle = new Text("Directions:");
+    directionsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+    vbox.getChildren().add(directionsTitle);
+
+    Text directions = new Text(recipe.getDirections());
+    directions.setFont(Font.font("Roboto", 20));
+    // wrap text in vbox and add to vbox container
+    VBox directionsTitleBox = new VBox(directionsTitle);
+    directionsTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    vbox.getChildren().add(directionsTitleBox);
+    
+    VBox directionsBox = new VBox(directions);
+    vbox.getChildren().add(directionsBox);
+    
+
+    // Display tags
+    Text tagsTitle = new Text("Tags:");
+    tagsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+    HBox tagsTitleBox = new HBox(tagsTitle);
+    tagsTitleBox.setPadding(new Insets(40, 0, 20, 0));
+    vbox.getChildren().add(tagsTitleBox);
+
+ 
+    // Display tags in a single line
+    HBox tagsHBox = new HBox();
+    tagsHBox.setSpacing(10); // Set spacing between tags
+    for (String tag : recipe.getTags()) {
+      Text tagText = new Text("# " + tag);
+      tagText.setFont(Font.font("Arial", FontPosture.ITALIC, 20));
+      tagsHBox.getChildren().add(tagText);
+    }
+    vbox.getChildren().add(tagsHBox);
+  }
+
+
+}
+
+  
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae

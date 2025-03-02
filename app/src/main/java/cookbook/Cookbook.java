@@ -1,5 +1,6 @@
 package cookbook;
 
+<<<<<<< HEAD
 import cookbook.controller.MainController;
 import cookbook.database.Database;
 import cookbook.model.CookbookFacade;
@@ -46,4 +47,25 @@ public class Cookbook extends Application {
     // Init UI
     launch(args);
   }
+=======
+
+import cookbook.controller.ControllerManager;
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+
+//Main class and entry point for the JavaFX application
+public class Cookbook extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+      // Init controller manager to manage the user interface
+      new ControllerManager(primaryStage);
+    }
+
+    public static void main(String args[]) {
+        // Init UI
+        launch(args);
+    }
+>>>>>>> 650f248cb461825fbe4c63afa2464483f95a54ae
 }
