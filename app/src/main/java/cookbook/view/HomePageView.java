@@ -138,6 +138,7 @@ public class HomePageView {
     label.setGraphicTextGap(20.0); 
     hbox.getChildren().add(label);
     return hbox;
+
   }
 
 

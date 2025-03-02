@@ -238,7 +238,7 @@ public class LoginView {
 
       // Create a TranslateTransition for the new logo image
       TranslateTransition newImageTranslateTransition = new TranslateTransition();
-      newImageTranslateTransition.setDuration(Duration.millis(500));  
+      newImageTranslateTransition.setDuration(Duration.millis(600));  
       newImageTranslateTransition.setNode(newImage);
       newImageTranslateTransition.setByY(-20);  // Move 20 pixels up
       newImageTranslateTransition.setAutoReverse(true);  // Move back and forth
@@ -295,7 +295,7 @@ public class LoginView {
       ImageView topLeftImage = new ImageView(topLeftImageUrl);
 
       // Create an ImageView and set the top left image to it
-      topLeftImage.setFitWidth(300); // Set the width of the image
+      topLeftImage.setFitWidth(400); // Set the width of the image
       topLeftImage.setPreserveRatio(true); // Maintain the aspect ratio
       topLeftImage.setSmooth(true); // Enable smooth resizing
 
@@ -320,7 +320,7 @@ public class LoginView {
       ImageView leftImage = new ImageView(leftImageUrl);
 
       // Create an ImageView and set the left side image to it
-      leftImage.setFitWidth(300); // Set the width of the image
+      leftImage.setFitWidth(400); // Set the width of the image
       leftImage.setPreserveRatio(true); // Maintain the aspect ratio
       leftImage.setSmooth(true); // Enable smooth resizing
 
@@ -454,7 +454,7 @@ public class LoginView {
     ImageView image = new ImageView(imageUrl);
 
     // Create an ImageView and set the image to it
-    image.setFitWidth(800); // Set the width of the image
+    image.setFitWidth(900); // Set the width of the image
     image.setPreserveRatio(true); // Maintain the aspect ratio
     image.setSmooth(true); // Enable smooth resizing
 
@@ -534,7 +534,7 @@ public class LoginView {
 
     // Add this section for the new GIF on the right bottom side
     String gifUrl = "https://i.imgur.com/5S8VFrF.gif";
-    Image gifImage = new Image(gifUrl, 200, 200, true, true);
+    Image gifImage = new Image(gifUrl, 250, 250, true, true);
     ImageView gifImageView = new ImageView(gifImage);
 
     StackPane.setAlignment(gifImageView, Pos.BOTTOM_RIGHT);
@@ -544,7 +544,7 @@ public class LoginView {
 
     // Add this section for the new GIF on the left bottom side
     String gifUrlLeft = "https://i.imgur.com/NFN3ywE.gif";
-    Image gifImageLeft = new Image(gifUrlLeft, 200, 200, true, true);
+    Image gifImageLeft = new Image(gifUrlLeft, 250, 250, true, true);
     ImageView gifImageViewLeft = new ImageView(gifImageLeft);
 
     StackPane.setAlignment(gifImageViewLeft, Pos.BOTTOM_LEFT);
